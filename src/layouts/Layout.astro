@@ -1,0 +1,521 @@
+---
+import Sidebar from '../components/Sidebar.astro';
+import Header from '../components/Header.astro';
+import '../styles/global.css';
+
+// Self-host typography locally to prevent render blocking and layout shift
+import '@fontsource/inter/300.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/outfit/400.css';
+import '@fontsource/outfit/500.css';
+import '@fontsource/outfit/600.css';
+import '@fontsource/outfit/700.css';
+import '@fontsource/outfit/800.css';
+import '@fontsource/fira-code/400.css';
+import '@fontsource/fira-code/500.css';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  activeTool?: string;
+  accentColor?: string;
+  accentGlow?: string;
+}
+
+const { 
+  title, 
+  description, 
+  keywords = "developer tools, json formatter, base64 encoder, regex tester, url encoder, jwt decoder, online tools", 
+  activeTool = "",
+  accentColor = "#6366f1",
+  accentGlow = "rgba(99, 102, 241, 0.15)"
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://toolshub.dev");
+const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Developer Tools";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="ToolsHub" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href={canonicalUrl.href} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://toolshub.dev/og-image.png" />
+    <meta property="og:site_name" content="ToolsHub" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl.href} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://toolshub.dev/og-image.png" />
+
+    <!-- Icons & PWA -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#080c14" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Schema.org WebSite + SearchAction (Sitelinks Search Box) -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "ToolsHub",
+        "url": "https://toolshub.dev",
+        "description": "Free, secure, client-side developer tools for formatting, encoding, decoding, and debugging.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://toolshub.dev/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Schema.org SoftwareApplication Markup -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ToolsHub Developer Suite",
+        "operatingSystem": "All",
+        "applicationCategory": "DeveloperApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ToolsHub",
+        "url": "https://toolshub.dev",
+        "logo": "https://toolshub.dev/favicon.svg"
+      }
+    </script>
+
+    <!-- Schema.org BreadcrumbList -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://toolshub.dev/"
+        },
+        ...(activeTool ? [{
+          "@type": "ListItem",
+          "position": 2,
+          "name": title,
+          "item": canonicalUrl.href
+        }] : [])
+      ]
+    })} />
+  </head>
+  <body>
+    <div 
+      class="layout-wrapper" 
+      id="app-layout"
+      style={`--accent-primary: ${accentColor}; --accent-glow: ${accentGlow}; --accent-hover: ${accentColor}dd;`}
+    >
+      <div id="mobile-sidebar-backdrop" class="sidebar-backdrop"></div>
+      
+      <!-- Sidebar Column -->
+      <div id="sidebar-container" class="sidebar-container">
+        <Sidebar activeTool={activeTool} />
+      </div>
+
+      <!-- Main Column -->
+      <div class="content-container">
+        <Header />
+        <main>
+          <slot />
+        </main>
+        
+        <!-- AdSense Placeholder (non-render-blocking) -->
+        <div class="ad-container" id="ad-footer-unit" aria-hidden="true">
+          <div class="ad-placeholder">
+            <span>Advertisement</span>
+          </div>
+        </div>
+
+        <footer class="app-footer">
+          <div class="footer-content">
+            <div class="footer-left">
+              <span class="footer-logo">Tools<span>Hub</span></span>
+              <p class="footer-desc">Free, secure, client-side tools for developers.</p>
+            </div>
+            <nav class="footer-tools" aria-label="Tools navigation">
+              <h3 class="footer-group-label">Tools</h3>
+              <ul class="footer-tools-list">
+                <li><a href="/json-formatter">JSON Formatter</a></li>
+                <li><a href="/base64">Base64</a></li>
+                <li><a href="/url-encoder-decoder">URL Encoder/Decoder</a></li>
+                <li><a href="/regex-tester">RegEx Tester</a></li>
+                <li><a href="/jwt-decoder">JWT Decoder</a></li>
+                <li><a href="/code-minifier-beautifier">Code Minifier</a></li>
+                <li><a href="/markdown-editor">Markdown Editor</a></li>
+                <li><a href="/color-converter">Color Converter</a></li>
+                <li><a href="/timestamp">Timestamp Converter</a></li>
+                <li><a href="/hash-generator">Hash Generator</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-links" aria-label="Footer navigation">
+              <a href="/">Home</a>
+              <a href="/blog">Blog</a>
+            </nav>
+            <div class="footer-right">
+              <p>&copy; {new Date().getFullYear()} ToolsHub. All code is processed locally in your browser.</p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <style>
+      .layout-wrapper {
+        display: grid;
+        grid-template-columns: var(--sidebar-width) 1fr;
+        grid-template-areas: "sidebar main-content";
+        min-height: 100vh;
+        width: 100vw;
+      }
+
+      .sidebar-container {
+        grid-area: sidebar;
+        width: var(--sidebar-width);
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        z-index: 99;
+      }
+
+      .content-container {
+        grid-area: main-content;
+        margin-left: var(--sidebar-width);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      main {
+        flex-grow: 1;
+        padding: 2rem;
+        width: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 90;
+      }
+
+      /* Ad Container */
+      .ad-container {
+        max-width: var(--max-width);
+        margin: 2rem auto;
+        padding: 0 2rem;
+        width: 100%;
+      }
+
+      .ad-placeholder {
+        background: rgba(15, 23, 42, 0.25);
+        border: 1px dashed var(--border-light);
+        border-radius: var(--radius-sm);
+        min-height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      /* Footer styling */
+      .app-footer {
+        border-top: 1px solid var(--border-light);
+        background: #06090f;
+        padding: 2.5rem 2rem;
+        margin-top: 2rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .footer-content {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 2rem;
+      }
+
+      .footer-logo {
+        font-family: var(--font-heading);
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.25rem;
+        display: inline-block;
+      }
+
+      .footer-logo span {
+        color: var(--accent-primary);
+      }
+
+      .footer-desc {
+        font-size: 0.8rem;
+      }
+
+      .footer-tools {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .footer-group-label {
+        font-family: var(--font-heading);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.25rem 0;
+      }
+
+      .footer-tools-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.25rem;
+        font-size: 0.8rem;
+      }
+
+      .footer-tools-list li a {
+        color: var(--text-secondary);
+        transition: color var(--transition-fast);
+      }
+
+      .footer-tools-list li a:hover {
+        color: var(--accent-primary);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.5rem;
+        font-size: 0.8rem;
+      }
+
+      .footer-links a {
+        color: var(--text-secondary);
+        transition: color var(--transition-fast);
+      }
+
+      .footer-links a:hover {
+        color: var(--accent-primary);
+      }
+
+      /* Responsive rules */
+      @media (max-width: 768px) {
+        .layout-wrapper {
+          grid-template-columns: 1fr;
+          grid-template-areas: "main-content";
+        }
+
+        .sidebar-container {
+          transform: translateX(-100%);
+          transition: transform var(--transition-normal);
+        }
+
+        .layout-wrapper.mobile-sidebar-open .sidebar-container {
+          transform: translateX(0);
+        }
+
+        .layout-wrapper.mobile-sidebar-open .sidebar-backdrop {
+          display: block;
+        }
+
+        .content-container {
+          margin-left: 0;
+        }
+
+        main {
+          padding: 1.25rem;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+        }
+      }
+    </style>
+
+    <script>
+      // Manage mobile sidebar drawer
+      const menuToggle = document.getElementById('mobile-menu-toggle');
+      const layoutWrapper = document.getElementById('app-layout');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+
+      function toggleSidebar() {
+        if (layoutWrapper) {
+          layoutWrapper.classList.toggle('mobile-sidebar-open');
+        }
+      }
+
+      function closeSidebar() {
+        if (layoutWrapper) {
+          layoutWrapper.classList.remove('mobile-sidebar-open');
+        }
+      }
+
+      if (menuToggle) {
+        menuToggle.addEventListener('click', toggleSidebar);
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', closeSidebar);
+      }
+
+      // Register Service Worker for PWA offline support
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+
+        // Listen for service worker updates and show toast notification
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          // Avoid showing multiple toasts
+          if (document.getElementById('sw-update-toast')) return;
+
+          const toast = document.createElement('div');
+          toast.id = 'sw-update-toast';
+          toast.setAttribute('role', 'status');
+          toast.setAttribute('aria-live', 'polite');
+          toast.innerHTML = `
+            <span class="sw-toast-message">App updated! Refresh for the latest version.</span>
+            <button class="sw-toast-dismiss" aria-label="Dismiss notification">&times;</button>
+          `;
+
+          // Apply inline styles for the toast
+          Object.assign(toast.style, {
+            position: 'fixed',
+            bottom: '1.5rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#1e293b',
+            color: '#f8fafc',
+            padding: '0.875rem 1.25rem',
+            borderRadius: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+            zIndex: '10000',
+            fontSize: '0.9rem',
+            fontFamily: 'var(--font-body, system-ui, sans-serif)',
+            maxWidth: '90vw',
+            animation: 'sw-toast-in 0.3s ease-out'
+          });
+
+          // Style the dismiss button
+          const dismissBtn = toast.querySelector('.sw-toast-dismiss') as HTMLButtonElement | null;
+          if (dismissBtn) {
+            Object.assign(dismissBtn.style, {
+              background: 'transparent',
+              border: 'none',
+              color: '#94a3b8',
+              fontSize: '1.25rem',
+              cursor: 'pointer',
+              padding: '0.25rem 0.5rem',
+              lineHeight: '1',
+              borderRadius: '0.25rem',
+              transition: 'color 0.2s'
+            });
+            dismissBtn.addEventListener('mouseenter', () => {
+              dismissBtn.style.color = '#f8fafc';
+            });
+            dismissBtn.addEventListener('mouseleave', () => {
+              dismissBtn.style.color = '#94a3b8';
+            });
+          }
+
+          // Add animation keyframes
+          const styleEl = document.createElement('style');
+          styleEl.textContent = `
+            @keyframes sw-toast-in {
+              from { opacity: 0; transform: translateX(-50%) translateY(1rem); }
+              to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+            @keyframes sw-toast-out {
+              from { opacity: 1; transform: translateX(-50%) translateY(0); }
+              to { opacity: 0; transform: translateX(-50%) translateY(1rem); }
+            }
+          `;
+          document.head.appendChild(styleEl);
+
+          function dismissToast() {
+            toast.style.animation = 'sw-toast-out 0.3s ease-in forwards';
+            toast.addEventListener('animationend', () => {
+              toast.remove();
+              styleEl.remove();
+            }, { once: true });
+          }
+
+          // Dismiss on button click
+          if (dismissBtn) {
+            dismissBtn.addEventListener('click', dismissToast);
+          }
+
+          // Auto-dismiss after 8 seconds
+          setTimeout(dismissToast, 8000);
+
+          document.body.appendChild(toast);
+        });
+      }
+    </script>
+  </body>
+</html>

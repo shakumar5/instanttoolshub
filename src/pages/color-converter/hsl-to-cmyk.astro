@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "HSL to CMYK Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert HSL color values to CMYK print percentages online. Free, instant browser-based HSL to CMYK color converter for designers preparing digital assets for print.";
+const seoKeywords = "hsl to cmyk, hsl to cmyk converter, convert hsl to cmyk online, screen color to print color";
+
+const howToUse = [
+  "Enter your HSL values (Hue 0-360, Saturation 0-100%, Lightness 0-100%) in the HSL input field.",
+  "The tool will instantly calculate the matching CMYK percentages (Cyan, Magenta, Yellow, Key/Black).",
+  "Click 'Copy' to copy the formatted CMYK string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does HSL to CMYK conversion work?",
+    a: "HSL is first converted to RGB (using the chroma/hue-sector algorithm), then RGB is converted to CMYK using: K = 1 - max(R,G,B)/255, C = (1 - R/255 - K)/(1-K), M = (1 - G/255 - K)/(1-K), Y = (1 - B/255 - K)/(1-K)."
+  },
+  {
+    q: "When would I convert HSL to CMYK?",
+    a: "When you've designed a color palette using HSL in CSS and need to communicate those exact colors to a print shop for brochures, business cards, or packaging."
+  },
+  {
+    q: "Will my HSL web colors look identical in print?",
+    a: "Not always. CMYK has a narrower gamut than RGB/HSL. Highly saturated or neon colors may appear muted in print. Always request a color proof from your printer for critical brand colors."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert HSL (Hue, Saturation, Lightness) web color values to CMYK print percentages instantly.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="hsl-to-cmyk" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

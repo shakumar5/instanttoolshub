@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "HSL to RGB Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert HSL color values to RGB format online. Free, instant browser-based HSL to RGB color converter with visual picker and live preview.";
+const seoKeywords = "hsl to rgb, hsl to rgb converter, convert hsl to rgb online, hsl color to rgb values";
+
+const howToUse = [
+  "Enter your HSL values (Hue 0-360, Saturation 0-100%, Lightness 0-100%) in the HSL input field.",
+  "The tool will instantly calculate the matching RGB values (e.g. rgb(20, 184, 166)).",
+  "Click 'Copy' to copy the formatted RGB CSS string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does HSL to RGB conversion work?",
+    a: "The conversion uses the chroma (C = (1 - |2L - 1|) × S) and hue sector (H/60) to determine intermediate color values. These are then adjusted by a lightness match value to produce final Red, Green, and Blue intensity values between 0 and 255."
+  },
+  {
+    q: "What is the advantage of HSL over RGB?",
+    a: "HSL separates color identity (Hue) from intensity (Saturation) and brightness (Lightness), making it easier to create color variations. For example, darkening a color is simply reducing L, while in RGB you must adjust all three channels proportionally."
+  },
+  {
+    q: "Are HSL and HSV the same thing?",
+    a: "No. HSL (Hue, Saturation, Lightness) and HSV/HSB (Hue, Saturation, Value/Brightness) use different definitions of saturation and brightness. A color with 100% lightness in HSL is always white, while 100% value in HSV gives the purest color."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert HSL (Hue, Saturation, Lightness) color values to RGB (Red, Green, Blue) format instantly.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="hsl-to-rgb" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

@@ -1,0 +1,1409 @@
+---
+interface Props {
+  initialColor?: string;
+  pageMode?: string; // e.g. "hex-to-rgb", "rgb-to-hex"
+}
+
+const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
+---
+
+<div class="color-tool-wrapper" data-page-mode={pageMode} data-initial-color={initialColor}>
+  <!-- Top Split: Picker & Conversions -->
+  <div class="color-main-grid">
+    <!-- Picker panel -->
+    <div class="color-panel glass">
+      <div class="split-label">Visual Color Picker</div>
+      <div class="picker-box">
+        <div class="color-preview-large" id="color-preview" style={`background-color: ${initialColor};`}>
+          <div class="color-preview-text" id="color-preview-hex">{initialColor}</div>
+        </div>
+        <div class="picker-row">
+          <input type="color" id="native-color-picker" value={initialColor} class="color-input-dot" />
+          <button class="btn btn-outline btn-sm" id="btn-random-color">🎲 Random Color</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversions panel -->
+    <div class="color-panel glass">
+      <div class="split-label">Color Conversions</div>
+      <div class="conversions-form">
+        <div class="form-control">
+          <label class="form-label">HEX</label>
+          <div class="input-copy-row">
+            <input type="text" id="color-hex" value={initialColor} class="form-input code-font" />
+            <button class="btn btn-secondary btn-xs btn-copy-field" data-target="color-hex">Copy</button>
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="form-label">RGB</label>
+          <div class="input-copy-row">
+            <input type="text" id="color-rgb" value="rgb(20, 184, 166)" class="form-input code-font" />
+            <button class="btn btn-secondary btn-xs btn-copy-field" data-target="color-rgb">Copy</button>
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="form-label">HSL</label>
+          <div class="input-copy-row">
+            <input type="text" id="color-hsl" value="hsl(173, 80%, 40%)" class="form-input code-font" />
+            <button class="btn btn-secondary btn-xs btn-copy-field" data-target="color-hsl">Copy</button>
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="form-label">CMYK</label>
+          <div class="input-copy-row">
+            <input type="text" id="color-cmyk" value="cmyk(89%, 0%, 10%, 28%)" class="form-input code-font" />
+            <button class="btn btn-secondary btn-xs btn-copy-field" data-target="color-cmyk">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Tabs: Palettes, Gradients, Image Extractor, Contrast Checker -->
+  <div class="color-secondary-tabs glass">
+    <div class="tabs-header-bar">
+      <button class="color-tab-btn active" data-color-tab="tab-palettes">Palette Generator</button>
+      <button class="color-tab-btn" data-color-tab="tab-gradients">Gradient Builder</button>
+      <button class="color-tab-btn" data-color-tab="tab-extractor">Color from Image</button>
+      <button class="color-tab-btn" data-color-tab="tab-contrast">Contrast Checker</button>
+    </div>
+
+    <div class="color-tab-content-container">
+      
+      <!-- Palette Generator Content -->
+      <div class="color-tab-content active" id="tab-palettes">
+        <div class="palette-sections">
+          <div class="palette-block">
+            <h4 class="palette-title">Complementary Palette</h4>
+            <div class="palette-row" id="palette-complementary"></div>
+          </div>
+          <div class="palette-block">
+            <h4 class="palette-title">Analogous Palette</h4>
+            <div class="palette-row" id="palette-analogous"></div>
+          </div>
+          <div class="palette-block">
+            <h4 class="palette-title">Triadic Palette</h4>
+            <div class="palette-row" id="palette-triadic"></div>
+          </div>
+          <div class="palette-block">
+            <h4 class="palette-title">Monochromatic Palette</h4>
+            <div class="palette-row" id="palette-monochromatic"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gradient Builder Content -->
+      <div class="color-tab-content" id="tab-gradients">
+        <div class="gradient-workspace">
+          <div class="gradient-controls-side">
+            <div class="form-control">
+              <label class="form-label">Color 1</label>
+              <div class="picker-row-inline">
+                <input type="color" id="grad-color-1" value="#14b8a6" class="color-picker-mini" />
+                <input type="text" id="grad-color-1-text" value="#14b8a6" class="form-input code-font text-mini" />
+              </div>
+            </div>
+            <div class="form-control">
+              <label class="form-label">Color 2</label>
+              <div class="picker-row-inline">
+                <input type="color" id="grad-color-2" value="#a855f7" class="color-picker-mini" />
+                <input type="text" id="grad-color-2-text" value="#a855f7" class="form-input code-font text-mini" />
+              </div>
+            </div>
+            <div class="form-control">
+              <label class="form-label">Angle (Degrees)</label>
+              <input type="range" id="grad-angle" min="0" max="360" value="135" class="grad-slider" />
+              <span class="slider-display" id="grad-angle-val">135&deg;</span>
+            </div>
+            <div class="form-control">
+              <label class="form-label">CSS Code</label>
+              <textarea id="grad-css-output" readonly class="form-textarea code-font" style="min-height: 60px;"></textarea>
+            </div>
+            <button class="btn btn-primary btn-sm copy-btn" id="btn-copy-gradient">Copy CSS</button>
+          </div>
+          <div class="gradient-preview-side">
+            <div class="gradient-preview-box" id="gradient-preview-box"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Color from Image Content -->
+      <div class="color-tab-content" id="tab-extractor">
+        <div class="extractor-workspace">
+          <div class="extractor-left">
+            <div class="extractor-error-msg hidden" id="extractor-error" role="alert" aria-live="polite"></div>
+            <div class="drag-zone" id="drop-zone-img">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem; opacity: 0.7;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <p>Drag & Drop Image or Click to Browse</p>
+              <p class="ext-formats">Supported: JPEG, PNG, GIF, SVG, WebP (max 10 MB)</p>
+              <input type="file" id="extractor-file-input" accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp" class="hidden" />
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="extractor-canvas" class="hidden"></canvas>
+            </div>
+          </div>
+          <div class="extractor-right">
+            <div class="split-label">Extracted Details</div>
+            <div class="extracted-panel">
+              <div class="hover-color-indicator">
+                <span class="ind-label">Hover Pixel Color:</span>
+                <div class="ind-swatch" id="pixel-swatch"></div>
+                <span class="ind-hex code-font" id="pixel-hex">#ffffff</span>
+              </div>
+              <div class="hover-color-indicator">
+                <span class="ind-label">Selected Color:</span>
+                <div class="ind-swatch" id="selected-swatch"></div>
+                <span class="ind-hex code-font" id="selected-hex">—</span>
+              </div>
+              <p class="ext-help">Hover over the image to preview pixel colors. Click to select and load that color into the main converter fields (HEX, RGB, HSL, CMYK).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrast Checker Content -->
+      <div class="color-tab-content" id="tab-contrast">
+        <div class="contrast-workspace">
+          <div class="contrast-inputs">
+            <div class="form-control">
+              <label class="form-label">Foreground (Text) Color</label>
+              <div class="picker-row-inline">
+                <input type="color" id="contrast-fg" value="#14b8a6" class="color-picker-mini" />
+                <input type="text" id="contrast-fg-text" value="#14b8a6" class="form-input code-font text-mini" />
+              </div>
+            </div>
+            <div class="form-control">
+              <label class="form-label">Background Color</label>
+              <div class="picker-row-inline">
+                <input type="color" id="contrast-bg" value="#0f172a" class="color-picker-mini" />
+                <input type="text" id="contrast-bg-text" value="#0f172a" class="form-input code-font text-mini" />
+              </div>
+            </div>
+          </div>
+
+          <div class="contrast-results">
+            <div class="contrast-preview-card" id="contrast-preview-card">
+              <span id="contrast-preview-text">Sample Text Display</span>
+            </div>
+            
+            <div class="contrast-metrics">
+              <div class="metric-circle-box">
+                <span class="ratio-label">Contrast Ratio</span>
+                <span class="ratio-value" id="contrast-ratio-val">4.5:1</span>
+              </div>
+              
+              <div class="wcag-scores">
+                <div class="score-row">
+                  <span>Small Text (WCAG AA - 4.5:1)</span>
+                  <span class="score-badge" id="badge-aa-small">Pass</span>
+                </div>
+                <div class="score-row">
+                  <span>Large Text (WCAG AA - 3.0:1)</span>
+                  <span class="score-badge" id="badge-aa-large">Pass</span>
+                </div>
+                <div class="score-row">
+                  <span>Small Text (WCAG AAA - 7.0:1)</span>
+                  <span class="score-badge" id="badge-aaa-small">Pass</span>
+                </div>
+                <div class="score-row">
+                  <span>Large Text (WCAG AAA - 4.5:1)</span>
+                  <span class="score-badge" id="badge-aaa-large">Pass</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .color-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .color-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    height: 320px;
+  }
+
+  .picker-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    gap: 1.25rem;
+  }
+
+  .color-preview-large {
+    width: 100%;
+    max-width: 250px;
+    height: 120px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .color-preview-text {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.35rem 0.85rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .picker-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .color-input-dot {
+    -webkit-appearance: none;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .color-input-dot::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  .color-input-dot::-webkit-color-swatch {
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .conversions-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    justify-content: center;
+    flex-grow: 1;
+  }
+
+  .input-copy-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .input-copy-row input {
+    flex-grow: 1;
+  }
+
+  /* Secondary Tabs container */
+  .color-secondary-tabs {
+    display: flex;
+    flex-direction: column;
+    min-height: 350px;
+    overflow: hidden;
+  }
+
+  .tabs-header-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+    background: rgba(15, 23, 42, 0.4);
+  }
+
+  .color-tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .color-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .color-tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .color-tab-content-container {
+    padding: 1.5rem;
+    flex-grow: 1;
+    background: #030712;
+  }
+
+  .color-tab-content {
+    display: none;
+    height: 100%;
+  }
+
+  .color-tab-content.active {
+    display: block;
+  }
+
+  /* Palette layouts */
+  .palette-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .palette-title {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .palette-row {
+    display: flex;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    height: 48px;
+    border: 1px solid var(--border-light);
+  }
+
+  :global(.palette-color) {
+    flex-grow: 1;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+  }
+
+  :global(.palette-color span) {
+    font-family: var(--font-mono);
+    font-size: 0.725rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  :global(.palette-color:hover span) {
+    opacity: 1;
+  }
+
+  /* Gradient workspace */
+  .gradient-workspace {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    height: 100%;
+  }
+
+  .gradient-controls-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .picker-row-inline {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .color-picker-mini {
+    -webkit-appearance: none;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .color-picker-mini::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-picker-mini::-webkit-color-swatch { border: 1px solid var(--border-light); border-radius: 4px; }
+
+  .text-mini {
+    width: 110px;
+    padding: 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .grad-slider {
+    flex-grow: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-tertiary);
+    outline: none;
+  }
+
+  .slider-display {
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+  }
+
+  .gradient-preview-side {
+    height: 100%;
+    display: flex;
+  }
+
+  .gradient-preview-box {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+    min-height: 200px;
+  }
+
+  /* Image Extractor workspace */
+  .extractor-workspace {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+  }
+
+  .extractor-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .drag-zone {
+    border: 2px dashed var(--border-light);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.01);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .drag-zone:hover {
+    border-color: var(--accent-primary);
+  }
+
+  .drag-zone p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .canvas-wrapper {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    max-height: 220px;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  #extractor-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    cursor: crosshair;
+    border: 1px solid var(--border-light);
+  }
+
+  .extracted-panel {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border-light);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-sm);
+  }
+
+  .hover-color-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .ind-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+
+  .ind-hex {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .ext-help {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .ext-formats {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    opacity: 0.7;
+  }
+
+  .extractor-error-msg {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .extractor-error-msg::before {
+    content: '⚠';
+    font-size: 1rem;
+  }
+
+  /* Contrast checker workspace */
+  .contrast-workspace {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+  }
+
+  .contrast-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .contrast-results {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .contrast-preview-card {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+
+  .contrast-metrics {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .metric-circle-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border-light);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
+  }
+
+  .ratio-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .ratio-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .wcag-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    flex-grow: 1;
+  }
+
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    align-items: center;
+    color: var(--text-secondary);
+  }
+
+  .score-badge {
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  :global(.score-badge.pass) {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+  }
+
+  :global(.score-badge.fail) {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+  }
+
+  .form-control.conversion-highlight {
+    position: relative;
+  }
+
+  .form-control.conversion-highlight .form-label {
+    color: var(--accent-primary);
+    font-weight: 600;
+  }
+
+  .form-control.conversion-highlight .form-input {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+  }
+
+  .conversion-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--accent-glow);
+    color: var(--accent-primary);
+    border: 1px solid var(--accent-primary);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 850px) {
+    .color-main-grid, .gradient-workspace, .extractor-workspace, .contrast-workspace {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .color-panel {
+      height: auto;
+    }
+  }
+</style>
+
+<script>
+  // Tab Management
+  const tabs = document.querySelectorAll('.color-tab-btn');
+  const tabContents = document.querySelectorAll('.color-tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-color-tab');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetId) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+
+  // Elements
+  const previewBox = document.getElementById('color-preview');
+  const previewHex = document.getElementById('color-preview-hex');
+  const nativePicker = document.getElementById('native-color-picker') as HTMLInputElement | null;
+  const btnRandom = document.getElementById('btn-random-color');
+
+  // Fields
+  const inputHex = document.getElementById('color-hex') as HTMLInputElement | null;
+  const inputRgb = document.getElementById('color-rgb') as HTMLInputElement | null;
+  const inputHsl = document.getElementById('color-hsl') as HTMLInputElement | null;
+  const inputCmyk = document.getElementById('color-cmyk') as HTMLInputElement | null;
+
+  // Copy Buttons
+  const copyBtns = document.querySelectorAll('.btn-copy-field');
+
+  // Hooks
+  if (nativePicker) {
+    nativePicker.addEventListener('input', () => {
+      updateColor(nativePicker.value);
+    });
+  }
+
+  if (btnRandom) {
+    btnRandom.addEventListener('click', () => {
+      const randHex = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+      updateColor(randHex);
+    });
+  }
+
+  if (inputHex) {
+    inputHex.addEventListener('input', () => {
+      const val = inputHex.value.trim();
+      if (/^#?[0-9a-fA-F]{6}$/.test(val) || /^#?[0-9a-fA-F]{3}$/.test(val)) {
+        const hex = val.startsWith('#') ? val : '#' + val;
+        updateColor(hex);
+      }
+    });
+  }
+
+  if (inputRgb) {
+    inputRgb.addEventListener('input', () => {
+      const val = inputRgb.value;
+      const match = val.match(/rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i);
+      if (match) {
+        const r = parseInt(match[1], 10);
+        const g = parseInt(match[2], 10);
+        const b = parseInt(match[3], 10);
+        if (r <= 255 && g <= 255 && b <= 255) {
+          updateColor(rgbToHex(r, g, b));
+        }
+      }
+    });
+  }
+
+  if (inputHsl) {
+    inputHsl.addEventListener('input', () => {
+      const val = inputHsl.value;
+      const match = val.match(/hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*\)/i);
+      if (match) {
+        const h = parseInt(match[1], 10);
+        const s = parseInt(match[2], 10);
+        const l = parseInt(match[3], 10);
+        if (h <= 360 && s <= 100 && l <= 100) {
+          const [r, g, b] = hslToRgb(h / 360, s / 100, l / 100);
+          updateColor(rgbToHex(r, g, b));
+        }
+      }
+    });
+  }
+
+  if (inputCmyk) {
+    inputCmyk.addEventListener('input', () => {
+      const val = inputCmyk.value;
+      const match = val.match(/cmyk\(\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*\)/i);
+      if (match) {
+        const c = parseInt(match[1], 10) / 100;
+        const m = parseInt(match[2], 10) / 100;
+        const y = parseInt(match[3], 10) / 100;
+        const k = parseInt(match[4], 10) / 100;
+        if (c <= 1 && m <= 1 && y <= 1 && k <= 1) {
+          const [r, g, b] = cmykToRgb(c, m, y, k);
+          updateColor(rgbToHex(r, g, b));
+        }
+      }
+    });
+  }
+
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target') || '';
+      const input = document.getElementById(targetId) as HTMLInputElement | null;
+      if (input) {
+        navigator.clipboard.writeText(input.value).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      }
+    });
+  });
+
+  // Main color state updater
+  function updateColor(hex: string) {
+    if (previewBox) previewBox.style.backgroundColor = hex;
+    if (previewHex) previewHex.textContent = hex.toUpperCase();
+    if (nativePicker) nativePicker.value = hex;
+
+    // Parse to RGB
+    const [r, g, b] = hexToRgb(hex);
+
+    // Update Input Fields
+    if (inputHex && document.activeElement !== inputHex) inputHex.value = hex.toUpperCase();
+    if (inputRgb && document.activeElement !== inputRgb) inputRgb.value = `rgb(${r}, ${g}, ${b})`;
+    
+    // Parse HSL
+    const [h, s, l] = rgbToHsl(r, g, b);
+    if (inputHsl && document.activeElement !== inputHsl) {
+      inputHsl.value = `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+    }
+
+    // Parse CMYK
+    const [c, m, y, k] = rgbToCmyk(r, g, b);
+    if (inputCmyk && document.activeElement !== inputCmyk) {
+      inputCmyk.value = `cmyk(${Math.round(c * 100)}%, ${Math.round(m * 100)}%, ${Math.round(y * 100)}%, ${Math.round(k * 100)}%)`;
+    }
+
+    // Update Palettes
+    generatePalettes(hex, r, g, b);
+
+    // Sync other tabs
+    syncToContrast(hex);
+  }
+
+  // --- PALETTE GENERATOR ---
+  function generatePalettes(hex: string, r: number, g: number, b: number) {
+    const rowComp = document.getElementById('palette-complementary');
+    const rowAna = document.getElementById('palette-analogous');
+    const rowTri = document.getElementById('palette-triadic');
+    const rowMono = document.getElementById('palette-monochromatic');
+
+    const [h, s, l] = rgbToHsl(r, g, b);
+
+    // 1. Complementary (Opposite color - 180 degrees)
+    if (rowComp) {
+      const compH = (h + 0.5) % 1.0;
+      const compHex = rgbToHex(...hslToRgb(compH, s, l));
+      renderPaletteRow(rowComp, [hex, compHex]);
+    }
+
+    // 2. Analogous (Neighboring colors - +/- 30 degrees)
+    if (rowAna) {
+      const h1 = (h + 30/360) % 1.0;
+      const h2 = (h + 330/360) % 1.0;
+      const hex1 = rgbToHex(...hslToRgb(h1, s, l));
+      const hex2 = rgbToHex(...hslToRgb(h2, s, l));
+      renderPaletteRow(rowAna, [hex2, hex, hex1]);
+    }
+
+    // 3. Triadic (120 degrees apart)
+    if (rowTri) {
+      const h1 = (h + 120/360) % 1.0;
+      const h2 = (h + 240/360) % 1.0;
+      const hex1 = rgbToHex(...hslToRgb(h1, s, l));
+      const hex2 = rgbToHex(...hslToRgb(h2, s, l));
+      renderPaletteRow(rowTri, [hex, hex1, hex2]);
+    }
+
+    // 4. Monochromatic (Varied lightness)
+    if (rowMono) {
+      const l1 = Math.max(0.1, l - 0.2);
+      const l2 = Math.max(0.2, l - 0.1);
+      const l3 = Math.min(0.9, l + 0.1);
+      const l4 = Math.min(0.95, l + 0.2);
+      const hex1 = rgbToHex(...hslToRgb(h, s, l1));
+      const hex2 = rgbToHex(...hslToRgb(h, s, l2));
+      const hex3 = rgbToHex(...hslToRgb(h, s, l3));
+      const hex4 = rgbToHex(...hslToRgb(h, s, l4));
+      renderPaletteRow(rowMono, [hex1, hex2, hex, hex3, hex4]);
+    }
+  }
+
+  function renderPaletteRow(container: HTMLElement, colors: string[]) {
+    container.innerHTML = '';
+    colors.forEach(col => {
+      const el = document.createElement('div');
+      el.className = 'palette-color';
+      el.style.backgroundColor = col;
+      el.innerHTML = `<span>${col.toUpperCase()}</span>`;
+      
+      // Click color to load into main picker
+      el.addEventListener('click', () => {
+        updateColor(col);
+      });
+      container.appendChild(el);
+    });
+  }
+
+  // --- GRADIENT BUILDER ---
+  const gradColor1 = document.getElementById('grad-color-1') as HTMLInputElement | null;
+  const gradColor1Text = document.getElementById('grad-color-1-text') as HTMLInputElement | null;
+  const gradColor2 = document.getElementById('grad-color-2') as HTMLInputElement | null;
+  const gradColor2Text = document.getElementById('grad-color-2-text') as HTMLInputElement | null;
+  const gradAngle = document.getElementById('grad-angle') as HTMLInputElement | null;
+  const gradAngleVal = document.getElementById('grad-angle-val');
+  const gradCssOutput = document.getElementById('grad-css-output') as HTMLTextAreaElement | null;
+  const gradPreviewBox = document.getElementById('gradient-preview-box');
+  const btnCopyGrad = document.getElementById('btn-copy-gradient');
+
+  if (gradColor1 && gradColor2 && gradAngle) {
+    [gradColor1, gradColor2, gradAngle].forEach(el => {
+      el.addEventListener('input', buildGradient);
+    });
+  }
+
+  if (gradColor1Text && gradColor1) {
+    gradColor1Text.addEventListener('input', () => {
+      if (/^#[0-9a-fA-F]{6}$/.test(gradColor1Text.value)) {
+        gradColor1.value = gradColor1Text.value;
+        buildGradient();
+      }
+    });
+  }
+
+  if (gradColor2Text && gradColor2) {
+    gradColor2Text.addEventListener('input', () => {
+      if (/^#[0-9a-fA-F]{6}$/.test(gradColor2Text.value)) {
+        gradColor2.value = gradColor2Text.value;
+        buildGradient();
+      }
+    });
+  }
+
+  function buildGradient() {
+    if (!gradColor1 || !gradColor2 || !gradAngle || !gradAngleVal || !gradCssOutput || !gradPreviewBox || !gradColor1Text || !gradColor2Text) return;
+
+    const col1 = gradColor1.value;
+    const col2 = gradColor2.value;
+    const angle = gradAngle.value;
+
+    gradColor1Text.value = col1.toUpperCase();
+    gradColor2Text.value = col2.toUpperCase();
+
+    gradAngleVal.innerHTML = `${angle}&deg;`;
+    
+    const cssCode = `linear-gradient(${angle}deg, ${col1}, ${col2})`;
+    gradCssOutput.value = `background-color: ${col1};\nbackground: ${cssCode};`;
+    
+    gradPreviewBox.style.background = cssCode;
+  }
+
+  if (btnCopyGrad && gradCssOutput) {
+    btnCopyGrad.addEventListener('click', () => {
+      navigator.clipboard.writeText(gradCssOutput.value).then(() => {
+        btnCopyGrad.textContent = 'Copied!';
+        setTimeout(() => {
+          btnCopyGrad.textContent = 'Copy CSS';
+        }, 2000);
+      });
+    });
+  }
+
+  // --- COLOR EXTRACTOR FROM IMAGE ---
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+  const SUPPORTED_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
+
+  const dropZoneImg = document.getElementById('drop-zone-img');
+  const extractorFileInput = document.getElementById('extractor-file-input') as HTMLInputElement | null;
+  const canvas = document.getElementById('extractor-canvas') as HTMLCanvasElement | null;
+  const pixelSwatch = document.getElementById('pixel-swatch');
+  const pixelHex = document.getElementById('pixel-hex');
+  const selectedSwatch = document.getElementById('selected-swatch');
+  const selectedHex = document.getElementById('selected-hex');
+  const extractorError = document.getElementById('extractor-error');
+
+  function showExtractorError(message: string) {
+    if (extractorError) {
+      extractorError.textContent = message;
+      extractorError.classList.remove('hidden');
+    }
+  }
+
+  function clearExtractorError() {
+    if (extractorError) {
+      extractorError.textContent = '';
+      extractorError.classList.add('hidden');
+    }
+  }
+
+  function validateImageFile(file: File): string | null {
+    if (!SUPPORTED_FORMATS.includes(file.type)) {
+      return `Unsupported file format "${file.type || 'unknown'}". Please upload a JPEG, PNG, GIF, SVG, or WebP image.`;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      return `File size (${sizeMB} MB) exceeds the maximum allowed size of 10 MB. Please upload a smaller image.`;
+    }
+    return null;
+  }
+
+  if (dropZoneImg && extractorFileInput && canvas) {
+    dropZoneImg.addEventListener('click', () => extractorFileInput.click());
+    
+    dropZoneImg.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZoneImg.style.borderColor = 'var(--accent-primary)';
+    });
+
+    dropZoneImg.addEventListener('dragleave', () => {
+      dropZoneImg.style.borderColor = '';
+    });
+
+    dropZoneImg.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZoneImg.style.borderColor = '';
+      if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+        extractFromImage(e.dataTransfer.files[0]);
+      }
+    });
+
+    extractorFileInput.addEventListener('change', () => {
+      if (extractorFileInput.files && extractorFileInput.files.length > 0) {
+        extractFromImage(extractorFileInput.files[0]);
+      }
+    });
+  }
+
+  function extractFromImage(file: File) {
+    clearExtractorError();
+
+    // Validate the file
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      showExtractorError(validationError);
+      // Reset the file input so the same file can be re-selected
+      if (extractorFileInput) extractorFileInput.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => {
+      showExtractorError('Failed to read the image file. Please try another file.');
+    };
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = () => {
+        showExtractorError('Image could not be processed. The file may be corrupted or in an unsupported variant.');
+      };
+      img.onload = () => {
+        if (!canvas || !dropZoneImg) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          showExtractorError('Image could not be processed. Canvas rendering failed. Your browser may not support this feature.');
+          return;
+        }
+
+        try {
+          // Resize canvas to match image, keeping it inside container boundaries
+          const maxW = 400;
+          const maxH = 220;
+          const scaleW = maxW / img.width;
+          const scaleH = maxH / img.height;
+          const scale = Math.min(1.0, scaleW, scaleH);
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
+          // Verify the canvas actually rendered something
+          const testPixel = ctx.getImageData(0, 0, 1, 1);
+          if (!testPixel) {
+            showExtractorError('Image could not be processed. Canvas rendering failed.');
+            return;
+          }
+
+          dropZoneImg.classList.add('hidden');
+          canvas.classList.remove('hidden');
+
+          // Hook hover sampler - display pixel color under cursor
+          canvas.onmousemove = (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = Math.round((event.clientX - rect.left) * scaleX);
+            const y = Math.round((event.clientY - rect.top) * scaleY);
+
+            if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+              const pixel = ctx.getImageData(x, y, 1, 1).data;
+              const [r, g, b] = [pixel[0], pixel[1], pixel[2]];
+              const hex = rgbToHex(r, g, b);
+
+              if (pixelSwatch) pixelSwatch.style.backgroundColor = hex;
+              if (pixelHex) pixelHex.textContent = hex.toUpperCase();
+            }
+          };
+
+          // Hook click sampler - select pixel and load into main converter
+          canvas.onclick = (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = Math.round((event.clientX - rect.left) * scaleX);
+            const y = Math.round((event.clientY - rect.top) * scaleY);
+
+            if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+              const pixel = ctx.getImageData(x, y, 1, 1).data;
+              const [r, g, b] = [pixel[0], pixel[1], pixel[2]];
+              const hex = rgbToHex(r, g, b);
+
+              if (selectedSwatch) selectedSwatch.style.backgroundColor = hex;
+              if (selectedHex) selectedHex.textContent = hex.toUpperCase();
+
+              // Load into main converter fields (HEX, RGB, HSL, CMYK)
+              updateColor(hex);
+            }
+          };
+        } catch (err) {
+          showExtractorError('Image could not be processed. An unexpected error occurred during rendering.');
+        }
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // --- WCAG CONTRAST CHECKER ---
+  const contrastFg = document.getElementById('contrast-fg') as HTMLInputElement | null;
+  const contrastFgText = document.getElementById('contrast-fg-text') as HTMLInputElement | null;
+  const contrastBg = document.getElementById('contrast-bg') as HTMLInputElement | null;
+  const contrastBgText = document.getElementById('contrast-bg-text') as HTMLInputElement | null;
+  const contrastCard = document.getElementById('contrast-preview-card');
+  const contrastText = document.getElementById('contrast-preview-text');
+  const ratioVal = document.getElementById('contrast-ratio-val');
+  
+  // badges
+  const badgeAASmall = document.getElementById('badge-aa-small');
+  const badgeAALarge = document.getElementById('badge-aa-large');
+  const badgeAAASmall = document.getElementById('badge-aaa-small');
+  const badgeAAALarge = document.getElementById('badge-aaa-large');
+
+  if (contrastFg && contrastBg) {
+    [contrastFg, contrastBg].forEach(el => {
+      el.addEventListener('input', checkContrast);
+    });
+  }
+
+  if (contrastFgText && contrastFg) {
+    contrastFgText.addEventListener('input', () => {
+      if (/^#[0-9a-fA-F]{6}$/.test(contrastFgText.value)) {
+        contrastFg.value = contrastFgText.value;
+        checkContrast();
+      }
+    });
+  }
+
+  if (contrastBgText && contrastBg) {
+    contrastBgText.addEventListener('input', () => {
+      if (/^#[0-9a-fA-F]{6}$/.test(contrastBgText.value)) {
+        contrastBg.value = contrastBgText.value;
+        checkContrast();
+      }
+    });
+  }
+
+  function syncToContrast(hex: string) {
+    if (contrastFg && contrastFgText) {
+      contrastFg.value = hex;
+      contrastFgText.value = hex.toUpperCase();
+      checkContrast();
+    }
+  }
+
+  function checkContrast() {
+    if (!contrastFg || !contrastBg || !contrastCard || !contrastText || !ratioVal || !contrastFgText || !contrastBgText) return;
+
+    const fg = contrastFg.value;
+    const bg = contrastBg.value;
+
+    contrastFgText.value = fg.toUpperCase();
+    contrastBgText.value = bg.toUpperCase();
+
+    // Update preview card styles
+    contrastCard.style.backgroundColor = bg;
+    contrastText.style.color = fg;
+
+    // Calculate Luminance
+    const ratio = calculateContrastRatio(fg, bg);
+    ratioVal.textContent = `${ratio.toFixed(1)}:1`;
+
+    // Apply WCAG badge rules
+    applyBadge(badgeAASmall, ratio >= 4.5);
+    applyBadge(badgeAALarge, ratio >= 3.0);
+    applyBadge(badgeAAASmall, ratio >= 7.0);
+    applyBadge(badgeAAALarge, ratio >= 4.5);
+  }
+
+  function applyBadge(el: HTMLElement | null, pass: boolean) {
+    if (!el) return;
+    el.textContent = pass ? "Pass" : "Fail";
+    el.className = pass ? "score-badge pass" : "score-badge fail";
+  }
+
+  function calculateContrastRatio(hex1: string, hex2: string): number {
+    const l1 = getLuminance(hex1);
+    const l2 = getLuminance(hex2);
+    
+    const brightest = Math.max(l1, l2);
+    const darkest = Math.min(l1, l2);
+    
+    return (brightest + 0.05) / (darkest + 0.05);
+  }
+
+  function getLuminance(hex: string): number {
+    const [r, g, b] = hexToRgb(hex).map(c => {
+      const s = c / 255;
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  // --- COLOR MATH TRANSLATION HELPERS ---
+
+  function hexToRgb(hex: string): [number, number, number] {
+    let clean = hex.replace('#', '');
+    if (clean.length === 3) {
+      clean = clean.split('').map(c => c + c).join('');
+    }
+    const num = parseInt(clean, 16);
+    return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+  }
+
+  function rgbToHex(r: number, g: number, b: number): string {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch(max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return [h, s, l];
+  }
+
+  function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+    }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
+  function rgbToCmyk(r: number, g: number, b: number): [number, number, number, number] {
+    const rL = r / 255;
+    const gL = g / 255;
+    const bL = b / 255;
+
+    const k = 1 - Math.max(rL, gL, bL);
+    if (k === 1) return [0, 0, 0, 1];
+
+    const c = (1 - rL - k) / (1 - k);
+    const m = (1 - gL - k) / (1 - k);
+    const y = (1 - bL - k) / (1 - k);
+
+    return [c, m, y, k];
+  }
+
+  function cmykToRgb(c: number, m: number, y: number, k: number): [number, number, number] {
+    const r = 255 * (1 - c) * (1 - k);
+    const g = 255 * (1 - m) * (1 - k);
+    const b = 255 * (1 - y) * (1 - k);
+    return [Math.round(r), Math.round(g), Math.round(b)];
+  }
+
+  // --- PAGE MODE: Highlight specific conversion based on sub-page ---
+  const toolWrapper = document.querySelector('.color-tool-wrapper') as HTMLElement | null;
+  const pageMode = toolWrapper?.getAttribute('data-page-mode') || '';
+
+  // Map format names to their input field IDs
+  const formatToInputId: Record<string, string> = {
+    'hex': 'color-hex',
+    'rgb': 'color-rgb',
+    'hsl': 'color-hsl',
+    'cmyk': 'color-cmyk',
+  };
+
+  if (pageMode) {
+    // Parse source/target from the pageMode string (e.g., "hex-to-rgb" → source: "hex", target: "rgb")
+    const modeMatch = pageMode.match(/^(hex|rgb|hsl|cmyk)-to-(hex|rgb|hsl|cmyk)$/);
+
+    if (modeMatch) {
+      const sourceFormat = modeMatch[1];
+      const targetFormat = modeMatch[2];
+      const sourceId = formatToInputId[sourceFormat];
+      const targetId = formatToInputId[targetFormat];
+
+      // Set focus on the source format input field
+      const sourceField = document.getElementById(sourceId) as HTMLInputElement | null;
+      if (sourceField) {
+        sourceField.focus();
+      }
+
+      // Apply .conversion-highlight CSS class to the target format output container
+      const targetField = document.getElementById(targetId);
+      const targetControl = targetField?.closest('.form-control') as HTMLElement | null;
+      if (targetControl) {
+        targetControl.classList.add('conversion-highlight');
+        const targetLabel = targetControl.querySelector('.form-label');
+        if (targetLabel) {
+          const badge = document.createElement('span');
+          badge.className = 'conversion-badge';
+          badge.textContent = 'TARGET';
+          targetLabel.appendChild(badge);
+        }
+      }
+
+      // Add a SOURCE badge to the source input for visual clarity
+      const sourceControl = sourceField?.closest('.form-control') as HTMLElement | null;
+      if (sourceControl) {
+        const sourceLabel = sourceControl.querySelector('.form-label');
+        if (sourceLabel) {
+          const badge = document.createElement('span');
+          badge.className = 'conversion-badge';
+          badge.textContent = 'SOURCE';
+          sourceLabel.appendChild(badge);
+        }
+      }
+    }
+  }
+
+  // Trigger init on the component's initial color (read from data attribute)
+  const initColor = toolWrapper?.getAttribute('data-initial-color') || '#14b8a6';
+  updateColor(initColor);
+  buildGradient();
+</script>

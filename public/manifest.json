@@ -1,0 +1,16 @@
+{
+  "name": "ToolsHub — Free Developer Tools Suite",
+  "short_name": "ToolsHub",
+  "description": "Fast, secure, client-side developer utilities: JSON formatting, Base64, URL encoding, RegEx, JWT decoder, code minification, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080c14",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}

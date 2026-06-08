@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "RGB to CMYK Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6"; // Teal
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert screen RGB color values to printer CMYK percentages online. Easy, fast, local browser-based RGB to CMYK color converter.";
+const seoKeywords = "rgb to cmyk, rgb to cmyk converter, convert rgb to cmyk online, screen to print color conversion";
+
+const howToUse = [
+  "Enter your RGB intensity values in the RGB input field (e.g. rgb(20, 184, 166)).",
+  "The tool will instantly calculate the CMYK cyan, magenta, yellow, and black values (e.g. cmyk(89%, 0%, 10%, 28%)).",
+  "Click 'Copy' to copy the formatted CMYK string."
+];
+
+const faqs = [
+  {
+    q: "Why do we need RGB to CMYK conversion?",
+    a: "RGB (Red, Green, Blue) is an additive color model used for digital screens. CMYK (Cyan, Magenta, Yellow, Key/Black) is a subtractive color model used in printing. When printing a digital design, the colors must be converted to CMYK to ensure the printed ink coordinates match the screen visual closely."
+  },
+  {
+    q: "Does printing in CMYK match screen RGB colors perfectly?",
+    a: "Not always. The color gamut (range of colors) of CMYK is narrower than RGB. Highly saturated neon screen colors (like electric blue) cannot be reproduced using standard CMYK inks and will print slightly duller. The converter calculates the mathematical equivalent."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert digital screen RGB color values to physical print CMYK percentages instantly.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="rgb-to-cmyk" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

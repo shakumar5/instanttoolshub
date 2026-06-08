@@ -1,0 +1,149 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const toolName = "About Us";
+const activeTool = "about";
+const accentColor = "#6366f1"; // Indigo
+const accentGlow = "rgba(99, 102, 241, 0.15)";
+
+const seoDescription = "Learn more about ToolsHub - a collection of free, blazing-fast, 100% client-side utilities for web developers. Find out why our privacy-first local browser execution model is trusted by thousands of engineers.";
+const seoKeywords = "about toolshub, client-side tools, private developer utilities, free code tools, local browser sandboxing";
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>About ToolsHub</h1>
+    <p>Empowering web developers with a premium suite of client-side utilities, built with zero latency and absolute privacy.</p>
+  </div>
+
+  <section class="about-content">
+    <div class="about-card glass">
+      <h2>The ToolsHub Mission</h2>
+      <p>
+        Every day, software engineers, DevOps professionals, and system administrators copy and paste sensitive strings (like database configurations, customer JSON, cryptographic secrets, or JWT authentication tokens) into online tools for formatting, encoding, or debugging.
+      </p>
+      <p style="margin-top: 1rem;">
+        What many don't realize is that most online utility sites send this data to backend servers. This introduces a major compliance risk and opens the door to potential data leaks. <strong>ToolsHub was built to solve this problem.</strong> Our mission is to provide the highest-performing developer utility suite where 100% of the processing happens locally inside your browser sandboxed memory.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <div class="info-box glass">
+        <div class="info-icon">🔒</div>
+        <h3>100% Privacy by Design</h3>
+        <p>Your inputs, code files, and sensitive configurations never touch a server. All conversions, hashes, formatting, and rendering occur locally inside browser APIs (like the Web Crypto API and local JavaScript FileReader).</p>
+      </div>
+
+      <div class="info-box glass">
+        <div class="info-icon">⚡</div>
+        <h3>Sub-Millisecond Speed</h3>
+        <p>Because there is zero network overhead or server queuing latency, execution is immediate. Large JSON configurations, file hashes, or code base minifications execute in a fraction of a millisecond.</p>
+      </div>
+
+      <div class="info-box glass">
+        <div class="info-icon">📶</div>
+        <h3>Works Offline (PWA)</h3>
+        <p>All tool scripts are packaged inside our static site bundle. You can pin ToolsHub in your browser tabs and use every utility complete without internet connectivity.</p>
+      </div>
+
+      <div class="info-box glass">
+        <div class="info-icon">🎨</div>
+        <h3>Vibrant Premium Design</h3>
+        <p>No clunky tabular forms or jarring ads. ToolsHub provides a beautiful dark-mode interface with elegant micro-interactions, layout splits, and clipboard shortcuts to optimize your workflow.</p>
+      </div>
+    </div>
+
+    <div class="about-card glass">
+      <h2>Under the Hood</h2>
+      <p>
+        ToolsHub is constructed as a static site using the ultra-efficient <strong>Astro framework</strong>. By compiling layout structures to minimal, dependency-free HTML on build, we eliminate layout delays and deliver a PageSpeed score above 98. 
+      </p>
+      <p style="margin-top: 1rem;">
+        For advanced utilities (like our AI-powered RegEx parser), we leverage direct client-to-API secure endpoints, storing private authentication tokens strictly in your browser's local sandbox storage (`localStorage`).
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .about-card {
+    padding: 2.5rem;
+    border-radius: var(--radius-md);
+  }
+
+  .about-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+  }
+
+  .about-card p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .about-card p strong {
+    color: var(--accent-primary);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .info-box {
+    padding: 1.75rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .info-icon {
+    font-size: 2rem;
+  }
+
+  .info-box h3 {
+    font-size: 1.15rem;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .info-box p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+</style>

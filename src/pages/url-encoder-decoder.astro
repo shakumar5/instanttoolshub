@@ -1,0 +1,1046 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "URL Encoder & Decoder";
+const activeTool = "url-encoder-decoder";
+const accentColor = "#3b82f6"; // Blue
+const accentGlow = "rgba(59, 130, 246, 0.15)";
+
+const seoDescription = "Free online URL encoder and decoder. Encode special characters, batch process multiple URLs, parse query string parameters into an editable table, and build UTM campaign links.";
+const seoKeywords = "url encode, url decoder online, url encode special characters, percent encoding, query string parser, utm campaign builder";
+
+const howToUse = [
+  "Choose your tool from the tabs: 'URL Encoder/Decoder', 'Batch Processing', 'Query Parser', or 'UTM Builder'.",
+  "URL Encoder/Decoder: Paste your text, select the encoding mode (Standard vs Special characters only), and click Encode or Decode.",
+  "Query Parser: Paste a full URL with query parameters. The tool will break them down into an interactive table where you can edit values, add new parameters, or delete parameters to rebuild a new URL.",
+  "UTM Builder: Fill in your website URL and marketing parameters (Source, Medium, Campaign, etc.) to instantly generate a tagged campaign URL."
+];
+
+const faqs = [
+  {
+    q: "What is URL encoding (percent encoding)?",
+    a: "URL encoding converts characters into a format that can be transmitted securely over the internet. URLs can only contain a specific set of ASCII characters. Non-conforming characters are replaced with a '%' followed by two hexadecimal digits. For binary-to-text encoding of files and images, see our <a href=\"/base64\">Base64 Encoder &amp; Decoder</a>."
+  },
+  {
+    q: "What is the difference between Encode URL vs Encode Component?",
+    a: "Encoding a full URL keeps delimiters like 'http://', '?', and '&' intact so the URL remains navigable. Encoding a component encodes every special character (including slashes and question marks), which is necessary when nesting a URL inside a query parameter of another URL."
+  },
+  {
+    q: "How does the query string parser help me?",
+    a: "When debugging APIs or web links, reading long query strings can be tedious. The parser splits them into a clear table. You can modify the keys/values, click 'Rebuild URL', and copy the newly generated link immediately. For validating URL patterns with regular expressions, check out our <a href=\"/regex-tester\">RegEx Tester</a>."
+  },
+  {
+    q: "Can I generate UTM campaign links here?",
+    a: "Yes! The UTM Builder tab helps you construct Google Analytics campaign tracking URLs (UTM) instantly, ensuring correct syntax and character encoding."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Encode or decode percent-encoded URLs, batch parse paths, analyze queries, and build UTM tracking campaigns.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header tabbed-header">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-single">URL Encoder/Decoder</button>
+        <button class="tab-btn" data-tab="tab-batch">Batch Processing</button>
+        <button class="tab-btn" data-tab="tab-query">Query String Parser</button>
+        <button class="tab-btn" data-tab="tab-utm">UTM Builder</button>
+      </div>
+      <div class="panel-header-actions">
+        <button class="btn btn-primary btn-xs copy-btn" id="copy-action">Copy Output</button>
+      </div>
+    </div>
+
+    <div class="panel-body tab-content-container">
+      
+      <!-- Single URL Tab -->
+      <div class="tab-content active" id="tab-single">
+        <div class="url-split-container">
+          <div class="split-box">
+            <div class="split-label">Input URL / Text</div>
+            <textarea id="url-input" placeholder="Enter URL or text here..." class="split-textarea"></textarea>
+          </div>
+          <div class="split-controls">
+            <div class="encoding-options">
+              <label class="radio-label">
+                <input type="radio" name="url-mode" value="component" checked /> Encode All (Component)
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="url-mode" value="uri" /> Keep Delimiters (URI)
+              </label>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-url-encode">Encode →</button>
+            <button class="btn btn-secondary btn-sm" id="btn-url-decode">← Decode</button>
+            <button class="btn btn-outline btn-sm" id="btn-url-clear">Clear</button>
+          </div>
+          <div class="split-box">
+            <div class="split-label">Result Output</div>
+            <textarea id="url-output" placeholder="Processed output will appear here..." class="split-textarea code-font"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch URL Tab -->
+      <div class="tab-content" id="tab-batch">
+        <div class="url-split-container">
+          <div class="split-box">
+            <div class="split-label">Batch Input (One URL per line)</div>
+            <textarea id="batch-input" placeholder="https://example.com/search?q=hello world&#10;https://google.com/test?name=john doe" class="split-textarea"></textarea>
+          </div>
+          <div class="split-controls">
+            <button class="btn btn-primary btn-sm" id="btn-batch-encode">Batch Encode →</button>
+            <button class="btn btn-secondary btn-sm" id="btn-batch-decode">← Batch Decode</button>
+            <button class="btn btn-outline btn-sm" id="btn-batch-clear">Clear</button>
+          </div>
+          <div class="split-box">
+            <div class="split-label">Batch Output</div>
+            <textarea id="batch-output" placeholder="Processed lines will output here..." class="split-textarea code-font" readonly></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Query String Parser Tab -->
+      <div class="tab-content" id="tab-query">
+        <div class="query-tool-container">
+          <div class="query-input-section">
+            <label class="form-label">Full URL to Parse</label>
+            <div class="input-row">
+              <input type="text" id="query-url-input" placeholder="https://example.com/search?q=shoes&category=activewear&sort=price" class="form-input" />
+              <button class="btn btn-primary" id="btn-parse-query">Parse</button>
+            </div>
+          </div>
+
+          <div class="query-table-section">
+            <div id="query-error-notification" class="query-error-notification" style="display: none;" role="alert" aria-live="assertive"></div>
+            <div class="table-header-row">
+              <span>Parsed Query Parameters</span>
+              <button class="btn btn-outline btn-xs" id="btn-add-param">+ Add Parameter</button>
+            </div>
+            <div class="table-wrapper">
+              <table class="query-table">
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                    <th style="width: 80px; text-align: center;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="query-params-body">
+                  <tr>
+                    <td colspan="3" class="table-placeholder">Enter a URL above and click Parse to inspect details</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="rebuild-section">
+              <button class="btn btn-secondary" id="btn-rebuild-url">Rebuild URL</button>
+              <div class="rebuilt-url-wrapper">
+                <input type="text" id="rebuilt-url-output" readonly placeholder="Rebuilt URL will appear here..." class="form-input" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UTM Campaign Builder Tab -->
+      <div class="tab-content" id="tab-utm">
+        <div class="utm-tool-container">
+          <div class="utm-form">
+            <div id="utm-validation-error" class="utm-validation-alert" style="display: none;" role="alert" aria-live="assertive"></div>
+            <div class="form-control">
+              <label class="form-label" for="utm-url">Website URL <span class="required">*</span></label>
+              <input type="text" id="utm-url" placeholder="https://mywebsite.com" class="form-input" aria-describedby="utm-validation-error" />
+            </div>
+            <div class="form-grid">
+              <div class="form-control">
+                <label class="form-label" for="utm-source">Campaign Source <span class="required">*</span></label>
+                <input type="text" id="utm-source" placeholder="google, newsletter" class="form-input" aria-describedby="utm-validation-error" />
+              </div>
+              <div class="form-control">
+                <label class="form-label" for="utm-medium">Campaign Medium <span class="required">*</span></label>
+                <input type="text" id="utm-medium" placeholder="cpc, email, banner" class="form-input" aria-describedby="utm-validation-error" />
+              </div>
+              <div class="form-control">
+                <label class="form-label" for="utm-name">Campaign Name <span class="required">*</span></label>
+                <input type="text" id="utm-name" placeholder="spring_sale" class="form-input" aria-describedby="utm-validation-error" />
+              </div>
+              <div class="form-control">
+                <label class="form-label" for="utm-term">Campaign Term</label>
+                <input type="text" id="utm-term" placeholder="running+shoes" class="form-input" />
+              </div>
+              <div class="form-control">
+                <label class="form-label" for="utm-content">Campaign Content</label>
+                <input type="text" id="utm-content" placeholder="text_link" class="form-input" />
+              </div>
+            </div>
+            <div class="form-actions-row">
+              <button class="btn btn-primary" id="btn-build-utm">Generate UTM Link</button>
+              <button class="btn btn-outline" id="btn-clear-utm">Clear Fields</button>
+            </div>
+          </div>
+          
+          <div class="utm-output-card glass">
+            <h3 style="margin-bottom: 0.5rem; color: #fff;">Generated Campaign Link</h3>
+            <textarea id="utm-output" readonly placeholder="Your UTM tagged campaign URL will generate here..." class="utm-output-textarea code-font"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <RelatedTools currentTool="url-encoder-decoder" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .tabbed-header {
+    padding: 0;
+    padding-right: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .panel-header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    height: calc(100% - 45px);
+  }
+
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .code-font {
+    font-family: var(--font-mono) !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Single & Batch layout */
+  .url-split-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: #030712;
+  }
+
+  .split-box {
+    flex-grow: 1;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .split-label {
+    padding: 0.5rem 1.25rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .split-textarea {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1.25rem;
+    color: var(--text-primary);
+    resize: none;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  textarea#url-output {
+    color: #60a5fa; /* Blue output */
+  }
+
+  .split-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-left: 1px solid var(--border-light);
+    border-right: 1px solid var(--border-light);
+    background: #090e18;
+    width: 160px;
+    flex-shrink: 0;
+  }
+
+  .encoding-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.75rem;
+  }
+
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  /* Query Parser Layout */
+  .query-tool-container {
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: #030712;
+    overflow-y: auto;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .input-row input {
+    flex-grow: 1;
+  }
+
+  .table-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .table-wrapper {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    max-height: 220px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.01);
+  }
+
+  .query-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .query-table th, .query-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .query-table th {
+    background: rgba(15, 23, 42, 0.5);
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .query-input-cell {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    width: 100%;
+    padding: 0.2rem 0.5rem;
+    font-family: var(--font-mono);
+    border-radius: var(--radius-sm);
+    outline: none;
+  }
+
+  .query-input-cell:focus {
+    background: #000;
+    border-color: var(--accent-primary);
+  }
+
+  .table-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem !important;
+  }
+
+  .query-error-notification {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.75rem;
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .rebuild-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .rebuilt-url-wrapper {
+    display: flex;
+    width: 100%;
+  }
+
+  .rebuilt-url-wrapper input {
+    flex-grow: 1;
+    color: #60a5fa;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  /* UTM Builder Layout */
+  .utm-tool-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .utm-form {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+
+  .required {
+    color: var(--color-error);
+  }
+
+  .form-actions-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .utm-output-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .utm-output-textarea {
+    width: 100%;
+    flex-grow: 1;
+    background: #000;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    color: #3b82f6;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+
+  .utm-validation-alert {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 850px) {
+    .url-split-container {
+      flex-direction: column;
+    }
+    .split-box {
+      width: 100%;
+      height: 40%;
+    }
+    .split-controls {
+      width: 100%;
+      flex-direction: row;
+      height: auto;
+      padding: 0.5rem 1rem;
+    }
+    .utm-tool-container {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .utm-form {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      height: auto;
+    }
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // === PURE FUNCTIONS (extractable for testing) ===
+
+  /**
+   * Encode a string using the specified mode.
+   * @param input - The string to encode
+   * @param mode - 'component' uses encodeURIComponent, 'uri' uses encodeURI
+   * @returns The percent-encoded string
+   */
+  function urlEncode(input: string, mode: 'component' | 'uri'): string {
+    if (mode === 'component') {
+      return encodeURIComponent(input);
+    }
+    return encodeURI(input);
+  }
+
+  /**
+   * Decode a percent-encoded string using decodeURIComponent.
+   * Throws URIError for invalid percent-encoded sequences.
+   * @param input - The percent-encoded string to decode
+   * @returns The decoded string
+   */
+  function urlDecode(input: string): string {
+    return decodeURIComponent(input);
+  }
+
+  /**
+   * Batch encode an array of lines. Each non-empty line is encoded independently
+   * using encodeURIComponent. Empty lines (no characters or only whitespace) are
+   * preserved as empty output lines.
+   * @param lines - Array of input strings (one per line)
+   * @returns Array of encoded strings with the same length as input
+   */
+  function batchEncode(lines: string[]): string[] {
+    return lines.map(line => {
+      if (!line.trim()) return '';
+      return encodeURIComponent(line);
+    });
+  }
+
+  /**
+   * Batch decode an array of lines. Each non-empty line is decoded independently
+   * using decodeURIComponent. Lines with invalid percent-encoded sequences are
+   * prefixed with an error indicator "[Error] " followed by the original input,
+   * without halting processing of remaining lines. Empty lines are preserved as
+   * empty output lines.
+   * @param lines - Array of percent-encoded strings (one per line)
+   * @returns Array of decoded strings (or error-prefixed originals) with the same length
+   */
+  function batchDecode(lines: string[]): string[] {
+    return lines.map(line => {
+      if (!line.trim()) return '';
+      try {
+        return decodeURIComponent(line);
+      } catch (e) {
+        return '[Error] ' + line;
+      }
+    });
+  }
+
+  /**
+   * Parse a URL string into a base path and an array of key-value query parameters.
+   * @param url - The full URL to parse
+   * @returns An object with base (origin + pathname) and params array
+   */
+  function parseQueryString(url: string): { base: string; params: { key: string; value: string }[] } {
+    let urlObj: URL;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      urlObj = new URL(url);
+    } else {
+      urlObj = new URL('https://' + url);
+    }
+    const base = urlObj.origin + urlObj.pathname;
+    const params = Array.from(urlObj.searchParams.entries()).map(([key, value]) => ({ key, value }));
+    return { base, params };
+  }
+
+  /**
+   * Rebuild a URL from a base path and an array of key-value parameters.
+   * Rows with empty keys are omitted.
+   * @param base - The base URL (origin + pathname)
+   * @param params - Array of key-value pairs
+   * @returns The reconstructed URL string
+   */
+  function rebuildUrl(base: string, params: { key: string; value: string }[]): string {
+    const searchParams = new URLSearchParams();
+    params.forEach(({ key, value }) => {
+      if (key.trim()) {
+        searchParams.append(key.trim(), value);
+      }
+    });
+    const queryString = searchParams.toString();
+    return queryString ? `${base}?${queryString}` : base;
+  }
+
+  /**
+   * Build a UTM campaign URL from the given parameters.
+   * Returns null if any required field is empty (validation failure).
+   * @param params - UTM parameters object
+   * @returns The full UTM URL string, or null if validation fails
+   */
+  function buildUtmUrl(params: { websiteUrl: string; source: string; medium: string; campaign: string; term?: string; content?: string }): string | null {
+    const { websiteUrl, source, medium, campaign, term, content } = params;
+    if (!websiteUrl || !source || !medium || !campaign) {
+      return null;
+    }
+    let urlObj: URL;
+    if (websiteUrl.startsWith('http://') || websiteUrl.startsWith('https://')) {
+      urlObj = new URL(websiteUrl);
+    } else {
+      urlObj = new URL('https://' + websiteUrl);
+    }
+    urlObj.searchParams.set('utm_source', source);
+    urlObj.searchParams.set('utm_medium', medium);
+    urlObj.searchParams.set('utm_campaign', campaign);
+    if (term) urlObj.searchParams.set('utm_term', term);
+    if (content) urlObj.searchParams.set('utm_content', content);
+    return urlObj.toString();
+  }
+
+  // === DOM GLUE CODE ===
+
+  // Tab Management
+  const tabs = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  const globalCopyBtn = document.getElementById('copy-action');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-tab');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetId) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+
+  // Global copy helper
+  if (globalCopyBtn) {
+    globalCopyBtn.addEventListener('click', () => {
+      const activeTabBtn = document.querySelector('.tab-btn.active');
+      const activeTabId = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : '';
+      let textToCopy = '';
+
+      if (activeTabId === 'tab-single') {
+        const outputVal = document.getElementById('url-output') as HTMLTextAreaElement | null;
+        textToCopy = outputVal?.value || '';
+      } else if (activeTabId === 'tab-batch') {
+        const outputVal = document.getElementById('batch-output') as HTMLTextAreaElement | null;
+        textToCopy = outputVal?.value || '';
+      } else if (activeTabId === 'tab-query') {
+        const outputVal = document.getElementById('rebuilt-url-output') as HTMLInputElement | null;
+        textToCopy = outputVal?.value || '';
+      } else if (activeTabId === 'tab-utm') {
+        const outputVal = document.getElementById('utm-output') as HTMLTextAreaElement | null;
+        textToCopy = outputVal?.value || '';
+      }
+
+      if (textToCopy) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          globalCopyBtn.classList.add('copied');
+          globalCopyBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            globalCopyBtn.classList.remove('copied');
+            globalCopyBtn.textContent = 'Copy Output';
+          }, 2000);
+        });
+      }
+    });
+  }
+
+  // --- SINGLE URL ENCODER/DECODER ---
+  const urlInput = document.getElementById('url-input') as HTMLTextAreaElement | null;
+  const urlOutput = document.getElementById('url-output') as HTMLTextAreaElement | null;
+  const btnUrlEncode = document.getElementById('btn-url-encode');
+  const btnUrlDecode = document.getElementById('btn-url-decode');
+  const btnUrlClear = document.getElementById('btn-url-clear');
+
+  if (btnUrlEncode && urlInput && urlOutput) {
+    btnUrlEncode.addEventListener('click', () => {
+      const val = urlInput.value;
+      const mode = (document.querySelector('input[name="url-mode"]:checked') as HTMLInputElement)?.value as 'component' | 'uri';
+      
+      try {
+        urlOutput.value = urlEncode(val, mode);
+      } catch (e: any) {
+        urlOutput.value = "Encoding Error: " + e.message;
+      }
+    });
+  }
+
+  if (btnUrlDecode && urlInput && urlOutput) {
+    btnUrlDecode.addEventListener('click', () => {
+      const val = urlInput.value;
+      try {
+        urlOutput.value = urlDecode(val);
+      } catch (e: any) {
+        urlOutput.value = "Decoding Error: " + e.message;
+      }
+    });
+  }
+
+  if (btnUrlClear && urlInput && urlOutput) {
+    btnUrlClear.addEventListener('click', () => {
+      urlInput.value = '';
+      urlOutput.value = '';
+    });
+  }
+
+  // --- BATCH PROCESSING ---
+  const batchInput = document.getElementById('batch-input') as HTMLTextAreaElement | null;
+  const batchOutput = document.getElementById('batch-output') as HTMLTextAreaElement | null;
+  const btnBatchEncode = document.getElementById('btn-batch-encode');
+  const btnBatchDecode = document.getElementById('btn-batch-decode');
+  const btnBatchClear = document.getElementById('btn-batch-clear');
+
+  if (btnBatchEncode && batchInput && batchOutput) {
+    btnBatchEncode.addEventListener('click', () => {
+      const lines = batchInput.value.split('\n');
+      batchOutput.value = batchEncode(lines).join('\n');
+    });
+  }
+
+  if (btnBatchDecode && batchInput && batchOutput) {
+    btnBatchDecode.addEventListener('click', () => {
+      const lines = batchInput.value.split('\n');
+      batchOutput.value = batchDecode(lines).join('\n');
+    });
+  }
+
+  if (btnBatchClear && batchInput && batchOutput) {
+    btnBatchClear.addEventListener('click', () => {
+      batchInput.value = '';
+      batchOutput.value = '';
+    });
+  }
+
+  // --- QUERY STRING PARSER ---
+  const queryUrlInput = document.getElementById('query-url-input') as HTMLInputElement | null;
+  const btnParseQuery = document.getElementById('btn-parse-query');
+  const btnAddParam = document.getElementById('btn-add-param');
+  const queryParamsBody = document.getElementById('query-params-body');
+  const btnRebuildUrl = document.getElementById('btn-rebuild-url');
+  const rebuiltUrlOutput = document.getElementById('rebuilt-url-output') as HTMLInputElement | null;
+
+  let parsedBaseUrl = "";
+  const queryErrorNotification = document.getElementById('query-error-notification');
+
+  function showQueryError(message: string) {
+    if (queryErrorNotification) {
+      queryErrorNotification.textContent = message;
+      queryErrorNotification.style.display = 'block';
+    }
+  }
+
+  function hideQueryError() {
+    if (queryErrorNotification) {
+      queryErrorNotification.style.display = 'none';
+      queryErrorNotification.textContent = '';
+    }
+  }
+
+  if (btnParseQuery && queryUrlInput && queryParamsBody) {
+    btnParseQuery.addEventListener('click', () => {
+      const val = queryUrlInput.value.trim();
+      if (!val) {
+        showQueryError("Invalid URL: Please enter a URL to parse.");
+        return;
+      }
+
+      try {
+        const parsed = parseQueryString(val);
+        hideQueryError();
+        parsedBaseUrl = parsed.base;
+        const params = parsed.params;
+
+        queryParamsBody.innerHTML = '';
+        
+        if (params.length === 0) {
+          queryParamsBody.innerHTML = `
+            <tr>
+              <td colspan="3" class="table-placeholder">No query parameters were found. Click "+ Add Parameter" to create some.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        params.forEach(({ key, value }) => {
+          addParamRow(key, value);
+        });
+
+      } catch (e: any) {
+        showQueryError("Invalid URL: The URL could not be parsed. Make sure to enter a valid website address.");
+      }
+    });
+  }
+
+  function addParamRow(key: string, value: string) {
+    if (!queryParamsBody) return;
+
+    // Remove placeholder if it exists
+    const placeholder = queryParamsBody.querySelector('.table-placeholder');
+    if (placeholder) {
+      queryParamsBody.innerHTML = '';
+    }
+
+    const tr = document.createElement('tr');
+    tr.className = 'param-row';
+    tr.innerHTML = `
+      <td><input type="text" class="query-input-cell param-key" value="${escapeHtml(key)}" placeholder="Key" /></td>
+      <td><input type="text" class="query-input-cell param-value" value="${escapeHtml(value)}" placeholder="Value" /></td>
+      <td style="text-align: center;">
+        <button class="btn btn-outline btn-xs btn-delete-param" style="border-color: var(--color-error); color: var(--color-error);">Delete</button>
+      </td>
+    `;
+
+    // Hook delete button
+    tr.querySelector('.btn-delete-param')?.addEventListener('click', () => {
+      tr.remove();
+      if (queryParamsBody.querySelectorAll('.param-row').length === 0) {
+        queryParamsBody.innerHTML = `
+          <tr>
+            <td colspan="3" class="table-placeholder">No query parameters defined. Click "+ Add Parameter" to create some.</td>
+          </tr>
+        `;
+      }
+    });
+
+    queryParamsBody.appendChild(tr);
+  }
+
+  if (btnAddParam) {
+    btnAddParam.addEventListener('click', () => {
+      addParamRow('', '');
+    });
+  }
+
+  if (btnRebuildUrl && queryParamsBody && rebuiltUrlOutput) {
+    btnRebuildUrl.addEventListener('click', () => {
+      const rows = queryParamsBody.querySelectorAll('.param-row');
+      const params: { key: string; value: string }[] = [];
+
+      rows.forEach(row => {
+        const key = (row.querySelector('.param-key') as HTMLInputElement)?.value.trim();
+        const val = (row.querySelector('.param-value') as HTMLInputElement)?.value;
+        params.push({ key, value: val });
+      });
+
+      const baseUrl = parsedBaseUrl || 'https://example.com';
+      rebuiltUrlOutput.value = rebuildUrl(baseUrl, params);
+    });
+  }
+
+  // --- UTM CAMPAIGN BUILDER ---
+  const utmUrl = document.getElementById('utm-url') as HTMLInputElement | null;
+  const utmSource = document.getElementById('utm-source') as HTMLInputElement | null;
+  const utmMedium = document.getElementById('utm-medium') as HTMLInputElement | null;
+  const utmName = document.getElementById('utm-name') as HTMLInputElement | null;
+  const utmTerm = document.getElementById('utm-term') as HTMLInputElement | null;
+  const utmContent = document.getElementById('utm-content') as HTMLInputElement | null;
+  const utmOutput = document.getElementById('utm-output') as HTMLTextAreaElement | null;
+  const btnBuildUtm = document.getElementById('btn-build-utm');
+  const btnClearUtm = document.getElementById('btn-clear-utm');
+  const utmValidationError = document.getElementById('utm-validation-error');
+
+  function showUtmError(message: string) {
+    if (utmValidationError) {
+      utmValidationError.textContent = message;
+      utmValidationError.style.display = 'block';
+    }
+  }
+
+  function hideUtmError() {
+    if (utmValidationError) {
+      utmValidationError.style.display = 'none';
+      utmValidationError.textContent = '';
+    }
+  }
+
+  /**
+   * generateUtm() - Validates required fields and URL structure, then produces
+   * a fully percent-encoded UTM campaign URL. Uses inline error messages instead
+   * of alert().
+   */
+  function generateUtm(): void {
+    if (!utmUrl || !utmSource || !utmMedium || !utmName || !utmOutput) return;
+
+    const url = utmUrl.value.trim();
+    const source = utmSource.value.trim();
+    const medium = utmMedium.value.trim();
+    const campaign = utmName.value.trim();
+    const term = utmTerm?.value.trim() || '';
+    const content = utmContent?.value.trim() || '';
+
+    // Step 1: Validate all 4 required fields are non-empty
+    const missingFields: string[] = [];
+    if (!url) missingFields.push('Website URL');
+    if (!source) missingFields.push('Campaign Source');
+    if (!medium) missingFields.push('Campaign Medium');
+    if (!campaign) missingFields.push('Campaign Name');
+
+    if (missingFields.length > 0) {
+      showUtmError(`Missing required fields: ${missingFields.join(', ')}. Please fill in all required fields before generating.`);
+      return;
+    }
+
+    // Step 2: Validate that Website URL can be parsed as a valid URL
+    try {
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        new URL(url);
+      } else {
+        new URL('https://' + url);
+      }
+    } catch (e) {
+      showUtmError('Invalid URL structure: The Website URL could not be parsed as a valid URL. Please enter a valid website address (e.g., https://example.com).');
+      return;
+    }
+
+    // Step 3: Build the UTM URL
+    const result = buildUtmUrl({
+      websiteUrl: url,
+      source,
+      medium,
+      campaign,
+      term: term || undefined,
+      content: content || undefined
+    });
+
+    if (result) {
+      hideUtmError();
+      utmOutput.value = result;
+    }
+  }
+
+  if (btnBuildUtm) {
+    btnBuildUtm.addEventListener('click', generateUtm);
+  }
+
+  if (btnClearUtm && utmUrl && utmSource && utmMedium && utmName && utmTerm && utmContent && utmOutput) {
+    btnClearUtm.addEventListener('click', () => {
+      utmUrl.value = '';
+      utmSource.value = '';
+      utmMedium.value = '';
+      utmName.value = '';
+      utmTerm.value = '';
+      utmContent.value = '';
+      utmOutput.value = '';
+      hideUtmError();
+    });
+  }
+
+  function escapeHtml(text: string) {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>

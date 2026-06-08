@@ -1,0 +1,991 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "CSS / JS / HTML Code Minifier & Beautifier";
+const activeTool = "code-minifier-beautifier";
+const accentColor = "#ec4899"; // Pink
+const accentGlow = "rgba(236, 72, 153, 0.15)";
+
+const seoDescription = "Free online CSS, JavaScript, and HTML minifier and beautifier. Compress code to improve web performance, view real-time size reduction stats, and process files in batches.";
+const seoKeywords = "css minifier, css beautifier online, minify js, minify html, code compressor, clean css online, developer page speed tools";
+
+const howToUse = [
+  "Select the code language from the tab bar (CSS, JavaScript, or HTML).",
+  "Paste your code into the input panel, or upload code files directly in the Batch Upload section.",
+  "Click 'Minify Code' to compress files (removes comments, spaces, and formatting to reduce file size).",
+  "Click 'Beautify Code' to format the nested structures, making it readable again.",
+  "Check the Compression Stats panel to view exact file savings in bytes and percentages."
+];
+
+const faqs = [
+  {
+    q: "Why should I minify my CSS, JS, and HTML files?",
+    a: "Minification strips unnecessary characters (comments, newlines, tabs, and spaces) without altering the functionality of the code. This drastically reduces the file size, resulting in faster download speeds, lower bandwidth usage, and a higher PageSpeed score."
+  },
+  {
+    q: "How does the batch file processing work?",
+    a: "You can drag and drop multiple files at once. The tool processes each file individually, shows you the file savings, and allows you to download each minified file in one click."
+  },
+  {
+    q: "Is there a risk of breaking my JavaScript code with this minifier?",
+    a: "Our minifier is designed to safely clean white spaces and comments. However, it is a best practice to ensure you terminate all statements with semicolons (`;`) before minifying to prevent syntax issues during compression. You can validate your JSON data structure first using the <a href=\"/json-formatter\">JSON Formatter &amp; Validator</a>."
+  },
+  {
+    q: "Is my source code uploaded anywhere?",
+    a: "Never. The compression algorithms are built completely in JavaScript and run locally in your web browser. Your proprietary code remains completely secure and private. For documenting your project alongside minified code, check out the <a href=\"/markdown-editor\">Markdown Editor &amp; README Generator</a>."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Minify files to boost load speed, format unreadable layouts, and calculate compression savings instantly.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header tabbed-header">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-css">CSS Optimizer</button>
+        <button class="tab-btn" data-tab="tab-js">JS Optimizer</button>
+        <button class="tab-btn" data-tab="tab-html">HTML Optimizer</button>
+        <button class="tab-btn" data-tab="tab-batch">Batch Files</button>
+      </div>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="copy-action">Copy Output</button>
+      </div>
+    </div>
+
+    <div class="panel-body tab-content-container">
+      
+      <!-- CSS, JS, HTML Common Editor layout (represented dynamically) -->
+      <div class="tab-content active" id="tab-css">
+        <div class="editor-grid">
+          <div class="editor-side">
+            <div class="split-label">Raw CSS Code</div>
+            <textarea id="css-input" placeholder="Paste your raw CSS code here..." class="editor-textarea code-font"></textarea>
+          </div>
+          <div class="editor-side">
+            <div class="split-label">Optimized CSS Output</div>
+            <textarea id="css-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-js">
+        <div class="editor-grid">
+          <div class="editor-side">
+            <div class="split-label">Raw JavaScript Code</div>
+            <textarea id="js-input" placeholder="Paste your raw JavaScript code here..." class="editor-textarea code-font"></textarea>
+          </div>
+          <div class="editor-side">
+            <div class="split-label">Optimized JS Output</div>
+            <textarea id="js-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-html">
+        <div class="editor-grid">
+          <div class="editor-side">
+            <div class="split-label">Raw HTML Code</div>
+            <textarea id="html-input" placeholder="Paste your raw HTML code here..." class="editor-textarea code-font"></textarea>
+          </div>
+          <div class="editor-side">
+            <div class="split-label">Optimized HTML Output</div>
+            <textarea id="html-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch File Processing Tab -->
+      <div class="tab-content" id="tab-batch">
+        <div class="batch-container">
+          <div class="upload-area">
+            <div class="drag-zone" id="drop-zone-code">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem; opacity: 0.7;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <p>Drag & Drop Multiple Code Files or Click to Browse</p>
+              <span class="file-limits">Supports .css, .js, .html (Max 5MB each)</span>
+              <input type="file" id="batch-code-input" accept=".css,.js,.html" multiple class="hidden" />
+            </div>
+          </div>
+          <div class="batch-list-wrapper">
+            <div class="split-label">Processed Batch Files</div>
+            <div class="batch-files-list" id="batch-files-list">
+              <div class="placeholder-text">No files processed yet. Drop files on the left to compress.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Stats and Actions Bar -->
+    <div class="tool-actions-row">
+      <!-- Stats Container -->
+      <div class="compression-stats-card" id="stats-card">
+        <div class="stat-item">
+          <span class="stat-label">Original:</span>
+          <span class="stat-value" id="stat-orig">0 B</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Optimized:</span>
+          <span class="stat-value" id="stat-opt">0 B</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Savings:</span>
+          <span class="stat-value highlight" id="stat-savings">0%</span>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="btn-minify">Minify Code</button>
+        <button class="btn btn-secondary" id="btn-beautify">Beautify Code</button>
+        <button class="btn btn-outline" id="btn-cdn-ready" title="Download minified file with content hash for cache-busting CDN deployment">CDN-Ready Download</button>
+      </div>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="code-minifier-beautifier" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .tabbed-header {
+    padding: 0;
+    padding-right: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .panel-header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    height: calc(100% - 110px); /* adjusted for bottom stats bar */
+  }
+
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .code-font {
+    font-family: var(--font-mono) !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Editor layout */
+  .editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .editor-side {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-light);
+    height: 100%;
+  }
+
+  .editor-side:last-child {
+    border-right: none;
+  }
+
+  .split-label {
+    padding: 0.5rem 1.25rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .editor-textarea {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1.25rem;
+    color: var(--text-primary);
+    resize: none;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  textarea#css-input, textarea#js-input, textarea#html-input {
+    background: #030712;
+  }
+
+  /* Action/Stats row */
+  .tool-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--border-light);
+    background: rgba(15, 23, 42, 0.4);
+    height: 65px;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .compression-stats-card {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-secondary);
+  }
+
+  .stat-value {
+    color: #fff;
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+
+  .stat-value.highlight {
+    color: #f472b6;
+  }
+
+  /* Batch tab layout */
+  .batch-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .upload-area {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .drag-zone {
+    border: 2px dashed var(--border-light);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.01);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .drag-zone:hover {
+    border-color: var(--accent-primary);
+    background: var(--accent-glow);
+  }
+
+  .drag-zone p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .file-limits {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .batch-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .batch-files-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #04060a;
+  }
+
+  :global(.batch-file-item) {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  :global(.batch-file-info) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  :global(.batch-file-name) {
+    font-weight: 500;
+    color: #fff;
+  }
+
+  :global(.batch-file-savings) {
+    font-size: 0.75rem;
+    color: #f472b6;
+    font-family: var(--font-mono);
+  }
+
+  :global(.batch-file-download) {
+    text-decoration: underline;
+    color: var(--accent-primary);
+    cursor: pointer;
+  }
+
+  :global(.batch-file-item.batch-file-error) {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  :global(.batch-file-error .batch-file-name) {
+    color: #ef4444;
+  }
+
+  :global(.batch-file-error-msg) {
+    font-size: 0.75rem;
+    color: #f87171;
+    font-style: italic;
+  }
+
+  @media (max-width: 850px) {
+    .editor-grid, .batch-container {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .editor-side, .upload-area {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      height: 250px;
+    }
+    .tool-actions-row {
+      flex-direction: column;
+      height: auto;
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Tab Handling
+  const tabs = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  const globalCopyBtn = document.getElementById('copy-action');
+  const btnClear = document.getElementById('btn-clear');
+
+  // Active language tracking
+  let activeLang = 'css';
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-tab');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetId) {
+          content.classList.add('active');
+        }
+      });
+
+      // Update active language
+      if (targetId === 'tab-css') activeLang = 'css';
+      else if (targetId === 'tab-js') activeLang = 'js';
+      else if (targetId === 'tab-html') activeLang = 'html';
+      else if (targetId === 'tab-batch') activeLang = 'batch';
+
+      // Hide or show bottom actions depending on tab
+      const statsRow = document.querySelector('.tool-actions-row') as HTMLElement | null;
+      if (statsRow) {
+        statsRow.style.display = activeLang === 'batch' ? 'none' : 'flex';
+      }
+
+      // Reset statistics values
+      updateStats(0, 0);
+    });
+  });
+
+  // Clear inputs
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (activeLang === 'css') {
+        const input = document.getElementById('css-input') as HTMLTextAreaElement | null;
+        const output = document.getElementById('css-output') as HTMLTextAreaElement | null;
+        if (input && output) { input.value = ''; output.value = ''; }
+      } else if (activeLang === 'js') {
+        const input = document.getElementById('js-input') as HTMLTextAreaElement | null;
+        const output = document.getElementById('js-output') as HTMLTextAreaElement | null;
+        if (input && output) { input.value = ''; output.value = ''; }
+      } else if (activeLang === 'html') {
+        const input = document.getElementById('html-input') as HTMLTextAreaElement | null;
+        const output = document.getElementById('html-output') as HTMLTextAreaElement | null;
+        if (input && output) { input.value = ''; output.value = ''; }
+      } else if (activeLang === 'batch') {
+        const batchFilesList = document.getElementById('batch-files-list');
+        if (batchFilesList) {
+          batchFilesList.innerHTML = '<div class="placeholder-text">No files processed yet. Drop files on the left to compress.</div>';
+        }
+      }
+      updateStats(0, 0);
+    });
+  }
+
+  // Copy Action
+  if (globalCopyBtn) {
+    globalCopyBtn.addEventListener('click', () => {
+      let outputText = '';
+      if (activeLang === 'css') {
+        const output = document.getElementById('css-output') as HTMLTextAreaElement | null;
+        outputText = output?.value || '';
+      } else if (activeLang === 'js') {
+        const output = document.getElementById('js-output') as HTMLTextAreaElement | null;
+        outputText = output?.value || '';
+      } else if (activeLang === 'html') {
+        const output = document.getElementById('html-output') as HTMLTextAreaElement | null;
+        outputText = output?.value || '';
+      }
+
+      if (outputText) {
+        navigator.clipboard.writeText(outputText).then(() => {
+          globalCopyBtn.classList.add('copied');
+          globalCopyBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            globalCopyBtn.classList.remove('copied');
+            globalCopyBtn.textContent = 'Copy Output';
+          }, 2000);
+        });
+      }
+    });
+  }
+
+  // Buttons
+  const btnMinify = document.getElementById('btn-minify');
+  const btnBeautify = document.getElementById('btn-beautify');
+
+  if (btnMinify) {
+    btnMinify.addEventListener('click', () => {
+      processCode('minify');
+    });
+  }
+
+  if (btnBeautify) {
+    btnBeautify.addEventListener('click', () => {
+      processCode('beautify');
+    });
+  }
+
+  // CDN-Ready Download: creates minified file with content hash in filename
+  const btnCdnReady = document.getElementById('btn-cdn-ready');
+  if (btnCdnReady) {
+    btnCdnReady.addEventListener('click', async () => {
+      let outputVal = '';
+      let ext = 'css';
+
+      if (activeLang === 'css') {
+        const input = document.getElementById('css-input') as HTMLTextAreaElement | null;
+        if (input && input.value.trim()) { outputVal = minifyCSS(input.value); ext = 'css'; }
+      } else if (activeLang === 'js') {
+        const input = document.getElementById('js-input') as HTMLTextAreaElement | null;
+        if (input && input.value.trim()) { outputVal = minifyJS(input.value); ext = 'js'; }
+      } else if (activeLang === 'html') {
+        const input = document.getElementById('html-input') as HTMLTextAreaElement | null;
+        if (input && input.value.trim()) { outputVal = minifyHTML(input.value); ext = 'html'; }
+      }
+
+      if (!outputVal) {
+        // Display inline feedback instead of alert
+        btnCdnReady.textContent = 'No code in input panel';
+        btnCdnReady.style.borderColor = '#ef4444';
+        setTimeout(() => {
+          btnCdnReady.textContent = 'CDN-Ready Download';
+          btnCdnReady.style.borderColor = '';
+        }, 3000);
+        return;
+      }
+
+      // Generate content hash for cache-busting
+      const encoder = new TextEncoder();
+      const data = encoder.encode(outputVal);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
+
+      // Create CDN-ready filename: bundle.[hash].min.[ext]
+      const filename = `bundle.${hashHex}.min.${ext}`;
+
+      // Add CDN cache headers as a comment at the top
+      let cdnOutput = '';
+      if (ext === 'css' || ext === 'js') {
+        cdnOutput = `/* CDN-Ready | Hash: ${hashHex} | Cache-Control: public, max-age=31536000, immutable */\n${outputVal}`;
+      } else {
+        cdnOutput = `<!-- CDN-Ready | Hash: ${hashHex} | Cache-Control: public, max-age=31536000, immutable -->\n${outputVal}`;
+      }
+
+      const blob = new Blob([cdnOutput], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // Show success feedback
+      btnCdnReady.textContent = `Downloaded: ${filename}`;
+      setTimeout(() => { btnCdnReady.textContent = 'CDN-Ready Download'; }, 3000);
+    });
+  }
+
+  function getByteSize(str: string): number {
+    return new TextEncoder().encode(str).length;
+  }
+
+  function processCode(mode: 'minify' | 'beautify') {
+    let inputVal = '';
+    let outputVal = '';
+
+    if (activeLang === 'css') {
+      const input = document.getElementById('css-input') as HTMLTextAreaElement | null;
+      const output = document.getElementById('css-output') as HTMLTextAreaElement | null;
+      if (input && output) {
+        inputVal = input.value;
+        if (inputVal === '') {
+          output.value = '';
+          updateStats(0, 0);
+          return;
+        }
+        outputVal = mode === 'minify' ? minifyCSS(inputVal) : beautifyCSS(inputVal);
+        output.value = outputVal;
+      }
+    } else if (activeLang === 'js') {
+      const input = document.getElementById('js-input') as HTMLTextAreaElement | null;
+      const output = document.getElementById('js-output') as HTMLTextAreaElement | null;
+      if (input && output) {
+        inputVal = input.value;
+        if (inputVal === '') {
+          output.value = '';
+          updateStats(0, 0);
+          return;
+        }
+        outputVal = mode === 'minify' ? minifyJS(inputVal) : beautifyJS(inputVal);
+        output.value = outputVal;
+      }
+    } else if (activeLang === 'html') {
+      const input = document.getElementById('html-input') as HTMLTextAreaElement | null;
+      const output = document.getElementById('html-output') as HTMLTextAreaElement | null;
+      if (input && output) {
+        inputVal = input.value;
+        if (inputVal === '') {
+          output.value = '';
+          updateStats(0, 0);
+          return;
+        }
+        outputVal = mode === 'minify' ? minifyHTML(inputVal) : beautifyHTML(inputVal);
+        output.value = outputVal;
+      }
+    }
+
+    // Always update stats after processing using byte sizes
+    const origBytes = getByteSize(inputVal);
+    const outBytes = getByteSize(outputVal);
+    updateStats(origBytes, outBytes);
+  }
+
+  // Stats Updater - displays compression statistics
+  // Percentage difference = ((original - output) / original × 100) rounded to 1 decimal place
+  // If original is 0 bytes, display 0%
+  function updateStats(origSize: number, optSize: number) {
+    const statOrig = document.getElementById('stat-orig');
+    const statOpt = document.getElementById('stat-opt');
+    const statSavings = document.getElementById('stat-savings');
+
+    if (statOrig && statOpt && statSavings) {
+      if (origSize === 0) {
+        statOrig.textContent = '0 B';
+        statOpt.textContent = '0 B';
+        statSavings.textContent = '0%';
+        return;
+      }
+
+      statOrig.textContent = formatBytes(origSize);
+      statOpt.textContent = formatBytes(optSize);
+
+      const percentage = ((origSize - optSize) / origSize) * 100;
+      statSavings.textContent = `${percentage.toFixed(1)}%`;
+    }
+  }
+
+  function formatBytes(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // --- COMPRESSION ALGORITHMS (Client-Side) ---
+
+  function minifyCSS(css: string): string {
+    return css
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Strip comments
+      .replace(/\s+/g, ' ')             // Collapse multi whitespace
+      .replace(/\s*([\{\}:;])\s*/g, '$1') // Clean spaces around delimiters
+      .replace(/;}/g, '}')               // Clean trailing semicolon
+      .trim();
+  }
+
+  function beautifyCSS(css: string): string {
+    // Basic CSS Beautifier
+    let clean = minifyCSS(css);
+    let formatted = "";
+    let indent = 0;
+
+    for (let i = 0; i < clean.length; i++) {
+      const char = clean[i];
+      if (char === '{') {
+        formatted += " {\n" + "  ".repeat(++indent);
+      } else if (char === '}') {
+        indent = Math.max(0, indent - 1);
+        formatted = formatted.trimEnd() + "\n" + "  ".repeat(indent) + "}\n\n" + "  ".repeat(indent);
+      } else if (char === ';') {
+        formatted += ";\n" + "  ".repeat(indent);
+      } else if (char === ',') {
+        formatted += ", ";
+      } else if (char === ':') {
+        formatted += ": ";
+      } else {
+        formatted += char;
+      }
+    }
+    return formatted.replace(/\n\s+\n/g, '\n').trim();
+  }
+
+  function minifyJS(js: string): string {
+    // Regex based JS minifier (strip comments & excessive spacing)
+    return js
+      .replace(/\/\*[\s\S]*?\*\//g, '') // strip block comments
+      .replace(/\/\/[^\n]*/g, '')        // strip line comments (including at EOF)
+      .replace(/\s+/g, ' ')             // collapse whitespace
+      .replace(/\s*([\{\}\(\)=\+\-\*\/,;:<>])\s*/g, '$1') // remove space around operators
+      .trim();
+  }
+
+  function beautifyJS(js: string): string {
+    // Indent curly brackets
+    let clean = minifyJS(js);
+    let formatted = "";
+    let indent = 0;
+
+    for (let i = 0; i < clean.length; i++) {
+      const char = clean[i];
+      if (char === '{') {
+        formatted += " {\n" + "  ".repeat(++indent);
+      } else if (char === '}') {
+        indent = Math.max(0, indent - 1);
+        formatted = formatted.trimEnd() + "\n" + "  ".repeat(indent) + "}\n" + "  ".repeat(indent);
+      } else if (char === ';') {
+        formatted += ";\n" + "  ".repeat(indent);
+      } else {
+        formatted += char;
+      }
+    }
+    return formatted.replace(/\n\s+\n/g, '\n').trim();
+  }
+
+  function minifyHTML(html: string): string {
+    return html
+      .replace(/<!--[\s\S]*?-->/g, '') // Strip HTML comments
+      .replace(/\s+/g, ' ')             // Collapse consecutive whitespace into single space
+      .replace(/>\s+</g, '><')          // Remove whitespace between adjacent closing/opening tags
+      .trim();
+  }
+
+  function beautifyHTML(html: string): string {
+    // First minify to normalize whitespace
+    let clean = minifyHTML(html);
+    let formatted = "";
+    let indent = 0;
+
+    // Void elements that don't increase indent depth
+    const voidElements = ['img', 'input', 'br', 'hr', 'meta', 'link'];
+
+    // Split into tags and text content
+    const tokens = clean.split(/(<\/?[^>]+>)/g);
+    
+    tokens.forEach(token => {
+      if (!token.trim()) return;
+
+      if (token.startsWith('</')) {
+        // Closing tag - decrease indent first, then print
+        indent = Math.max(0, indent - 1);
+        formatted += '  '.repeat(indent) + token + '\n';
+      } else if (token.startsWith('<')) {
+        // Check if it's a void element or self-closing tag (ends with "/>")
+        const tagName = token.match(/<([^\s>/]+)/)?.[1]?.toLowerCase() || '';
+        const isSelfClose = token.endsWith('/>');
+        const isVoid = voidElements.includes(tagName);
+        const isDoctype = token.startsWith('<!');
+
+        if (isDoctype) {
+          // DOCTYPE and similar declarations are leaf nodes
+          formatted += '  '.repeat(indent) + token + '\n';
+        } else if (isSelfClose || isVoid) {
+          // Void elements and self-closing tags are leaf nodes - no indent change
+          formatted += '  '.repeat(indent) + token + '\n';
+        } else {
+          // Regular opening tag - print then increase indent
+          formatted += '  '.repeat(indent) + token + '\n';
+          indent++;
+        }
+      } else {
+        // Text content
+        const trimmed = token.trim();
+        if (trimmed) {
+          formatted += '  '.repeat(indent) + trimmed + '\n';
+        }
+      }
+    });
+
+    return formatted.trimEnd();
+  }
+
+  function isSelfClosing(tag: string): boolean {
+    const tagName = tag.match(/<([^\s>]+)/)?.[1]?.toLowerCase() || '';
+    const selfClosingTags = ['img', 'input', 'br', 'hr', 'meta', 'link'];
+    return selfClosingTags.includes(tagName);
+  }
+
+  // --- BATCH FILES MINIFIER ---
+  const dropZoneCode = document.getElementById('drop-zone-code');
+  const batchCodeInput = document.getElementById('batch-code-input') as HTMLInputElement | null;
+  const batchFilesList = document.getElementById('batch-files-list');
+
+  if (dropZoneCode && batchCodeInput) {
+    dropZoneCode.addEventListener('click', () => batchCodeInput.click());
+
+    dropZoneCode.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZoneCode.classList.add('dragover');
+    });
+
+    dropZoneCode.addEventListener('dragleave', () => {
+      dropZoneCode.classList.remove('dragover');
+    });
+
+    dropZoneCode.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZoneCode.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+        processBatchFiles(e.dataTransfer.files);
+      }
+    });
+
+    batchCodeInput.addEventListener('change', () => {
+      if (batchCodeInput.files && batchCodeInput.files.length > 0) {
+        processBatchFiles(batchCodeInput.files);
+      }
+    });
+  }
+
+  function processBatchFiles(files: FileList) {
+    if (!batchFilesList) return;
+
+    // Clear placeholder
+    const placeholder = batchFilesList.querySelector('.placeholder-text');
+    if (placeholder) {
+      batchFilesList.innerHTML = '';
+    }
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+    const MAX_FILE_COUNT = 50;
+    const SUPPORTED_EXTENSIONS = ['css', 'js', 'html'];
+
+    const fileArray = Array.from(files);
+
+    // Enforce 50 file limit - reject excess files with inline message
+    if (fileArray.length > MAX_FILE_COUNT) {
+      const errorItem = document.createElement('div');
+      errorItem.className = 'batch-file-item batch-file-error';
+      errorItem.innerHTML = `
+        <div class="batch-file-info">
+          <span class="batch-file-name">Batch limit exceeded</span>
+          <span class="batch-file-error-msg">You selected ${fileArray.length} files. Maximum 50 files per batch allowed. Only the first 50 files will be processed.</span>
+        </div>
+      `;
+      batchFilesList.appendChild(errorItem);
+    }
+
+    // Process only up to 50 files
+    const filesToProcess = fileArray.slice(0, MAX_FILE_COUNT);
+
+    filesToProcess.forEach(file => {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+
+      // Check for unsupported file extension
+      if (!SUPPORTED_EXTENSIONS.includes(ext)) {
+        const errorItem = document.createElement('div');
+        errorItem.className = 'batch-file-item batch-file-error';
+        errorItem.innerHTML = `
+          <div class="batch-file-info">
+            <span class="batch-file-name">${file.name}</span>
+            <span class="batch-file-error-msg">Error: unsupported file type. Only .css, .js, and .html files are accepted.</span>
+          </div>
+        `;
+        batchFilesList.appendChild(errorItem);
+        return; // Continue processing remaining files
+      }
+
+      // Check for file size exceeding 5 MB
+      if (file.size > MAX_FILE_SIZE) {
+        const errorItem = document.createElement('div');
+        errorItem.className = 'batch-file-item batch-file-error';
+        errorItem.innerHTML = `
+          <div class="batch-file-info">
+            <span class="batch-file-name">${file.name}</span>
+            <span class="batch-file-error-msg">Error: file exceeds 5 MB limit (${formatBytes(file.size)}).</span>
+          </div>
+        `;
+        batchFilesList.appendChild(errorItem);
+        return; // Continue processing remaining files
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const rawContent = e.target?.result as string;
+        let minifiedContent = '';
+
+        // Auto-detect language from file extension
+        if (ext === 'css') minifiedContent = minifyCSS(rawContent);
+        else if (ext === 'js') minifiedContent = minifyJS(rawContent);
+        else if (ext === 'html') minifiedContent = minifyHTML(rawContent);
+
+        const origBytes = getByteSize(rawContent);
+        const minBytes = getByteSize(minifiedContent);
+        const savings = origBytes === 0 ? 0 : ((origBytes - minBytes) / origBytes) * 100;
+
+        // Generate download URL for minified file
+        const blob = new Blob([minifiedContent], { type: 'text/plain' });
+        const downloadUrl = URL.createObjectURL(blob);
+
+        const item = document.createElement('div');
+        item.className = 'batch-file-item';
+        item.innerHTML = `
+          <div class="batch-file-info">
+            <span class="batch-file-name">${file.name}</span>
+            <span class="batch-file-savings">${origBytes} bytes → ${minBytes} bytes (${savings.toFixed(1)}% savings)</span>
+          </div>
+          <a class="batch-file-download" href="${downloadUrl}" download="min.${file.name}">Download</a>
+        `;
+
+        batchFilesList.appendChild(item);
+      };
+      reader.readAsText(file);
+    });
+  }
+</script>

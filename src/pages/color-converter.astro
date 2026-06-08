@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import ColorConverterTool from '../components/tools/ColorConverterTool.astro';
+
+const toolName = "Color Converter & Palette Picker";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6"; // Teal
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Free online color converter and picker. Convert colors between HEX, RGB, HSL, and CMYK formats. Extract color palettes from images, build custom gradients, and test contrast ratios.";
+const seoKeywords = "color picker online, hex to rgb, rgb to hex, color converter, color palette generator, gradient builder, wcag contrast checker";
+
+const howToUse = [
+  "Use the visual color picker or enter raw values in HEX, RGB, HSL, or CMYK boxes to translate them instantly.",
+  "Check the Palette Generator tab to copy monochromatic, analogous, triadic, or complementary color coordinates.",
+  "Build linear gradients by choosing start and end colors, adjusting angles, and copying the CSS markup.",
+  "Upload an image in the Extractor tab and click pixels on the canvas to inspect and grab exact hex values.",
+  "Ensure WCAG accessibility compliance by evaluating color contrast scores in the Contrast Checker tab."
+];
+
+const faqs = [
+  {
+    q: "How does the Image Color Extractor work?",
+    a: "Drag and drop any image in the Extractor tab. The image is rendered on an HTML5 canvas element locally. When you hover or click on the image, the canvas extracts the RGB values of the specific pixel and automatically loads it into the main tool."
+  },
+  {
+    q: "What are the WCAG accessibility standards for color contrast?",
+    a: "Web Content Accessibility Guidelines (WCAG) specify that text must have a minimum contrast ratio against its background. Level AA requires a ratio of 4.5:1 for normal text and 3.0:1 for large text. Level AAA requires a stricter 7.0:1 for normal text and 4.5:1 for large text."
+  },
+  {
+    q: "Can I convert color codes to CMYK for print media?",
+    a: "Yes! The CMYK model (Cyan, Magenta, Yellow, Key/Black) is used in color printing. The tool converts RGB screen values to CMYK percentages dynamically. You can also use our <a href=\"/timestamp\">Timestamp Converter</a> when coordinating print deadlines across timezones."
+  },
+  {
+    q: "Is there any charge or tracking for extracting colors?",
+    a: "No. The entire workspace runs client-side in Javascript. Your uploaded images and palette codes are handled entirely locally and never stored on any server. For encoding extracted image data as text, try the <a href=\"/base64\">Base64 Encoder</a>."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert HEX, RGB, HSL, and CMYK codes. Build palettes, design linear CSS gradients, extract colors from images, and verify contrast ratios.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" />
+
+  <div class="conversion-links-grid glass">
+    <h3>Quick Color Conversions</h3>
+    <p>Select a specific conversion pair for dedicated instructions and quick lookup calculators:</p>
+    <div class="links-list">
+      <a href="/color-converter/hex-to-rgb">HEX to RGB Converter</a>
+      <a href="/color-converter/rgb-to-hex">RGB to HEX Converter</a>
+      <a href="/color-converter/hex-to-hsl">HEX to HSL Converter</a>
+      <a href="/color-converter/hex-to-cmyk">HEX to CMYK Converter</a>
+      <a href="/color-converter/rgb-to-cmyk">RGB to CMYK Converter</a>
+      <a href="/color-converter/rgb-to-hsl">RGB to HSL Converter</a>
+      <a href="/color-converter/hsl-to-rgb">HSL to RGB Converter</a>
+      <a href="/color-converter/hsl-to-hex">HSL to HEX Converter</a>
+      <a href="/color-converter/hsl-to-cmyk">HSL to CMYK Converter</a>
+      <a href="/color-converter/cmyk-to-rgb">CMYK to RGB Converter</a>
+      <a href="/color-converter/cmyk-to-hex">CMYK to HEX Converter</a>
+      <a href="/color-converter/cmyk-to-hsl">CMYK to HSL Converter</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="color-converter" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .conversion-links-grid {
+    padding: 1.5rem;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .conversion-links-grid h3 {
+    color: #fff;
+    font-size: 1.15rem;
+  }
+
+  .links-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .links-list a {
+    color: var(--accent-primary);
+    font-weight: 500;
+    text-decoration: underline;
+    font-size: 0.95rem;
+  }
+
+  .links-list a:hover {
+    color: #fff;
+  }
+</style>

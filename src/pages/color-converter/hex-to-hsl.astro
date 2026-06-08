@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "HEX to HSL Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6"; // Teal
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert HEX color codes to HSL (Hue, Saturation, Lightness) values online. Fast, secure, browser-local hex to hsl color converter.";
+const seoKeywords = "hex to hsl, hex to hsl converter, convert hex to hsl online, hex color code to hsl";
+
+const howToUse = [
+  "Enter your HEX color code in the HEX input field.",
+  "The tool will instantly output the matching HSL coordinates (e.g. hsl(173, 80%, 40%)).",
+  "Click 'Copy' to copy the formatted HSL CSS string."
+];
+
+const faqs = [
+  {
+    q: "What is HSL representation?",
+    a: "HSL stands for Hue (the color type/angle on color wheel, 0-360), Saturation (the color intensity/purity percentage, 0-100%), and Lightness (the color brightness percentage, 0-100%). It is often preferred by designers because it is much more intuitive to adjust than RGB or HEX."
+  },
+  {
+    q: "How does the conversion from HEX to HSL happen?",
+    a: "First, the HEX code is decoded into Red, Green, and Blue percentages. Then, we find the maximum and minimum values of these channels to compute lightness. Saturation is calculated based on the difference between max and min, and hue is calculated depending on which color channel is the maximum."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert hexadecimal color codes to Hue, Saturation, Lightness values instantly in your browser.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="hex-to-hsl" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

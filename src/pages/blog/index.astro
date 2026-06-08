@@ -1,0 +1,328 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const toolName = "Developer Blog";
+const seoDescription = "ToolsHub developer blog — learn about JSON Web Tokens, Unix timestamps, regular expressions, CSS performance optimization, and more with practical guides and tutorials.";
+const seoKeywords = "developer blog, web development tutorials, jwt explained, unix timestamp, regex guide, css performance";
+
+const allPosts = await getCollection('blog');
+
+// Sort by datePublished descending (newest first)
+const posts = allPosts.sort((a, b) => {
+  return new Date(b.data.datePublished).getTime() - new Date(a.data.datePublished).getTime();
+});
+
+// Derive unique topics and tool categories from the posts
+const topics = [...new Set(posts.map(p => p.data.topic))].sort();
+const toolCategories = [...new Set(posts.flatMap(p => p.data.tools))].sort();
+
+// Tool display name mapping
+const toolDisplayNames: Record<string, string> = {
+  'json-formatter': 'JSON Formatter',
+  'base64': 'Base64',
+  'regex-tester': 'RegEx Tester',
+  'jwt-decoder': 'JWT Decoder',
+  'hash-generator': 'Hash Generator',
+  'url-encoder-decoder': 'URL Encoder/Decoder',
+  'timestamp': 'Timestamp',
+  'markdown-editor': 'Markdown Editor',
+  'color-converter': 'Color Converter',
+  'code-minifier-beautifier': 'Code Minifier',
+};
+
+// Format date as YYYY-MM-DD
+function formatDate(date: Date): string {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+---
+
+<Layout 
+  title={toolName}
+  description={seoDescription}
+  keywords={seoKeywords}
+>
+  <div class="blog-header">
+    <h1>Developer Blog</h1>
+    <p>Practical guides, tutorials, and deep dives into the tools and concepts every developer needs to know.</p>
+  </div>
+
+  <div class="blog-filters" id="blog-filters">
+    <div class="filter-group">
+      <label class="filter-label">Topic:</label>
+      <div class="filter-buttons" id="topic-filters">
+        <button class="filter-btn active" data-filter="all" data-filter-type="topic">All</button>
+        {topics.map(topic => (
+          <button class="filter-btn" data-filter={topic} data-filter-type="topic">
+            {topic.charAt(0).toUpperCase() + topic.slice(1)}
+          </button>
+        ))}
+      </div>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label">Tool:</label>
+      <div class="filter-buttons" id="tool-filters">
+        <button class="filter-btn active" data-filter="all" data-filter-type="tool">All</button>
+        {toolCategories.map(tool => (
+          <button class="filter-btn" data-filter={tool} data-filter-type="tool">
+            {toolDisplayNames[tool] || tool}
+          </button>
+        ))}
+      </div>
+    </div>
+    <button class="clear-filters-btn" id="clear-filters" style="display:none;">Clear All Filters</button>
+  </div>
+
+  <div class="blog-grid" id="blog-grid">
+    {posts.map(post => (
+      <a href={`/blog/${post.id}`} class="blog-card glass" data-topic={post.data.topic} data-tools={post.data.tools.join(',')}>
+        <div class="blog-card-meta">
+          <span class="blog-card-topic">{post.data.topic.charAt(0).toUpperCase() + post.data.topic.slice(1)}</span>
+          <time class="blog-card-date" datetime={formatDate(post.data.datePublished)}>{formatDate(post.data.datePublished)}</time>
+        </div>
+        <h2 class="blog-card-title">{post.data.title}</h2>
+        <p class="blog-card-excerpt">{post.data.excerpt}</p>
+        <div class="blog-card-tools">
+          {post.data.tools.map(tool => (
+            <span class="blog-card-tool-tag">{toolDisplayNames[tool] || tool}</span>
+          ))}
+        </div>
+        <span class="blog-card-link">Read Article →</span>
+      </a>
+    ))}
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('blog-grid');
+    const clearBtn = document.getElementById('clear-filters');
+    const topicFilters = document.getElementById('topic-filters');
+    const toolFilters = document.getElementById('tool-filters');
+
+    if (!grid || !clearBtn || !topicFilters || !toolFilters) return;
+
+    let activeTopic = 'all';
+    let activeTool = 'all';
+
+    function updateDisplay() {
+      const cards = grid!.querySelectorAll<HTMLElement>('.blog-card');
+      cards.forEach(card => {
+        const cardTopic = card.getAttribute('data-topic') || '';
+        const cardTools = (card.getAttribute('data-tools') || '').split(',');
+
+        const topicMatch = activeTopic === 'all' || cardTopic === activeTopic;
+        const toolMatch = activeTool === 'all' || cardTools.includes(activeTool);
+
+        card.style.display = (topicMatch && toolMatch) ? '' : 'none';
+      });
+
+      // Show/hide clear button
+      clearBtn!.style.display = (activeTopic !== 'all' || activeTool !== 'all') ? '' : 'none';
+    }
+
+    function setActiveButton(container: HTMLElement, filterValue: string) {
+      container.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === filterValue);
+      });
+    }
+
+    topicFilters.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest('.filter-btn') as HTMLElement | null;
+      if (!target) return;
+      activeTopic = target.getAttribute('data-filter') || 'all';
+      setActiveButton(topicFilters, activeTopic);
+      updateDisplay();
+    });
+
+    toolFilters.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest('.filter-btn') as HTMLElement | null;
+      if (!target) return;
+      activeTool = target.getAttribute('data-filter') || 'all';
+      setActiveButton(toolFilters, activeTool);
+      updateDisplay();
+    });
+
+    clearBtn.addEventListener('click', () => {
+      activeTopic = 'all';
+      activeTool = 'all';
+      setActiveButton(topicFilters, 'all');
+      setActiveButton(toolFilters, 'all');
+      updateDisplay();
+    });
+  });
+</script>
+
+<style>
+  .blog-header {
+    margin-bottom: 2rem;
+  }
+
+  .blog-header h1 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+  }
+
+  .blog-filters {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 45px;
+  }
+
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent-primary);
+    color: #fff;
+  }
+
+  .filter-btn.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--accent-primary);
+    color: #a5b4fc;
+    font-weight: 600;
+  }
+
+  .clear-filters-btn {
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    align-self: flex-start;
+  }
+
+  .clear-filters-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.7);
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.75rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    border: 1px solid var(--border-light);
+  }
+
+  .blog-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.08);
+  }
+
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .blog-card-topic {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .blog-card-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .blog-card-title {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .blog-card-excerpt {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .blog-card-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .blog-card-tool-tag {
+    background: rgba(16, 185, 129, 0.12);
+    color: #6ee7b7;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.68rem;
+    font-weight: 500;
+  }
+
+  .blog-card-link {
+    color: var(--accent-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .blog-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

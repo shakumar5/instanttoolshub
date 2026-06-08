@@ -1,0 +1,212 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+---
+
+<BlogLayout
+  title="Cryptographic Hash Functions: MD5, SHA-256, and Beyond"
+  description="Understand how cryptographic hash functions work, compare MD5 vs SHA-1 vs SHA-256 vs SHA-512, and learn their real-world applications in passwords, file integrity, and digital signatures."
+  keywords="hash function, sha256, md5, cryptographic hash, hash collision"
+  publishDate="2025-04-01"
+  category="Security"
+>
+  <h1>Cryptographic Hash Functions: MD5, SHA-256, and Beyond</h1>
+
+  <p>Hash functions are the unsung heroes of modern computing. They secure your passwords, verify software downloads, power blockchain networks, and protect digital signatures. Yet many developers use them without fully understanding what makes a good hash function — or why some older ones should be retired. Let's change that.</p>
+
+  <h2>What Is a Hash Function?</h2>
+
+  <p>A hash function takes an input of any size and produces a fixed-size output (called a digest, hash, or fingerprint). A cryptographic hash function adds security properties that make it suitable for use in security-critical applications.</p>
+
+  <pre><code set:html={'Input: "Hello"\nSHA-256: 185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969\n\nInput: "Hello." (one character added)\nSHA-256: 2d8bd7d9bb5f85ba643f0110d50cb506a1fe439e769a22503c0e90f1f6e3b\n\n→ Completely different output from a tiny change'} /></pre>
+
+  <h2>Essential Properties of Cryptographic Hash Functions</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Definition</th>
+        <th>Why It Matters</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Deterministic</strong></td>
+        <td>Same input always produces same output</td>
+        <td>Enables verification and comparison</td>
+      </tr>
+      <tr>
+        <td><strong>One-way (Pre-image resistance)</strong></td>
+        <td>Cannot reverse the hash to find the input</td>
+        <td>Protects passwords and secrets</td>
+      </tr>
+      <tr>
+        <td><strong>Avalanche effect</strong></td>
+        <td>Tiny input change flips ~50% of output bits</td>
+        <td>Prevents pattern analysis</td>
+      </tr>
+      <tr>
+        <td><strong>Collision resistance</strong></td>
+        <td>Infeasible to find two inputs with same hash</td>
+        <td>Guarantees data integrity</td>
+      </tr>
+      <tr>
+        <td><strong>Fixed output size</strong></td>
+        <td>Output length is constant regardless of input size</td>
+        <td>Predictable storage and comparison</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Comparing Hash Algorithms</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Algorithm</th>
+        <th>Output Size</th>
+        <th>Speed</th>
+        <th>Security Status</th>
+        <th>Use Today?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>MD5</strong></td>
+        <td>128 bits (32 hex)</td>
+        <td>Very fast</td>
+        <td>Broken (collisions found)</td>
+        <td>No — checksums only</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-1</strong></td>
+        <td>160 bits (40 hex)</td>
+        <td>Fast</td>
+        <td>Broken (2017 collision)</td>
+        <td>No — being phased out</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-256</strong></td>
+        <td>256 bits (64 hex)</td>
+        <td>Moderate</td>
+        <td>Secure</td>
+        <td>Yes — recommended</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-512</strong></td>
+        <td>512 bits (128 hex)</td>
+        <td>Moderate (faster on 64-bit)</td>
+        <td>Secure</td>
+        <td>Yes — when extra security needed</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-3</strong></td>
+        <td>Variable (224-512)</td>
+        <td>Moderate</td>
+        <td>Secure (different design)</td>
+        <td>Yes — alternative to SHA-2</td>
+      </tr>
+      <tr>
+        <td><strong>BLAKE3</strong></td>
+        <td>256 bits (default)</td>
+        <td>Very fast</td>
+        <td>Secure</td>
+        <td>Yes — high performance</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>How Hash Functions Work (Simplified)</h2>
+
+  <p>While each algorithm differs in implementation, most follow these general steps:</p>
+
+  <ol>
+    <li><strong>Padding:</strong> The input message is padded to a specific block size (e.g., 512 bits for SHA-256)</li>
+    <li><strong>Parsing:</strong> The padded message is divided into fixed-size blocks</li>
+    <li><strong>Initialization:</strong> Internal state variables are set to predefined constants</li>
+    <li><strong>Compression:</strong> Each block is processed through rounds of bitwise operations (AND, OR, XOR, rotations, additions)</li>
+    <li><strong>Finalization:</strong> The final internal state is output as the hash digest</li>
+  </ol>
+
+  <p>SHA-256 specifically uses 64 rounds of compression per block with a message schedule that expands 16 input words into 64 working words.</p>
+
+  <h2>Real-World Use Cases</h2>
+
+  <h3>Password Storage</h3>
+  <p>Never store passwords in plaintext. Hash them before storage so a database breach doesn't expose credentials. However, general-purpose hashes (SHA-256) are too fast for passwords — use specialized algorithms:</p>
+  <ul>
+    <li><strong>bcrypt:</strong> Adaptive work factor, industry standard</li>
+    <li><strong>Argon2:</strong> Winner of the Password Hashing Competition (2015), memory-hard</li>
+    <li><strong>scrypt:</strong> Memory-hard, resistant to hardware attacks</li>
+  </ul>
+
+  <h3>File Integrity Verification</h3>
+  <p>Software downloads provide SHA-256 checksums so you can verify the file wasn't tampered with:</p>
+  <pre><code set:html={'# Linux/Mac: verify a downloaded file\nsha256sum ubuntu-24.04-desktop-amd64.iso\n# Compare output with the published hash'} /></pre>
+
+  <h3>Digital Signatures</h3>
+  <p>Rather than signing an entire document (slow), the document is hashed and the hash is signed. The recipient hashes the document again and verifies the signature against that hash.</p>
+
+  <h3>Data Deduplication</h3>
+  <p>Cloud storage services hash file contents to detect duplicates. If two users upload the same file, only one copy needs to be stored.</p>
+
+  <h3>Blockchain and Proof of Work</h3>
+  <p>Bitcoin uses double SHA-256 hashing. Miners must find an input that produces a hash below a target threshold — computationally expensive but trivial to verify.</p>
+
+  <h2>Understanding Hash Collisions</h2>
+
+  <p>A collision occurs when two different inputs produce the same hash output. For a 128-bit hash like MD5, the birthday paradox means a collision can be found in roughly 2^64 operations — well within reach of modern hardware.</p>
+
+  <h3>Why MD5 Is Broken</h3>
+  <p>In 2004, researchers demonstrated practical MD5 collisions. By 2012, the Flame malware exploited an MD5 collision to forge a Microsoft code-signing certificate. MD5 should never be used for security purposes.</p>
+
+  <h3>Why SHA-1 Is Broken</h3>
+  <p>In 2017, Google's SHAttered project produced the first practical SHA-1 collision using 6,500 years of CPU time and 110 years of GPU time (feasible for well-funded attackers). Major browsers and certificate authorities have since deprecated SHA-1.</p>
+
+  <h2>Choosing the Right Hash Function</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Use Case</th>
+        <th>Recommended Algorithm</th>
+        <th>Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Password hashing</td>
+        <td>Argon2 / bcrypt</td>
+        <td>Intentionally slow, memory-hard</td>
+      </tr>
+      <tr>
+        <td>File integrity</td>
+        <td>SHA-256 / BLAKE3</td>
+        <td>Fast, collision-resistant</td>
+      </tr>
+      <tr>
+        <td>Digital signatures</td>
+        <td>SHA-256 / SHA-512</td>
+        <td>Industry standard, well-audited</td>
+      </tr>
+      <tr>
+        <td>Non-security checksums</td>
+        <td>CRC32 / xxHash</td>
+        <td>Extremely fast, not cryptographic</td>
+      </tr>
+      <tr>
+        <td>Blockchain</td>
+        <td>SHA-256 / Keccak</td>
+        <td>Proven security margin</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Hash Functions in JavaScript</h2>
+
+  <pre><code set:html={'// Using the Web Crypto API (browser & Node.js)\nasync function sha256(message) {\n  const encoder = new TextEncoder();\n  const data = encoder.encode(message);\n  const hashBuffer = await crypto.subtle.digest("SHA-256", data);\n  const hashArray = Array.from(new Uint8Array(hashBuffer));\n  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");\n}\n\n// Usage\nconst hash = await sha256("Hello, World!");\n// "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"'} /></pre>
+
+  <div class="cta-box">
+    <p><strong>Try it yourself:</strong> Generate MD5, SHA-1, SHA-256, and SHA-512 hashes instantly with our free <a href="/hash-generator">Hash Generator</a> — compare algorithms side-by-side, all processing happens locally in your browser.</p>
+  </div>
+</BlogLayout>

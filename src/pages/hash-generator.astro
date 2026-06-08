@@ -1,0 +1,856 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "Cryptographic Hash & HMAC Generator";
+const activeTool = "hash-generator";
+const accentColor = "#e11d48"; // Crimson
+const accentGlow = "rgba(225, 29, 72, 0.15)";
+
+const seoDescription = "Free online cryptographic hash and HMAC generator. Calculate MD5, SHA-1, SHA-256, and SHA-512 checksums for text or files locally in your browser.";
+const seoKeywords = "sha256 generator, md5 generator, hash generator online, hmac generator, file checksum calculator, sha512 hash";
+
+const howToUse = [
+  "Choose your operation tab: 'Text Hash/HMAC' or 'File Checksum'.",
+  "Text Hash: Type or paste your text in the input box. The tool will calculate and display MD5, SHA-1, SHA-256, and SHA-512 hashes simultaneously in real-time.",
+  "HMAC Mode: Turn on the 'HMAC Mode' switch, enter a secret key, and inspect the keyed hash outputs.",
+  "File Checksum: Drop or upload any file to calculate its SHA-256 and MD5 checksum values locally."
+];
+
+const faqs = [
+  {
+    q: "How does the file checksum calculator work?",
+    a: "When you upload a file, the browser's FileReader API reads the file contents as a binary ArrayBuffer. Then, we use the browser's native Web Crypto API to compute the hash bytes and format them as a hexadecimal string. Your file is never sent over the internet."
+  },
+  {
+    q: "What is an HMAC?",
+    a: "HMAC (Hash-based Message Authentication Code) is a specific type of message authentication code involving a cryptographic hash function and a secret cryptographic key. It is used to verify both the data integrity and the authenticity of a message. HMAC signatures are commonly used inside <a href=\"/jwt-decoder\">JSON Web Tokens (JWT)</a> for verifying token integrity."
+  },
+  {
+    q: "Why is MD5 still used if it is cryptographically weak?",
+    a: "While MD5 is vulnerable to collision attacks and is no longer recommended for secure data (like password hashing), it is still widely used as a fast, simple checksum tool to verify that a file has not been corrupted during transfer. For encoding file data as text for safe transmission, try our <a href=\"/base64\">Base64 Encoder</a>."
+  },
+  {
+    q: "Is there a limit on file size for checksumming?",
+    a: "Because all hashing runs on your local CPU, you can hash files up to 25MB instantly. Larger files (up to 100MB) will work but might pause the browser tab for a second or two while the browser computes the hash bytes."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Generate cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512) and HMAC signatures, or verify file checksums locally.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header tabbed-header">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-text">Text Hash & HMAC</button>
+        <button class="tab-btn" data-tab="tab-file">File Checksum</button>
+      </div>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+      </div>
+    </div>
+
+    <div class="panel-body tab-content-container">
+      
+      <!-- Text Hash Tab -->
+      <div class="tab-content active" id="tab-text">
+        <div class="hash-split-container">
+          <!-- Left Input Panel -->
+          <div class="hash-input-side">
+            <div class="form-control" style="flex-grow: 1; display: flex; flex-direction: column;">
+              <label class="form-label">Input Text</label>
+              <textarea id="hash-text-input" placeholder="Type or paste your text here to generate hashes..." class="form-textarea hash-textarea"></textarea>
+            </div>
+            
+            <div class="hmac-options-card glass">
+              <label class="checkbox-label">
+                <input type="checkbox" id="hmac-toggle" /> Enable HMAC (Keyed Hash)
+              </label>
+              
+              <div class="form-control hidden" id="hmac-key-control">
+                <label class="form-label" style="font-size: 0.75rem;">Secret Key / Passphrase</label>
+                <input type="text" id="hmac-key" placeholder="Enter secret HMAC key..." class="form-input code-font" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Output Lists -->
+          <div class="hash-output-side">
+            <div class="hash-output-item">
+              <div class="hash-meta-row">
+                <span class="hash-alg-label" id="label-md5">MD5</span>
+                <button class="btn btn-secondary btn-xs btn-copy-hash" data-target="output-md5">Copy</button>
+              </div>
+              <input type="text" id="output-md5" readonly class="form-input code-font hash-val" placeholder="md5 hash will appear here..." />
+            </div>
+
+            <div class="hash-output-item">
+              <div class="hash-meta-row">
+                <span class="hash-alg-label" id="label-sha1">SHA-1</span>
+                <button class="btn btn-secondary btn-xs btn-copy-hash" data-target="output-sha1">Copy</button>
+              </div>
+              <input type="text" id="output-sha1" readonly class="form-input code-font hash-val" placeholder="sha-1 hash will appear here..." />
+            </div>
+
+            <div class="hash-output-item">
+              <div class="hash-meta-row">
+                <span class="hash-alg-label" id="label-sha256">SHA-256</span>
+                <button class="btn btn-secondary btn-xs btn-copy-hash" data-target="output-sha256">Copy</button>
+              </div>
+              <input type="text" id="output-sha256" readonly class="form-input code-font hash-val" placeholder="sha-256 hash will appear here..." />
+            </div>
+
+            <div class="hash-output-item">
+              <div class="hash-meta-row">
+                <span class="hash-alg-label" id="label-sha512">SHA-512</span>
+                <button class="btn btn-secondary btn-xs btn-copy-hash" data-target="output-sha512">Copy</button>
+              </div>
+              <input type="text" id="output-sha512" readonly class="form-input code-font hash-val" placeholder="sha-512 hash will appear here..." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Checksum Tab -->
+      <div class="tab-content" id="tab-file">
+        <div class="file-hash-container">
+          <div class="file-hash-upload">
+            <div class="split-label">Upload File for Checksum</div>
+            <div class="drag-zone" id="drop-zone-file">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem; opacity: 0.7;"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <p>Drag & Drop File or Click to Browse</p>
+              <span class="file-limits">Checksum runs locally in your browser (Max 50MB)</span>
+              <input type="file" id="hash-file-input" class="hidden" />
+            </div>
+            <div id="file-hash-meta" class="file-meta hidden"></div>
+          </div>
+
+          <div class="file-hash-outputs">
+            <div class="split-label">File Checksums</div>
+            <div class="hash-output-item" style="margin-top: 1rem;">
+              <div class="hash-meta-row">
+                <span class="hash-alg-label">File MD5</span>
+                <button class="btn btn-secondary btn-xs btn-copy-hash" data-target="file-output-md5">Copy</button>
+              </div>
+              <input type="text" id="file-output-md5" readonly class="form-input code-font hash-val" placeholder="File MD5 checksum..." />
+            </div>
+
+            <div class="hash-output-item">
+              <div class="hash-meta-row">
+                <span class="hash-alg-label">File SHA-256</span>
+                <button class="btn btn-secondary btn-xs btn-copy-hash" data-target="file-output-sha256">Copy</button>
+              </div>
+              <input type="text" id="file-output-sha256" readonly class="form-input code-font hash-val" placeholder="File SHA-256 checksum..." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <RelatedTools currentTool="hash-generator" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .tabbed-header {
+    padding: 0;
+    padding-right: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    height: calc(100% - 45px);
+  }
+
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .code-font {
+    font-family: var(--font-mono) !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Text Hash split layout */
+  .hash-split-container {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .hash-input-side {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .hash-textarea {
+    width: 100%;
+    flex-grow: 1;
+    min-height: 180px;
+    background: #000;
+    color: #e2e8f0;
+  }
+
+  .hmac-options-card {
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .hash-output-side {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  .hash-output-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .hash-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .hash-alg-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--text-muted);
+  }
+
+  .hash-val {
+    color: #f43f5e;
+    background: #000 !important;
+  }
+
+  /* File hashing layout */
+  .file-hash-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .file-hash-upload {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .drag-zone {
+    border: 2px dashed var(--border-light);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.01);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-top: 1rem;
+  }
+
+  .drag-zone:hover {
+    border-color: var(--accent-primary);
+  }
+
+  .drag-zone p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .file-limits {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .file-meta {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .file-hash-outputs {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .file-warning {
+    color: #f59e0b;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+    margin: 0.25rem 0;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 850px) {
+    .hash-split-container, .file-hash-container {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .hash-input-side, .file-hash-upload {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      height: auto;
+    }
+  }
+</style>
+
+<script>
+  // Tab Handling
+  const tabs = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  const btnClear = document.getElementById('btn-clear');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-tab');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetId) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+
+  // Copy Hash Functionality
+  const copyBtns = document.querySelectorAll('.btn-copy-hash');
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target') || '';
+      const input = document.getElementById(targetId) as HTMLInputElement | null;
+      if (!input || !input.value) {
+        // If hash output is empty, do NOT perform clipboard write or show confirmation
+        return;
+      }
+      navigator.clipboard.writeText(input.value).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+        }, 2000);
+      }).catch(() => {
+        // If clipboard write fails, leave button text unchanged (silently fail)
+      });
+    });
+  });
+
+  // --- TEXT HASHING & HMAC LOGIC ---
+  const txtInput = document.getElementById('hash-text-input') as HTMLTextAreaElement | null;
+  const hmacToggle = document.getElementById('hmac-toggle') as HTMLInputElement | null;
+  const hmacKeyControl = document.getElementById('hmac-key-control');
+  const hmacKey = document.getElementById('hmac-key') as HTMLInputElement | null;
+
+  // Output Fields
+  const outMd5 = document.getElementById('output-md5') as HTMLInputElement | null;
+  const outSha1 = document.getElementById('output-sha1') as HTMLInputElement | null;
+  const outSha256 = document.getElementById('output-sha256') as HTMLInputElement | null;
+  const outSha512 = document.getElementById('output-sha512') as HTMLInputElement | null;
+
+  // Labels
+  const lblMd5 = document.getElementById('label-md5');
+  const lblSha1 = document.getElementById('label-sha1');
+  const lblSha256 = document.getElementById('label-sha256');
+  const lblSha512 = document.getElementById('label-sha512');
+
+  if (txtInput) {
+    txtInput.addEventListener('input', runHashing);
+  }
+
+  if (hmacKey) {
+    hmacKey.addEventListener('input', runHashing);
+  }
+
+  if (hmacToggle) {
+    hmacToggle.addEventListener('change', () => {
+      const active = hmacToggle.checked;
+      if (hmacKeyControl) {
+        if (active) hmacKeyControl.classList.remove('hidden');
+        else hmacKeyControl.classList.add('hidden');
+      }
+
+      // Update Labels
+      if (lblMd5) lblMd5.textContent = active ? "HMAC-MD5" : "MD5";
+      if (lblSha1) lblSha1.textContent = active ? "HMAC-SHA1" : "SHA-1";
+      if (lblSha256) lblSha256.textContent = active ? "HMAC-SHA256" : "SHA-256";
+      if (lblSha512) lblSha512.textContent = active ? "HMAC-SHA512" : "SHA-512";
+
+      runHashing();
+    });
+  }
+
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (txtInput) txtInput.value = '';
+      if (hmacKey) hmacKey.value = '';
+      if (outMd5) outMd5.value = '';
+      if (outSha1) outSha1.value = '';
+      if (outSha256) outSha256.value = '';
+      if (outSha512) outSha512.value = '';
+      
+      const fileInput = document.getElementById('hash-file-input') as HTMLInputElement | null;
+      if (fileInput) fileInput.value = '';
+      const fileMeta = document.getElementById('file-hash-meta');
+      if (fileMeta) fileMeta.className = 'file-meta hidden';
+      const fileMd5 = document.getElementById('file-output-md5') as HTMLInputElement | null;
+      if (fileMd5) fileMd5.value = '';
+      const fileSha256 = document.getElementById('file-output-sha256') as HTMLInputElement | null;
+      if (fileSha256) fileSha256.value = '';
+    });
+  }
+
+  async function runHashing() {
+    if (!txtInput || !outMd5 || !outSha1 || !outSha256 || !outSha512) return;
+
+    const val = txtInput.value;
+    const isHmac = hmacToggle?.checked || false;
+    const key = hmacKey?.value || '';
+
+    if (!val) {
+      outMd5.value = '';
+      outSha1.value = '';
+      outSha256.value = '';
+      outSha512.value = '';
+      return;
+    }
+
+    try {
+      if (isHmac && key.length >= 1) {
+        // HMAC Mode — only compute when key has at least 1 character
+        outMd5.value = hmacMd5(val, key);
+        outSha1.value = await hmacSubtle(val, key, "SHA-1");
+        outSha256.value = await hmacSubtle(val, key, "SHA-256");
+        outSha512.value = await hmacSubtle(val, key, "SHA-512");
+      } else if (isHmac && key.length < 1) {
+        // HMAC mode is on but no key provided — clear outputs
+        outMd5.value = '';
+        outSha1.value = '';
+        outSha256.value = '';
+        outSha512.value = '';
+        return;
+      } else {
+        // Standard Hash Mode
+        outMd5.value = md5(val);
+        outSha1.value = await digestSubtle(val, "SHA-1");
+        outSha256.value = await digestSubtle(val, "SHA-256");
+        outSha512.value = await digestSubtle(val, "SHA-512");
+      }
+    } catch (e: any) {
+      console.error(e);
+    }
+  }
+
+  // --- FILE HASHING LOGIC ---
+  const dropZoneFile = document.getElementById('drop-zone-file');
+  const fileInput = document.getElementById('hash-file-input') as HTMLInputElement | null;
+  const fileMeta = document.getElementById('file-hash-meta');
+  const fileMd5 = document.getElementById('file-output-md5') as HTMLInputElement | null;
+  const fileSha256 = document.getElementById('file-output-sha256') as HTMLInputElement | null;
+
+  if (dropZoneFile && fileInput) {
+    dropZoneFile.addEventListener('click', () => fileInput.click());
+
+    dropZoneFile.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    dropZoneFile.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+        hashFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        hashFile(fileInput.files[0]);
+      }
+    });
+  }
+
+  async function hashFile(file: File) {
+    if (!fileMd5 || !fileSha256 || !fileMeta) return;
+
+    const fileSizeKB = (file.size / 1024).toFixed(2);
+    const MAX_SIZE_WARNING = 50 * 1024 * 1024; // 50 MB
+
+    // Check if file exceeds 50 MB and show warning without blocking
+    const warningMsg = file.size > MAX_SIZE_WARNING
+      ? `<span class="file-warning">⚠️ Large file detected (>${(file.size / (1024 * 1024)).toFixed(1)} MB). Processing may cause browser unresponsiveness.</span><br>`
+      : '';
+
+    // Display file name, size, and status indicator
+    fileMeta.innerHTML = `
+      <strong>File Name:</strong> ${file.name}<br>
+      <strong>File Size:</strong> ${fileSizeKB} KB<br>
+      ${warningMsg}
+      <strong>Status:</strong> <span id="file-hash-status">Computing hashes...</span>
+    `;
+    fileMeta.classList.remove('hidden');
+
+    // Clear previous outputs
+    fileMd5.value = '';
+    fileSha256.value = '';
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const buffer = e.target?.result as ArrayBuffer;
+
+      // Compute SHA-256 using Web Crypto API
+      const sha256Buffer = await crypto.subtle.digest("SHA-256", buffer);
+      const sha256Hex = bufToHex(sha256Buffer);
+      fileSha256.value = sha256Hex;
+
+      // Compute MD5 locally using JS implementation
+      const uint8 = new Uint8Array(buffer);
+      let binaryStr = "";
+      for (let i = 0; i < uint8.length; i++) {
+        binaryStr += String.fromCharCode(uint8[i]);
+      }
+      fileMd5.value = md5(binaryStr);
+
+      // Update status to Complete
+      const statusEl = document.getElementById('file-hash-status');
+      if (statusEl) {
+        statusEl.textContent = 'Complete';
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // --- CRYPTOGRAPHIC UTILITIES (Client-Side) ---
+
+  // Standard Web Crypto Digest (SHA-1, SHA-256, SHA-512)
+  async function digestSubtle(message: string, algorithm: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    const hashBuffer = await crypto.subtle.digest(algorithm, data);
+    return bufToHex(hashBuffer);
+  }
+
+  // Standard Web Crypto HMAC Signer
+  async function hmacSubtle(message: string, secret: string, algorithm: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const messageBytes = encoder.encode(message);
+    const secretBytes = encoder.encode(secret);
+
+    const key = await crypto.subtle.importKey(
+      "raw",
+      secretBytes,
+      { name: "HMAC", hash: algorithm },
+      false,
+      ["sign"]
+    );
+
+    const signatureBytes = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      messageBytes
+    );
+
+    return bufToHex(signatureBytes);
+  }
+
+  function bufToHex(buffer: ArrayBuffer): string {
+    const uint8 = new Uint8Array(buffer);
+    let hex = "";
+    for (let i = 0; i < uint8.length; i++) {
+      hex += uint8[i].toString(16).padStart(2, '0');
+    }
+    return hex;
+  }
+
+  // Pure JS MD5 (UTF-8 compatible)
+  function md5(string: string): string {
+    function md5cycle(x: any, k: any) {
+      var a = x[0], b = x[1], c = x[2], d = x[3];
+
+      a = ff(a, b, c, d, k[0], 7, -680876936);
+      d = ff(d, a, b, c, k[1], 12, -389564586);
+      c = ff(c, d, a, b, k[2], 17,  606105819);
+      b = ff(b, c, d, a, k[3], 22, -1044525330);
+      a = ff(a, b, c, d, k[4], 7, -176418897);
+      d = ff(d, a, b, c, k[5], 12,  1200080426);
+      c = ff(c, d, a, b, k[6], 17, -1473231341);
+      b = ff(b, c, d, a, k[7], 22, -45705983);
+      a = ff(a, b, c, d, k[8], 7,  1770035416);
+      d = ff(d, a, b, c, k[9], 12, -1958414417);
+      c = ff(c, d, a, b, k[10], 17, -42063);
+      b = ff(b, c, d, a, k[11], 22, -1990404162);
+      a = ff(a, b, c, d, k[12], 7,  1804603682);
+      d = ff(d, a, b, c, k[13], 12, -40341101);
+      c = ff(c, d, a, b, k[14], 17, -1502002290);
+      b = ff(b, c, d, a, k[15], 22,  1236535329);
+
+      a = gg(a, b, c, d, k[1], 5, -165796510);
+      d = gg(d, a, b, c, k[6], 9, -1069501632);
+      c = gg(c, d, a, b, k[11], 14,  643717713);
+      b = gg(b, c, d, a, k[0], 20, -373897302);
+      a = gg(a, b, c, d, k[5], 5, -701558691);
+      d = gg(d, a, b, c, k[10], 9,  38016083);
+      c = gg(c, d, a, b, k[15], 14, -660478335);
+      b = gg(b, c, d, a, k[4], 20, -405537848);
+      a = gg(a, b, c, d, k[9], 5,  568446438);
+      d = gg(d, a, b, c, k[14], 9, -1019803690);
+      c = gg(c, d, a, b, k[3], 14, -187363961);
+      b = gg(b, c, d, a, k[8], 20,  1163531501);
+      a = gg(a, b, c, d, k[13], 5, -1444681467);
+      d = gg(d, a, b, c, k[2], 9, -51403784);
+      c = gg(c, d, a, b, k[7], 14,  1735328473);
+      b = gg(b, c, d, a, k[12], 20, -1926607734);
+
+      a = hh(a, b, c, d, k[5], 4, -378558);
+      d = hh(d, a, b, c, k[8], 11, -2022574463);
+      c = hh(c, d, a, b, k[11], 16,  1839030562);
+      b = hh(b, c, d, a, k[14], 23, -35309556);
+      a = hh(a, b, c, d, k[1], 4, -1530992060);
+      d = hh(d, a, b, c, k[4], 11,  1272893353);
+      c = hh(c, d, a, b, k[7], 16, -155497632);
+      b = hh(b, c, d, a, k[10], 23, -1094730640);
+      a = hh(a, b, c, d, k[13], 4,  685971603);
+      d = hh(d, a, b, c, k[0], 11, -350595208);
+      c = hh(c, d, a, b, k[3], 16, -720250077);
+      b = hh(b, c, d, a, k[6], 23,  907740041);
+      a = hh(a, b, c, d, k[9], 4, -422701284);
+      d = hh(d, a, b, c, k[12], 11, -943835626);
+      c = hh(c, d, a, b, k[15], 16,  993208811);
+      b = hh(b, c, d, a, k[2], 23, -61944282);
+
+      a = ii(a, b, c, d, k[0], 6, -198630844);
+      d = ii(d, a, b, c, k[7], 10,  1126891415);
+      c = ii(c, d, a, b, k[14], 15, -1416354905);
+      b = ii(b, c, d, a, k[5], 21, -57434055);
+      a = ii(a, b, c, d, k[12], 6,  1700485571);
+      d = ii(d, a, b, c, k[3], 10, -1894986606);
+      c = ii(c, d, a, b, k[10], 15, -1051523);
+      b = ii(b, c, d, a, k[1], 21, -2054922799);
+      a = ii(a, b, c, d, k[8], 6,  1873313359);
+      d = ii(d, a, b, c, k[15], 10, -30611744);
+      c = ii(c, d, a, b, k[6], 15, -1560198380);
+      b = ii(b, c, d, a, k[13], 21,  1309151649);
+      a = ii(a, b, c, d, k[4], 6, -145523070);
+      d = ii(d, a, b, c, k[11], 10, -1120210379);
+      c = ii(c, d, a, b, k[2], 15,  718787281);
+      b = ii(b, c, d, a, k[9], 21, -343485551);
+
+      x[0] = add32(a, x[0]);
+      x[1] = add32(b, x[1]);
+      x[2] = add32(c, x[2]);
+      x[3] = add32(d, x[3]);
+    }
+
+    function cmn(q: any, a: any, b: any, x: any, s: any, t: any) {
+      a = add32(add32(a, q), add32(x, t));
+      return add32((a << s) | (a >>> (32 - s)), b);
+    }
+
+    function ff(a: any, b: any, c: any, d: any, x: any, s: any, t: any) {
+      return cmn((b & c) | ((~b) & d), a, b, x, s, t);
+    }
+
+    function gg(a: any, b: any, c: any, d: any, x: any, s: any, t: any) {
+      return cmn((b & d) | (c & (~d)), a, b, x, s, t);
+    }
+
+    function hh(a: any, b: any, c: any, d: any, x: any, s: any, t: any) {
+      return cmn(b ^ c ^ d, a, b, x, s, t);
+    }
+
+    function ii(a: any, b: any, c: any, d: any, x: any, s: any, t: any) {
+      return cmn(c ^ (b | (~d)), a, b, x, s, t);
+    }
+
+    function add32(x: any, y: any) {
+      return (x + y) & 0xFFFFFFFF;
+    }
+
+    function md51(s: string) {
+      var n = s.length,
+      state = [1732584193, -271733879, -1732584194, 271733878], i;
+      for (i=64; i<=s.length; i+=64) {
+        md5cycle(state, md5toWords(s.substring(i-64, i)));
+      }
+      s = s.substring(i-64);
+      var tail = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
+      for (i=0; i<s.length; i++)
+      tail[i>>2] |= s.charCodeAt(i) << ((i%4) << 3);
+      tail[i>>2] |= 0x80 << ((i%4) << 3);
+      if (i > 55) {
+        md5cycle(state, tail);
+        for (i=0; i<16; i++) tail[i] = 0;
+      }
+      tail[14] = n*8;
+      md5cycle(state, tail);
+      return state;
+    }
+
+    function md5toWords(s: string) {
+      var wa = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0], i;
+      for (i=0; i<16; i++) {
+        wa[i] = s.charCodeAt(i*4) | (s.charCodeAt(i*4+1) << 8) | (s.charCodeAt(i*4+2) << 16) | (s.charCodeAt(i*4+3) << 24);
+      }
+      return wa;
+    }
+
+    var hex_chr = "0123456789abcdef";
+    function rhex(num: number) {
+      var str = "", j;
+      for (j=0; j<=3; j++)
+      str += hex_chr.charAt((num >> (j * 8 + 4)) & 0x0F) + hex_chr.charAt((num >> (j * 8)) & 0x0F);
+      return str;
+    }
+
+    const state = md51(string);
+    return rhex(state[0]) + rhex(state[1]) + rhex(state[2]) + rhex(state[3]);
+  }
+
+  // Pure JS HMAC-MD5 helper
+  function hmacMd5(message: string, key: string): string {
+    if (key.length > 64) {
+      key = md5(key);
+    }
+    
+    // Pad key to 64 bytes
+    let ipad = Array(64).fill(0x36);
+    let opad = Array(64).fill(0x5c);
+    
+    for (let i = 0; i < key.length; i++) {
+      const code = key.charCodeAt(i);
+      ipad[i] ^= code;
+      opad[i] ^= code;
+    }
+    
+    const ipadStr = String.fromCharCode(...ipad);
+    const opadStr = String.fromCharCode(...opad);
+    
+    const innerHash = md5(ipadStr + message);
+    
+    // Hex string from md5 must be converted back to binary string before hashing again
+    let innerBinary = "";
+    for (let i = 0; i < innerHash.length; i += 2) {
+      innerBinary += String.fromCharCode(parseInt(innerHash.substring(i, i + 2), 16));
+    }
+    
+    return md5(opadStr + innerBinary);
+  }
+</script>

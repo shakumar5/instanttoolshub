@@ -1,0 +1,961 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "JWT Decoder & Debugger";
+const activeTool = "jwt-decoder";
+const accentColor = "#8b5cf6"; // Violet
+const accentGlow = "rgba(139, 92, 246, 0.15)";
+
+const seoDescription = "Free online JWT decoder and debugger. Parse, verify, and inspect JSON Web Tokens (JWT) locally. Check token expiration timers, decode payload claims, and generate mock tokens.";
+const seoKeywords = "jwt decoder, jwt debugger online, decode jwt token, jwt validator, jwt vs session, check jwt expiration";
+
+const howToUse = [
+  "Choose your mode: 'Decode Token' or 'Generate Test Token'.",
+  "Decode: Paste your encoded JSON Web Token (JWT) into the left text area. It will automatically color-code the header, payload, and signature segments.",
+  "Inspect: View the parsed Header and Payload JSON on the right side. Check the Expiry Status alert for timezone details and active countdowns.",
+  "Verify: Enter a secret passphrase in the Signature pane to verify HS256 token integrity locally in your browser."
+];
+
+const faqs = [
+  {
+    q: "Is it safe to paste my production JWT tokens here?",
+    a: "Yes. All decoding, claim evaluation, and signature verification are executed locally in your browser. No token data is sent to our servers, keeping your API keys and claims completely secure."
+  },
+  {
+    q: "What is a JWT (JSON Web Token)?",
+    a: "A JWT is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. For generating cryptographic hashes and HMAC signatures, see our <a href=\"/hash-generator\">Hash Generator</a>."
+  },
+  {
+    q: "JWT vs Session: What is the difference?",
+    a: "Sessions are stateful: the server stores session data in memory or database and sends a Session ID cookie to the browser. JWT is stateless: all user claims are stored directly inside the token itself, meaning the server does not need to query a database to authenticate the user for every request."
+  },
+  {
+    q: "What does the 'exp' claim represent?",
+    a: "The 'exp' (Expiration Time) claim identifies the expiration time on or after which the JWT must not be accepted for processing. Our tool decodes this Unix epoch timestamp and calculates a real-time countdown timer. Need to convert or inspect epoch values further? Use our <a href=\"/timestamp\">Timestamp Converter</a>."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Decode, verify, and generate JSON Web Tokens locally in your browser.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header tabbed-header">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-decode">Decode Token</button>
+        <button class="tab-btn" data-tab="tab-generate">Generate Test Token</button>
+      </div>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-sample-jwt">Sample JWT</button>
+        <button class="btn btn-outline btn-xs" id="btn-share-jwt" title="Share Token via URL">Share URL</button>
+        <button class="btn btn-outline btn-xs" id="btn-clear-jwt">Clear</button>
+      </div>
+    </div>
+
+    <div class="panel-body tab-content-container">
+      
+      <!-- Decode Token Tab -->
+      <div class="tab-content active" id="tab-decode">
+        <div class="jwt-container">
+          <!-- Left Input Panel -->
+          <div class="jwt-input-panel">
+            <div class="split-label">Encoded Token</div>
+            <textarea id="jwt-input" placeholder="Paste your encoded JWT (header.payload.signature) here..." class="jwt-textarea code-font"></textarea>
+            
+            <div class="token-split-visual" id="token-visualizer">
+              <span class="vis-label">Visual Segment Split:</span>
+              <div class="vis-box">
+                <span class="vis-header" id="vis-head">Header</span>
+                <span class="vis-dot">.</span>
+                <span class="vis-payload" id="vis-pay">Payload</span>
+                <span class="vis-dot">.</span>
+                <span class="vis-signature" id="vis-sig">Signature</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Decode Panel -->
+          <div class="jwt-output-panel">
+            <!-- Header Block -->
+            <div class="decode-block">
+              <div class="split-label header-label">Header: Algorithm & Token Type</div>
+              <div class="code-container">
+                <textarea id="jwt-header-output" readonly class="decoded-textarea" style="color: #f87171;"></textarea>
+              </div>
+            </div>
+
+            <!-- Payload Block -->
+            <div class="decode-block">
+              <div class="split-label payload-label">Payload: Claims / Data</div>
+              <div class="code-container">
+                <textarea id="jwt-payload-output" readonly class="decoded-textarea" style="color: #c084fc;"></textarea>
+              </div>
+              <div id="jwt-expiry-alert" class="expiry-alert hidden"></div>
+            </div>
+
+            <!-- Signature Verification Block -->
+            <div class="decode-block">
+              <div class="split-label signature-label">Signature Verification (HS256 only)</div>
+              <div class="verify-signature-box">
+                <div class="form-row">
+                  <input type="text" id="verify-secret" placeholder="Enter HS256 secret key (1-256 chars)..." class="form-input secret-input" minlength="1" maxlength="256" />
+                  <button class="btn btn-secondary btn-sm" id="btn-verify-sig">Verify Signature</button>
+                </div>
+                <div id="signature-status" class="signature-status">Enter your token and secret above to test integrity.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Test Token Tab -->
+      <div class="tab-content" id="tab-generate">
+        <div class="jwt-container">
+          <!-- Left Form Area -->
+          <div class="jwt-input-panel" style="padding: 1.25rem; overflow-y: auto;">
+            <div class="split-label">Token Configuration</div>
+            
+            <div class="form-control" style="margin-top: 1rem;">
+              <label class="form-label">Algorithm</label>
+              <select id="gen-alg" class="form-select">
+                <option value="HS256">HS256 (HMAC-SHA256)</option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="form-label">Header (JSON)</label>
+              <textarea id="gen-header" class="form-textarea code-font" style="min-height: 80px;"></textarea>
+            </div>
+
+            <div class="form-control">
+              <label class="form-label">Payload Claims (JSON)</label>
+              <textarea id="gen-payload" class="form-textarea code-font" style="min-height: 150px;"></textarea>
+            </div>
+
+            <div class="form-control">
+              <label class="form-label">Secret Key</label>
+              <input type="text" id="gen-secret" value="super-secret-key-123" class="form-input code-font" />
+            </div>
+
+            <div id="gen-error-message" class="gen-error-message hidden" role="alert" aria-live="polite"></div>
+            <button class="btn btn-primary" id="btn-generate-token" style="margin-top: 0.5rem;">Generate Token</button>
+          </div>
+
+          <!-- Right Generated Output Area -->
+          <div class="jwt-output-panel" style="padding: 1.25rem;">
+            <div class="split-label">Generated JWT Token</div>
+            <textarea id="gen-token-output" readonly placeholder="Your generated token will appear here..." class="jwt-output-textarea code-font" style="margin-top: 1rem;"></textarea>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <button class="btn btn-outline copy-btn" id="btn-copy-gen-token">Copy Token</button>
+              <button class="btn btn-secondary" id="btn-load-gen-token">Load into Decoder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <RelatedTools currentTool="jwt-decoder" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 640px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .tabbed-header {
+    padding: 0;
+    padding-right: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .panel-header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    height: calc(100% - 45px);
+  }
+
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .code-font {
+    font-family: var(--font-mono) !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Main Layout */
+  .jwt-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .jwt-input-panel {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-light);
+    height: 100%;
+  }
+
+  .jwt-output-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .split-label {
+    padding: 0.5rem 1.25rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .header-label {
+    border-left: 3px solid #f87171;
+  }
+
+  .payload-label {
+    border-left: 3px solid #c084fc;
+  }
+
+  .signature-label {
+    border-left: 3px solid #60a5fa;
+  }
+
+  .jwt-textarea {
+    width: 100%;
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1.25rem;
+    color: #e2e8f0;
+    resize: none;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    word-break: break-all;
+  }
+
+  .token-split-visual {
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.01);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .vis-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .vis-box {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    word-break: break-all;
+    line-height: 1.5;
+  }
+
+  .vis-header { color: #f87171; font-weight: bold; }
+  .vis-payload { color: #c084fc; font-weight: bold; }
+  .vis-signature { color: #60a5fa; font-weight: bold; }
+  .vis-dot { color: var(--text-muted); font-weight: bold; }
+
+  /* Output Blocks */
+  .decode-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .decode-block .code-container {
+    height: 140px;
+  }
+
+  .decoded-textarea {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.825rem;
+    line-height: 1.5;
+  }
+
+  .expiry-alert {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+    margin-top: 0.25rem;
+    border: 1px solid transparent;
+  }
+
+  .expiry-alert.active {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.25);
+  }
+
+  .expiry-alert.expired {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.25);
+  }
+
+  .verify-signature-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .secret-input {
+    flex-grow: 1;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .signature-status {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+  }
+
+  .signature-status.valid {
+    color: #34d399;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .signature-status.invalid {
+    color: #f87171;
+    font-weight: 600;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  /* Token Generator Output */
+  .gen-token-output-label {
+    margin-bottom: 0.5rem;
+  }
+
+  .jwt-output-textarea {
+    width: 100%;
+    flex-grow: 1;
+    background: #000;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    color: #8b5cf6;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+    font-size: 0.9rem;
+    word-break: break-all;
+  }
+
+  .gen-error-message {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+    margin-top: 0.5rem;
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    font-weight: 500;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 850px) {
+    .jwt-container {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .jwt-input-panel {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      height: 300px;
+      flex-shrink: 0;
+    }
+    .jwt-output-panel {
+      height: auto;
+      overflow: visible;
+    }
+  }
+</style>
+
+<script>
+  // Tab Handling
+  const tabs = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-tab');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetId) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+
+  // Elements
+  const jwtInput = document.getElementById('jwt-input') as HTMLTextAreaElement | null;
+  const headerOutput = document.getElementById('jwt-header-output') as HTMLTextAreaElement | null;
+  const payloadOutput = document.getElementById('jwt-payload-output') as HTMLTextAreaElement | null;
+  const tokenVisualizer = document.getElementById('token-visualizer');
+  const visHead = document.getElementById('vis-head');
+  const visPay = document.getElementById('vis-pay');
+  const visSig = document.getElementById('vis-sig');
+  
+  const expiryAlert = document.getElementById('jwt-expiry-alert');
+  const verifySecretInput = document.getElementById('verify-secret') as HTMLInputElement | null;
+  const btnVerifySig = document.getElementById('btn-verify-sig');
+  const signatureStatus = document.getElementById('signature-status');
+
+  const btnSample = document.getElementById('btn-sample-jwt');
+  const btnClear = document.getElementById('btn-clear-jwt');
+
+  // Generator Elements
+  const genHeader = document.getElementById('gen-header') as HTMLTextAreaElement | null;
+  const genPayload = document.getElementById('gen-payload') as HTMLTextAreaElement | null;
+  const genSecret = document.getElementById('gen-secret') as HTMLInputElement | null;
+  const genTokenOutput = document.getElementById('gen-token-output') as HTMLTextAreaElement | null;
+  const btnGenerateToken = document.getElementById('btn-generate-token');
+  const btnCopyGenToken = document.getElementById('btn-copy-gen-token');
+  const btnLoadGenToken = document.getElementById('btn-load-gen-token');
+
+  // Default values
+  const defaultHeader = {
+    "alg": "HS256",
+    "typ": "JWT"
+  };
+  const defaultPayload = {
+    "sub": "1234567890",
+    "name": "John Doe",
+    "admin": true,
+    "iat": Math.floor(Date.now() / 1000),
+    "exp": Math.floor(Date.now() / 1000) + 7200 // Expire in 2 hours
+  };
+
+  // Sample JWT (encoded with secret 'secret-key')
+  const sampleJWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE4OTA2MTAwMDAsImFkbWluIjp0cnVlfQ.P_6iP45sQ2r6l86V-oN6iW1mIspC7N_l9_w71vG1dzo";
+
+  if (genHeader && genPayload) {
+    genHeader.value = JSON.stringify(defaultHeader, null, 2);
+    genPayload.value = JSON.stringify(defaultPayload, null, 2);
+  }
+
+  // Load sample JWT
+  if (btnSample && jwtInput) {
+    btnSample.addEventListener('click', () => {
+      jwtInput.value = sampleJWT;
+      decodeJWT();
+    });
+  }
+
+  // Clear inputs
+  if (btnClear && jwtInput && headerOutput && payloadOutput && tokenVisualizer && expiryAlert && signatureStatus) {
+    btnClear.addEventListener('click', () => {
+      jwtInput.value = '';
+      headerOutput.value = '';
+      payloadOutput.value = '';
+      tokenVisualizer.style.display = 'none';
+      expiryAlert.className = 'expiry-alert hidden';
+      signatureStatus.className = 'signature-status';
+      signatureStatus.textContent = 'Enter your token and secret above to test integrity.';
+      if (verifySecretInput) verifySecretInput.value = '';
+    });
+  }
+
+  // Decode Action Hook
+  if (jwtInput) {
+    jwtInput.addEventListener('input', decodeJWT);
+  }
+
+  function decodeJWT() {
+    if (!jwtInput || !headerOutput || !payloadOutput || !visHead || !visPay || !visSig || !tokenVisualizer || !expiryAlert) return;
+    
+    const token = jwtInput.value.trim();
+    if (!token) {
+      headerOutput.value = '';
+      payloadOutput.value = '';
+      tokenVisualizer.style.display = 'none';
+      expiryAlert.className = 'expiry-alert hidden';
+      return;
+    }
+
+    const parts = token.split('.');
+    
+    // JWT must have 3 segments
+    if (parts.length !== 3) {
+      headerOutput.value = 'Invalid Token Format: JWT must contain exactly 3 segments separated by dots.';
+      payloadOutput.value = '';
+      tokenVisualizer.style.display = 'none';
+      expiryAlert.className = 'expiry-alert hidden';
+      return;
+    }
+
+    const [headerB64, payloadB64, signatureB64] = parts;
+
+    // Show visualizer segment split
+    visHead.textContent = headerB64.substring(0, 12) + "...";
+    visPay.textContent = payloadB64.substring(0, 12) + "...";
+    visSig.textContent = signatureB64.substring(0, 12) + "...";
+    tokenVisualizer.style.display = 'flex';
+
+    try {
+      // Decode Header
+      const headerStr = base64UrlDecode(headerB64);
+      const headerObj = JSON.parse(headerStr);
+      headerOutput.value = JSON.stringify(headerObj, null, 2);
+
+      // Decode Payload
+      const payloadStr = base64UrlDecode(payloadB64);
+      const payloadObj = JSON.parse(payloadStr);
+      payloadOutput.value = JSON.stringify(payloadObj, null, 2);
+
+      // Check Expiration claim
+      evaluateExpiration(payloadObj);
+
+    } catch (e: any) {
+      headerOutput.value = "Error parsing JWT segments. Ensure string is a correct Base64URL-encoded JWT token.\nDetails: " + e.message;
+      payloadOutput.value = '';
+      expiryAlert.className = 'expiry-alert hidden';
+    }
+  }
+
+  function evaluateExpiration(payload: any) {
+    if (!expiryAlert) return;
+
+    if (!payload.exp) {
+      expiryAlert.innerHTML = "<strong>Claim Info:</strong> No expiration claim ('exp') found in payload.";
+      expiryAlert.className = "expiry-alert active"; // treat as active
+      return;
+    }
+
+    const expTime = payload.exp * 1000; // to ms
+    const now = Date.now();
+    const expDate = new Date(expTime);
+
+    if (now > expTime) {
+      // Expired
+      expiryAlert.innerHTML = `⚠️ <strong>Expired:</strong> This token expired on ${expDate.toLocaleString()} (${getRelativeTimeString(expTime)})`;
+      expiryAlert.className = "expiry-alert expired";
+    } else {
+      // Active
+      expiryAlert.innerHTML = `✓ <strong>Active:</strong> This token expires on ${expDate.toLocaleString()} (${getRelativeTimeString(expTime)})`;
+      expiryAlert.className = "expiry-alert active";
+    }
+  }
+
+  // --- CRYPTOGRAPHIC SIGNATURE VERIFIER (Client-Side) ---
+
+  // Validates that a string is a valid Base64URL segment (A-Z, a-z, 0-9, -, _ with no padding)
+  function isBase64UrlSegment(str: string): boolean {
+    if (str.length === 0) return false;
+    return /^[A-Za-z0-9_-]+$/.test(str);
+  }
+
+  // verifySignature function - validates token structure, computes HMAC-SHA256, compares signatures
+  async function verifySignature(): Promise<void> {
+    if (!signatureStatus || !jwtInput || !verifySecretInput) return;
+
+    const token = jwtInput.value.trim();
+    const secret = verifySecretInput.value;
+
+    // Validate secret key is 1-256 characters
+    if (!secret || secret.length === 0 || secret.length > 256) {
+      signatureStatus.textContent = "Invalid token structure";
+      signatureStatus.className = "signature-status invalid";
+      return;
+    }
+
+    // Validate token structure: must contain exactly three Base64URL segments separated by dots
+    if (!token) {
+      signatureStatus.textContent = "Invalid token structure";
+      signatureStatus.className = "signature-status invalid";
+      return;
+    }
+
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      signatureStatus.textContent = "Invalid token structure";
+      signatureStatus.className = "signature-status invalid";
+      return;
+    }
+
+    const [headerB64, payloadB64, signatureB64] = parts;
+
+    // Validate each segment is a valid Base64URL string
+    if (!isBase64UrlSegment(headerB64) || !isBase64UrlSegment(payloadB64) || !isBase64UrlSegment(signatureB64)) {
+      signatureStatus.textContent = "Invalid token structure";
+      signatureStatus.className = "signature-status invalid";
+      return;
+    }
+
+    // Valid structure - compute HMAC-SHA256 over header.payload
+    try {
+      const dataToSign = `${headerB64}.${payloadB64}`;
+      
+      // Calculate HMAC-SHA256 signature
+      const calculatedSig = await hmacSha256(dataToSign, secret);
+      
+      if (calculatedSig === signatureB64) {
+        signatureStatus.textContent = "Valid Signature";
+        signatureStatus.className = "signature-status valid";
+      } else {
+        signatureStatus.textContent = "Invalid Signature";
+        signatureStatus.className = "signature-status invalid";
+      }
+    } catch (e: any) {
+      signatureStatus.textContent = "Invalid Signature";
+      signatureStatus.className = "signature-status invalid";
+    }
+  }
+
+  if (btnVerifySig) {
+    btnVerifySig.addEventListener('click', verifySignature);
+  }
+
+  // --- JWT GENERATOR LOGIC ---
+  const genErrorMessage = document.getElementById('gen-error-message');
+
+  function showGenError(message: string): void {
+    if (genErrorMessage) {
+      genErrorMessage.textContent = message;
+      genErrorMessage.classList.remove('hidden');
+    }
+  }
+
+  function clearGenError(): void {
+    if (genErrorMessage) {
+      genErrorMessage.textContent = '';
+      genErrorMessage.classList.add('hidden');
+    }
+  }
+
+  async function generateToken(): Promise<void> {
+    if (!genHeader || !genPayload || !genSecret || !genTokenOutput) return;
+
+    clearGenError();
+
+    // 1. Validate header JSON
+    let headObj: any;
+    try {
+      headObj = JSON.parse(genHeader.value.trim());
+    } catch (e: any) {
+      showGenError(`Header field contains invalid JSON: ${e.message}`);
+      return;
+    }
+
+    // 2. Validate payload JSON
+    let payObj: any;
+    try {
+      payObj = JSON.parse(genPayload.value.trim());
+    } catch (e: any) {
+      showGenError(`Payload field contains invalid JSON: ${e.message}`);
+      return;
+    }
+
+    // 3. Validate secret key is non-empty
+    const secret = genSecret.value;
+    if (!secret || secret.length === 0) {
+      showGenError('Secret key is required. Please enter a secret key to sign the token.');
+      return;
+    }
+
+    // 4. Produce HS256-signed JWT: Base64URL(header).Base64URL(payload).Base64URL(signature)
+    try {
+      const headEncoded = base64UrlEncode(JSON.stringify(headObj));
+      const payEncoded = base64UrlEncode(JSON.stringify(payObj));
+      const dataToSign = `${headEncoded}.${payEncoded}`;
+
+      const signature = await hmacSha256(dataToSign, secret);
+
+      // 5. Display generated token in the output area
+      genTokenOutput.value = `${dataToSign}.${signature}`;
+    } catch (e: any) {
+      showGenError(`Token generation failed: ${e.message}`);
+    }
+  }
+
+  if (btnGenerateToken) {
+    btnGenerateToken.addEventListener('click', generateToken);
+  }
+
+  if (btnCopyGenToken && genTokenOutput) {
+    btnCopyGenToken.addEventListener('click', () => {
+      const val = genTokenOutput.value.trim();
+      if (val) {
+        navigator.clipboard.writeText(val).then(() => {
+          btnCopyGenToken.textContent = 'Copied!';
+          setTimeout(() => {
+            btnCopyGenToken.textContent = 'Copy Token';
+          }, 2000);
+        });
+      }
+    });
+  }
+
+  if (btnLoadGenToken && genTokenOutput && jwtInput) {
+    btnLoadGenToken.addEventListener('click', () => {
+      const val = genTokenOutput.value.trim();
+      if (val) {
+        jwtInput.value = val;
+        decodeJWT();
+        
+        // Switch to decoder tab
+        const decodeTabBtn = document.querySelector('.tab-btn[data-tab="tab-decode"]') as HTMLElement | null;
+        decodeTabBtn?.click();
+      }
+    });
+  }
+
+  // --- HELPER UTILITIES ---
+
+  // Base64URL Decode (supports unicode)
+  function base64UrlDecode(str: string): string {
+    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4) {
+      base64 += '=';
+    }
+    return decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  }
+
+  // Base64URL Encode (supports unicode)
+  function base64UrlEncode(str: string): string {
+    const encoded = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(_match, p1) {
+      return String.fromCharCode(parseInt(p1, 16));
+    });
+    return btoa(encoded)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  }
+
+  // HMAC-SHA256 Client-Side Signer (Web Crypto API)
+  async function hmacSha256(message: string, secret: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const messageBytes = encoder.encode(message);
+    const secretBytes = encoder.encode(secret);
+
+    const key = await crypto.subtle.importKey(
+      "raw",
+      secretBytes,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
+    const signatureBytes = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      messageBytes
+    );
+
+    // Convert signature bytes to Base64URL
+    let binary = "";
+    const bytes = new Uint8Array(signatureBytes);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  }
+
+  function getRelativeTimeString(timeMs: number): string {
+    const now = Date.now();
+    const diff = Math.abs(timeMs - now);
+    const secs = Math.floor(diff / 1000);
+    const mins = Math.floor(secs / 60);
+    const hours = Math.floor(mins / 60);
+    const days = Math.floor(hours / 24);
+
+    const suffix = timeMs < now ? "ago" : "from now";
+
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ${suffix}`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ${suffix}`;
+    if (mins > 0) return `${mins} minute${mins > 1 ? 's' : ''} ${suffix}`;
+    return `${secs} second${secs > 1 ? 's' : ''} ${suffix}`;
+  }
+
+  // On Mount: Parse token from query parameter or hash
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    let token = params.get('token');
+    
+    if (!token && window.location.hash) {
+      const hashData = window.location.hash.substring(1);
+      const hashParams = new URLSearchParams(hashData);
+      token = hashParams.get('token') || hashData;
+    }
+
+    if (token && jwtInput) {
+      jwtInput.value = token;
+      decodeJWT();
+    }
+  });
+
+  // Share URL event handler
+  const btnShare = document.getElementById('btn-share-jwt');
+  if (btnShare && jwtInput) {
+    btnShare.addEventListener('click', () => {
+      shareUrl();
+    });
+  }
+
+  function shareUrl(): void {
+    if (!btnShare || !jwtInput) return;
+
+    const token = jwtInput.value.trim();
+
+    // Validate: must contain exactly three Base64URL segments separated by dots
+    if (!token) return;
+    const parts = token.split('.');
+    if (parts.length !== 3) return;
+
+    // Each segment must be a valid Base64URL string (non-empty, only A-Z, a-z, 0-9, -, _)
+    const isValidSegment = (s: string) => s.length > 0 && /^[A-Za-z0-9_-]+$/.test(s);
+    if (!isValidSegment(parts[0]) || !isValidSegment(parts[1]) || !isValidSegment(parts[2])) return;
+
+    // Construct URL with token as query parameter
+    const url = new URL(window.location.href.split('?')[0].split('#')[0]);
+    url.searchParams.set('token', token);
+
+    // Copy to clipboard and show confirmation
+    navigator.clipboard.writeText(url.toString()).then(() => {
+      btnShare.textContent = 'Link copied!';
+      setTimeout(() => {
+        btnShare.textContent = 'Share URL';
+      }, 2000);
+    }).catch(() => {
+      btnShare.textContent = 'Clipboard copy failed';
+      setTimeout(() => {
+        btnShare.textContent = 'Share URL';
+      }, 2000);
+    });
+  }
+</script>

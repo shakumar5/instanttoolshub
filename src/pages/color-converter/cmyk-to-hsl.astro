@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "CMYK to HSL Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert CMYK print color values to HSL format online. Free, instant browser-based CMYK to HSL converter for transitioning print designs to web-ready CSS colors.";
+const seoKeywords = "cmyk to hsl, cmyk to hsl converter, convert cmyk to hsl online, print color to css hsl";
+
+const howToUse = [
+  "Enter your CMYK percentage values (Cyan, Magenta, Yellow, Key/Black from 0-100%) in the CMYK input field.",
+  "The tool will instantly calculate the matching HSL values (Hue, Saturation%, Lightness%).",
+  "Click 'Copy' to copy the formatted HSL CSS string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does CMYK to HSL conversion work?",
+    a: "CMYK is first converted to RGB using: R = 255 × (1-C) × (1-K), G = 255 × (1-M) × (1-K), B = 255 × (1-Y) × (1-K). Then RGB is converted to HSL by calculating the hue from the dominant channel, saturation from the chroma, and lightness from the average of max and min channels."
+  },
+  {
+    q: "Why convert CMYK to HSL instead of HEX?",
+    a: "HSL is more intuitive for creating color variations in CSS. Once you have your print brand color in HSL, you can easily create lighter, darker, or muted versions by adjusting a single value — perfect for building design systems."
+  },
+  {
+    q: "Is this conversion lossless?",
+    a: "The mathematical conversion is precise within the RGB gamut. However, since CMYK and RGB/HSL represent different color spaces, there may be slight rounding differences at the decimal level."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert print CMYK color percentages to CSS-ready HSL (Hue, Saturation, Lightness) values instantly.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="cmyk-to-hsl" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

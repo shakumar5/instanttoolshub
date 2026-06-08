@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "RGB to HSL Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert RGB color values to HSL format online. Free, instant browser-based RGB to HSL color converter with visual picker and real-time results.";
+const seoKeywords = "rgb to hsl, rgb to hsl converter, convert rgb to hsl online, rgb color to hsl values";
+
+const howToUse = [
+  "Enter your RGB values (Red 0-255, Green 0-255, Blue 0-255) in the RGB input field.",
+  "The tool will instantly calculate the matching HSL values (e.g. hsl(174, 80%, 40%)).",
+  "Click 'Copy' to copy the formatted HSL CSS string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does RGB to HSL conversion work?",
+    a: "First, RGB values are normalized to a 0-1 range. The Lightness is the average of the max and min channel values. Saturation depends on Lightness — if L < 0.5, S = (max-min)/(max+min), otherwise S = (max-min)/(2-max-min). Hue is calculated based on which RGB channel is dominant."
+  },
+  {
+    q: "Why convert RGB to HSL?",
+    a: "HSL is more intuitive for color manipulation. Need a lighter version? Increase L. Need a muted tone? Decrease S. CSS natively supports hsl() values, making HSL ideal for creating dynamic theme systems and color scales."
+  },
+  {
+    q: "What range do HSL values use?",
+    a: "Hue is measured in degrees from 0 to 360 (where 0/360 is red, 120 is green, 240 is blue). Saturation and Lightness are percentages from 0% to 100%."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert RGB (Red, Green, Blue) color values to HSL (Hue, Saturation, Lightness) format instantly.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="rgb-to-hsl" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

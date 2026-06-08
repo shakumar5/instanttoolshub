@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "HEX to CMYK Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert HEX color codes to CMYK print values online. Free, instant browser-based HEX to CMYK converter for designers preparing digital assets for print production.";
+const seoKeywords = "hex to cmyk, hex to cmyk converter, convert hex to cmyk online, hexadecimal to cmyk print color";
+
+const howToUse = [
+  "Enter your 3-digit or 6-digit HEX color code (e.g. #14b8a6 or #fff) in the HEX input field.",
+  "The tool will instantly calculate the matching CMYK values (e.g. cmyk(89%, 0%, 10%, 28%)).",
+  "Click 'Copy' to copy the formatted CMYK string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does HEX to CMYK conversion work?",
+    a: "HEX is first converted to RGB (each hex pair becomes a 0-255 value). Then RGB is converted to CMYK using: K = 1 - max(R,G,B)/255, C = (1 - R/255 - K)/(1-K), M = (1 - G/255 - K)/(1-K), Y = (1 - B/255 - K)/(1-K)."
+  },
+  {
+    q: "Why convert HEX to CMYK?",
+    a: "Web designers work in HEX for CSS but print designers need CMYK values for offset printing. This converter bridges the gap — design in HEX on screen, get the CMYK equivalent for your print shop's specifications."
+  },
+  {
+    q: "Will my brand colors look the same in print?",
+    a: "There may be slight visual differences because CMYK has a narrower color gamut than RGB/HEX. Vibrant neon or highly saturated digital colors may appear slightly muted when printed. Always request a color proof from your printer."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert hexadecimal web color codes to CMYK print percentages instantly in your browser.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="hex-to-cmyk" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

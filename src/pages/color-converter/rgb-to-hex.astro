@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "RGB to HEX Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6"; // Teal
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert decimal RGB color values to hexadecimal HEX codes online. Instant, local browser-based RGB to HEX color converter, palette builder, and visual picker.";
+const seoKeywords = "rgb to hex, rgb to hex converter, convert rgb to hex online, rgb color values to hex";
+
+const howToUse = [
+  "Enter your RGB intensity values in the RGB input field formatted as rgb(red, green, blue) (e.g. rgb(20, 184, 166)).",
+  "The tool will instantly calculate the matching hexadecimal representation (e.g. #14B8A6).",
+  "Click 'Copy' to copy the hex code to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How do you convert RGB to HEX?",
+    a: "To convert RGB to HEX, you take each color channel integer (0 to 255), convert it to its base-16 (hexadecimal) string, pad it with a leading zero if it is a single character, and concatenate them. For example: R=255 (FF), G=0 (00), B=128 (80) becomes #FF0080."
+  },
+  {
+    q: "Is there a difference in hex color capitalization?",
+    a: "No. Colors in HEX codes like #ff0000 and #FF0000 are functionally identical and render exactly the same color in browsers."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert decimal Red, Green, Blue intensity values to hexadecimal CSS color codes instantly.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="rgb-to-hex" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

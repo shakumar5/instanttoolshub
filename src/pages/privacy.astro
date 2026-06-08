@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const toolName = "Privacy Policy";
+const activeTool = "privacy";
+const accentColor = "#10b981"; // Emerald green
+const accentGlow = "rgba(16, 185, 129, 0.15)";
+
+const seoDescription = "ToolsHub Privacy Policy. All developer tool processes execute locally in your browser memory. We collect no cookies, track no identifiers, and store zero logs.";
+const seoKeywords = "toolshub privacy policy, secure developer tools, private json parser, browser sandbox data security";
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>Privacy Policy</h1>
+    <p>Last Updated: June 8, 2026. Your privacy is structurally guaranteed: zero server transmission, zero logging.</p>
+  </div>
+
+  <section class="privacy-content">
+    <div class="privacy-card glass">
+      <h2>1. The Core Policy: Client-Side Sandboxing</h2>
+      <p>
+        ToolsHub is engineered under a strict, privacy-first technical architecture. <strong>No data, code snippets, cryptographic keys, files, or tokens parsed or compiled in our utility interfaces are ever sent across the network.</strong> 
+      </p>
+      <p style="margin-top: 1rem;">
+        All operations (including JSON formatting, Base64 translations, RegEx evaluating, file hashing, and JWT decoding) are handled entirely inside your local computer's browser process space. Your inputs exist only in temporary, volatile RAM which is discarded as soon as you close or refresh the browser tab.
+      </p>
+    </div>
+
+    <div class="privacy-card glass">
+      <h2>2. Data Collection & Cookies</h2>
+      <p>
+        ToolsHub values absolute transparency:
+      </p>
+      <ul class="policy-list">
+        <li><strong>No Server Logs:</strong> We do not log inputs, search logs, IP addresses, or browser footprints. Our static files are served via CDN hosts, and we operate no backend servers to store queries.</li>
+        <li><strong>No tracking Cookies:</strong> ToolsHub does not utilize tracking cookies, persistent identifiers, or analytics scripts that monitor your behavior across other web destinations.</li>
+        <li><strong>Local Storage Usage:</strong> Certain tools (like the RegEx AI Generator) allow you to save configurations (such as your Gemini API Key) for utility. These tokens are saved strictly inside your local browser's `localStorage` and never transmitted to our network.</li>
+      </ul>
+    </div>
+
+    <div class="privacy-card glass">
+      <h2>3. Third-Party Integrations & AI API Calls</h2>
+      <p>
+        The AI-powered RegEx Generator requires communication with Google's generative models:
+      </p>
+      <ul class="policy-list">
+        <li>The request is made directly from your browser to the official Google Gemini API endpoint (`https://generativelanguage.googleapis.com`).</li>
+        <li>This request utilizes the API key you provide. ToolsHub acts as a pure structural interface; we operate no intermediate proxy server, and we do not capture, intercept, or review your API key or prompt inputs.</li>
+      </ul>
+    </div>
+
+    <div class="privacy-card glass">
+      <h2>4. Advertising and Monetization</h2>
+      <p>
+        ToolsHub may contain non-intrusive display advertisements (such as Google AdSense). These display units operate in isolated frame sandboxes. These third-party services may gather basic technical signals (like screen resolution or browser type) to render advertisement placeholders correctly, in compliance with standard network terms.
+      </p>
+    </div>
+
+    <div class="privacy-card glass">
+      <h2>5. Updates and Inquiries</h2>
+      <p>
+        As ToolsHub is a static website, any updates to our tools or policy parameters are deployed by compiling a new production build. If you have any security inquiries or open-source suggestions, feel free to inspect our code repository or contact our administrative channels.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .privacy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .privacy-card {
+    padding: 2rem;
+    border-radius: var(--radius-md);
+  }
+
+  .privacy-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+  }
+
+  .privacy-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .privacy-card p strong {
+    color: var(--accent-primary);
+  }
+
+  .policy-list {
+    margin-left: 1.5rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .policy-list li strong {
+    color: #fff;
+  }
+</style>

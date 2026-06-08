@@ -1,0 +1,1279 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "Markdown Editor & README Generator";
+const activeTool = "markdown-editor";
+const accentColor = "#a855f7"; // Purple
+const accentGlow = "rgba(168, 85, 247, 0.15)";
+
+const seoDescription = "Free online Markdown editor with live preview. Generate beautiful GitHub README files using pre-made profile templates, compile tables, and export code to HTML or PDF.";
+const seoKeywords = "markdown editor online, markdown preview, markdown to html, readme generator, github readme template generator, markdown table generator";
+
+const howToUse = [
+  "Select a template from the 'README Templates' dropdown to kickstart your project profile, or type your own Markdown.",
+  "Use the toolbar to quickly insert bolding, italics, code snippets, lists, or custom table structures.",
+  "Type on the left and see the fully parsed preview render on the right in real-time.",
+  "Click 'Export HTML' to download the raw HTML source code, or click 'Export MD' to download the standard Markdown file."
+];
+
+const faqs = [
+  {
+    q: "How does the GitHub README profile generator work?",
+    a: "Select the 'Developer Profile' template from the dropdown. It will load a structured README template complete with SVG badges, project headers, skill matrices, and social links. You can edit the text to reflect your portfolio, then copy it into your GitHub repository."
+  },
+  {
+    q: "Can I export my document as a PDF?",
+    a: "Yes! Click the 'Print / PDF' button. It will open your browser's print utility, formatted with a stylesheet that hides the editor side and headers, giving you a clean, document-ready print of your rendered markdown."
+  },
+  {
+    q: "Is a library loaded to compile the Markdown?",
+    a: "No. To maximize PageSpeed and load performance, we built a highly optimized line-by-line Markdown parser in pure Javascript that translates formatting instantly with zero external payload. For further reducing your web asset sizes, try the <a href=\"/code-minifier-beautifier\">Code Minifier &amp; Beautifier</a>."
+  },
+  {
+    q: "Is my documentation data safe?",
+    a: "Absolutely. The editor holds your data in local browser storage, and files are generated and downloaded directly on your client machine. No data is sent to our servers. If you need to validate JSON config files alongside your docs, check the <a href=\"/json-formatter\">JSON Formatter &amp; Validator</a>."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Compose Markdown documents, generate professional GitHub profile READMEs, and download outputs instantly.</p>
+  </div>
+
+  <!-- Main Editor Workspace -->
+  <div class="panel glass">
+    <div class="panel-header toolbar-header">
+      <!-- Toolbar buttons -->
+      <div class="editor-toolbar">
+        <select id="readme-templates" class="form-select toolbar-select">
+          <option value="">-- Choose README Template --</option>
+          <option value="minimal">Minimal Project README</option>
+          <option value="professional">Professional Project README</option>
+          <option value="profile">Developer Profile README</option>
+          <option value="api">API Documentation README</option>
+          <option value="opensource">Open Source Project README</option>
+          <option value="startup">SaaS/Startup README</option>
+          <option value="cli">CLI Tool README</option>
+          <option value="library">Library/Package README</option>
+        </select>
+        
+        <div class="divider"></div>
+
+        <button class="tool-btn" id="btn-bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+        <button class="tool-btn" id="btn-italic" title="Italic (Ctrl+I)"><em>I</em></button>
+        <button class="tool-btn" id="btn-heading" title="Heading (H3)">H</button>
+        <button class="tool-btn" id="btn-quote" title="Blockquote">&gt;</button>
+        <button class="tool-btn" id="btn-code" title="Code Block">&lt;/&gt;</button>
+        <button class="tool-btn" id="btn-link" title="Insert Link">🔗</button>
+        <button class="tool-btn" id="btn-table" title="Insert Table">|田|</button>
+        
+        <div class="divider"></div>
+        <button class="btn btn-outline btn-xs" id="btn-cheatsheet-toggle">View Cheatsheet</button>
+      </div>
+
+      <div class="panel-header-actions">
+        <button class="btn btn-secondary btn-xs" id="btn-copy-md">Copy MD</button>
+        <button class="btn btn-outline btn-xs" id="btn-print-pdf">Print / PDF</button>
+        <button class="btn btn-outline btn-xs" id="btn-download-html">Export HTML</button>
+        <button class="btn btn-primary btn-xs" id="btn-download-md">Export MD</button>
+      </div>
+    </div>
+
+    <!-- Workspace split container -->
+    <div class="panel-body editor-workspace">
+      <div class="split-editor-container">
+        <!-- Editor Input Panel -->
+        <div class="editor-side">
+          <textarea id="markdown-input" placeholder="# Write your Markdown here...&#10;&#10;Use the toolbar above or choose a README template to get started!" class="markdown-textarea code-font"></textarea>
+        </div>
+
+        <!-- Rendered Preview Panel -->
+        <div class="preview-side">
+          <div class="markdown-body" id="markdown-preview">
+            <div class="preview-placeholder">Live parsed preview will display here...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick cheatsheet overlay -->
+      <div class="cheatsheet-overlay hidden" id="cheatsheet-overlay">
+        <div class="cheatsheet-box glass">
+          <div class="cheatsheet-box-header">
+            <h4>Markdown Cheatsheet</h4>
+            <button class="btn btn-outline btn-xs" id="btn-cheatsheet-close">Close</button>
+          </div>
+          <div class="cheatsheet-content">
+            <div class="cheat-item"><span># Heading 1</span><p>Title</p></div>
+            <div class="cheat-item"><span>## Heading 2</span><p>Section</p></div>
+            <div class="cheat-item"><span>**text**</span><p>Bold</p></div>
+            <div class="cheat-item"><span>*text*</span><p>Italic</p></div>
+            <div class="cheat-item"><span>[Link](url)</span><p>Hyperlink</p></div>
+            <div class="cheat-item"><span>![Alt](img-url)</span><p>Image link</p></div>
+            <div class="cheat-item"><span>- item</span><p>Unordered list</p></div>
+            <div class="cheat-item"><span>1. item</span><p>Ordered list</p></div>
+            <div class="cheat-item"><span>`code`</span><p>Inline code</p></div>
+            <div class="cheat-item"><span>&gt; quote</span><p>Blockquote</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Generator Modal Dialog -->
+  <div class="modal-backdrop hidden" id="table-modal">
+    <div class="modal-box glass">
+      <h3>Insert Table</h3>
+      <div class="form-grid-row">
+        <div class="form-control">
+          <label class="form-label">Columns</label>
+          <input type="number" id="table-cols" value="3" min="1" max="10" class="form-input" />
+        </div>
+        <div class="form-control">
+          <label class="form-label">Rows</label>
+          <input type="number" id="table-rows" value="3" min="1" max="10" class="form-input" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary btn-sm" id="btn-confirm-table">Insert</button>
+        <button class="btn btn-outline btn-sm" id="btn-cancel-table">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="markdown-editor" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 520px;
+    height: 640px;
+    overflow: hidden;
+  }
+
+  .toolbar-header {
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-select {
+    width: 220px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    background-color: var(--bg-primary);
+  }
+
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-light);
+    margin: 0 0.25rem;
+  }
+
+  .tool-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+  }
+
+  .tool-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-light);
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .split-editor-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .editor-side {
+    border-right: 1px solid var(--border-light);
+    height: 100%;
+  }
+
+  .markdown-textarea {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1.25rem;
+    color: var(--text-primary);
+    resize: none;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .preview-side {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1.25rem;
+    background: #090e16;
+  }
+
+  /* HTML Markdown Preview Styles */
+  .markdown-body {
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    line-height: 1.625;
+  }
+
+  :global(.markdown-body h1, .markdown-body h2, .markdown-body h3) {
+    color: #fff;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  :global(.markdown-body h1) { font-size: 1.8rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.35rem; }
+  :global(.markdown-body h2) { font-size: 1.4rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem; }
+  :global(.markdown-body h3) { font-size: 1.15rem; }
+  
+  :global(.markdown-body p) { margin-bottom: 1rem; color: #cbd5e1; }
+  :global(.markdown-body code) { font-family: var(--font-mono); background: rgba(255, 255, 255, 0.08); padding: 0.15rem 0.35rem; border-radius: 4px; color: #a78bfa; font-size: 0.85rem; }
+  :global(.markdown-body pre) { background: #000; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light); overflow-x: auto; margin-bottom: 1rem; }
+  :global(.markdown-body pre code) { color: #f3f4f6; background: transparent; padding: 0; }
+  
+  :global(.markdown-body ul, .markdown-body ol) { margin-left: 1.5rem; margin-bottom: 1rem; }
+  :global(.markdown-body li) { margin-bottom: 0.25rem; }
+
+  :global(.markdown-body blockquote) { border-left: 4px solid var(--accent-primary); padding-left: 1rem; color: var(--text-secondary); margin-bottom: 1rem; font-style: italic; }
+
+  :global(.markdown-body table) { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+  :global(.markdown-body th, .markdown-body td) { border: 1px solid var(--border-light); padding: 0.5rem 0.75rem; font-size: 0.85rem; }
+  :global(.markdown-body th) { background: rgba(255, 255, 255, 0.03); font-weight: 600; color: #fff; }
+
+  :global(.markdown-body hr) { border: none; border-top: 1px solid var(--border-light); margin: 1.5rem 0; }
+
+  :global(.markdown-body img) { max-width: 100%; border-radius: var(--radius-sm); margin: 0.5rem 0; }
+
+  .preview-placeholder {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 4rem;
+  }
+
+  /* Cheatsheet overlay box */
+  .cheatsheet-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    z-index: 10;
+    background: rgba(11, 15, 25, 0.9);
+    border-left: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cheatsheet-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .cheatsheet-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+  }
+
+  .cheatsheet-box-header h4 {
+    color: #fff;
+  }
+
+  .cheatsheet-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cheat-item {
+    font-size: 0.775rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .cheat-item span {
+    font-family: var(--font-mono);
+    color: #a855f7; /* purple */
+  }
+
+  .cheat-item p {
+    color: var(--text-secondary);
+  }
+
+  /* Table Modal Styles */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+  }
+
+  .modal-box {
+    width: 320px;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .modal-box h3 {
+    color: #fff;
+  }
+
+  .form-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  /* Hide print headers when printed */
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #markdown-preview, #markdown-preview * {
+      visibility: visible;
+    }
+    #markdown-preview {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      background: white !important;
+      color: black !important;
+    }
+    :global(.markdown-body h1, .markdown-body h2, .markdown-body h3) {
+      color: black !important;
+    }
+    :global(.markdown-body p) {
+      color: #333 !important;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .split-editor-container {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .editor-side {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      height: 250px;
+    }
+  }
+</style>
+
+<script>
+  // Elements
+  const mdInput = document.getElementById('markdown-input') as HTMLTextAreaElement | null;
+  const mdPreview = document.getElementById('markdown-preview');
+  const templatesSelect = document.getElementById('readme-templates') as HTMLSelectElement | null;
+
+  // Toolbar
+  const btnBold = document.getElementById('btn-bold');
+  const btnItalic = document.getElementById('btn-italic');
+  const btnHeading = document.getElementById('btn-heading');
+  const btnQuote = document.getElementById('btn-quote');
+  const btnCode = document.getElementById('btn-code');
+  const btnLink = document.getElementById('btn-link');
+  const btnTable = document.getElementById('btn-table');
+
+  // Cheatsheet
+  const cheatsheetToggle = document.getElementById('btn-cheatsheet-toggle');
+  const cheatsheetClose = document.getElementById('btn-cheatsheet-close');
+  const cheatsheetOverlay = document.getElementById('cheatsheet-overlay');
+
+  // Modal Table
+  const tableModal = document.getElementById('table-modal');
+  const tableCols = document.getElementById('table-cols') as HTMLInputElement | null;
+  const tableRows = document.getElementById('table-rows') as HTMLInputElement | null;
+  const btnConfirmTable = document.getElementById('btn-confirm-table');
+  const btnCancelTable = document.getElementById('btn-cancel-table');
+
+  // Export buttons
+  const btnCopyMd = document.getElementById('btn-copy-md');
+  const btnPrintPdf = document.getElementById('btn-print-pdf');
+  const btnDownloadHtml = document.getElementById('btn-download-html');
+  const btnDownloadMd = document.getElementById('btn-download-md');
+
+  // Pre-configured Templates
+  const templates = {
+    minimal: `# Project Name
+
+A short description of what this project does.
+
+## 🚀 Getting Started
+
+Provide instructions on setting up your project locally.
+
+### Prerequisites
+\`\`\`bash
+npm install -y
+\`\`\`
+
+### Installation
+\`\`\`bash
+npm run dev
+\`\`\`
+
+## 🛠️ Usage
+Add coding examples or instructions on how to use the project.
+
+## 📄 License
+Licensed under the MIT License.`,
+
+    professional: `# 📦 SuperApp
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
+[![License](https://img.shields.io/badge/license-MIT-blue)](#)
+
+A high-performance modern developer toolkit.
+
+## 🌟 Key Features
+
+- **Blazing Fast:** Precompiled static assets.
+- **Secure:** 100% client-side logic.
+- **Customizable:** CSS Custom properties.
+
+## ⚙️ Development Setup
+
+### Clone Repository
+\`\`\`bash
+git clone https://github.com/user/superapp.git
+cd superapp
+\`\`\`
+
+### Start dev server
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
+
+## 📝 Roadmap
+- [x] Initial design specs.
+- [ ] Add CLI binary support.
+- [ ] Implement cloud backup sync.
+
+## 🤝 Contributing
+Contributions are welcome. Open a PR or submit an issue.`,
+
+    profile: `# 👋 Hi, I'm Developer
+
+A passionate frontend engineer crafting responsive web experiences.
+
+## 💻 Tech Stack
+| Languages | Frameworks | Databases | Tools |
+|---|---|---|---|
+| JavaScript, TypeScript, HTML/CSS | Astro, React, Node.js | PostgreSQL, Redis | Git, Docker, Webpack |
+
+## 📊 Github Statistics
+![Your Github Stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=dark)
+
+## 📌 Projects
+- **[ToolsHub](https://toolshub.dev):** A premium developer client-side suite.
+- **[AstroStarter](https://github.com):** A static site builder template.
+
+## 📫 Connect with me:
+- **Email:** myemail@example.com
+- **LinkedIn:** [My Profile](#)
+- **Twitter:** [@MyHandle](#)`,
+
+    api: `# 📡 API Name
+
+RESTful API for managing resources.
+
+## Base URL
+\`\`\`
+https://api.example.com/v1
+\`\`\`
+
+## Authentication
+All requests require a Bearer token in the Authorization header:
+\`\`\`
+Authorization: Bearer YOUR_API_KEY
+\`\`\`
+
+## Endpoints
+
+### Get All Items
+\`\`\`
+GET /items
+\`\`\`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| page | integer | No | Page number (default: 1) |
+| limit | integer | No | Items per page (default: 20) |
+| sort | string | No | Sort field (created, name) |
+
+### Create Item
+\`\`\`
+POST /items
+Content-Type: application/json
+\`\`\`
+
+### Get Single Item
+\`\`\`
+GET /items/:id
+\`\`\`
+
+## Response Format
+All responses return JSON:
+\`\`\`json
+{
+  "success": true,
+  "data": {},
+  "meta": { "page": 1, "total": 100 }
+}
+\`\`\`
+
+## Error Codes
+| Code | Meaning |
+|------|---------|
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 404 | Not Found |
+| 429 | Rate Limited |
+| 500 | Server Error |
+
+## Rate Limits
+- Free tier: 100 requests/hour
+- Pro tier: 10,000 requests/hour`,
+
+    opensource: `# 🌟 Project Name
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
+[![Contributors](https://img.shields.io/badge/contributors-welcome-brightgreen)](#)
+[![Issues](https://img.shields.io/github/issues/user/repo)](#)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#)
+
+> Brief description of what this project does and why it's useful.
+
+## ✨ Features
+
+- Feature 1 — brief explanation
+- Feature 2 — brief explanation
+- Feature 3 — brief explanation
+
+## 🚀 Quick Start
+
+\`\`\`bash
+git clone https://github.com/user/repo.git
+cd repo
+npm install
+npm run dev
+\`\`\`
+
+## 📖 Documentation
+
+Full documentation is available at [docs.example.com](#).
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md).
+
+1. Fork the repository
+2. Create your feature branch: \`git checkout -b feature/amazing-feature\`
+3. Commit your changes: \`git commit -m 'Add amazing feature'\`
+4. Push to the branch: \`git push origin feature/amazing-feature\`
+5. Open a Pull Request
+
+## 🐛 Bug Reports
+
+Found a bug? Please [open an issue](#) with:
+- Description of the bug
+- Steps to reproduce
+- Expected behavior
+- Screenshots (if applicable)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Dependency 1](#) — what it's used for
+- [Dependency 2](#) — what it's used for
+- Inspired by [Project X](#)`,
+
+    startup: `# 🚀 ProductName
+
+> One-line value proposition that explains the product.
+
+[![Website](https://img.shields.io/badge/Website-Live-brightgreen)](#)
+[![Status](https://img.shields.io/badge/Status-Beta-yellow)](#)
+
+## The Problem
+
+Describe the pain point your product solves in 2-3 sentences.
+
+## The Solution
+
+Explain how your product solves it, briefly.
+
+## ✨ Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔒 Secure | End-to-end encrypted data |
+| ⚡ Fast | Sub-100ms response times |
+| 🌍 Global | CDN-deployed in 30+ regions |
+| 📱 Responsive | Works on any device |
+
+## 🏁 Getting Started
+
+### Sign Up
+1. Visit [app.product.com](#)
+2. Create a free account
+3. Follow the onboarding wizard
+
+### For Developers
+\`\`\`bash
+npm install @product/sdk
+\`\`\`
+
+\`\`\`javascript
+import { Product } from '@product/sdk';
+
+const client = new Product({ apiKey: 'YOUR_KEY' });
+const result = await client.doThing();
+\`\`\`
+
+## 💰 Pricing
+
+| Plan | Price | Features |
+|------|-------|----------|
+| Free | $0/mo | 1,000 requests, 1 user |
+| Pro | $29/mo | 100,000 requests, 10 users |
+| Enterprise | Custom | Unlimited, SLA, support |
+
+## 📬 Contact
+
+- **Website:** [product.com](#)
+- **Email:** hello@product.com
+- **Twitter:** [@product](#)`,
+
+    cli: `# ⚡ cli-tool-name
+
+A fast CLI tool for doing useful things.
+
+[![npm version](https://img.shields.io/badge/npm-v1.0.0-blue)](#)
+[![Downloads](https://img.shields.io/badge/downloads-10k%2Fweek-green)](#)
+
+## Installation
+
+\`\`\`bash
+# npm
+npm install -g cli-tool-name
+
+# yarn
+yarn global add cli-tool-name
+
+# or run directly
+npx cli-tool-name
+\`\`\`
+
+## Usage
+
+\`\`\`bash
+# Basic usage
+cli-tool-name <command> [options]
+
+# Examples
+cli-tool-name init my-project
+cli-tool-name build --output dist
+cli-tool-name deploy --production
+\`\`\`
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| \`init <name>\` | Create a new project |
+| \`build\` | Build for production |
+| \`dev\` | Start dev server |
+| \`deploy\` | Deploy to cloud |
+| \`--help\` | Show help |
+
+## Options
+
+| Flag | Short | Description | Default |
+|------|-------|-------------|---------|
+| \`--output\` | \`-o\` | Output directory | \`./dist\` |
+| \`--verbose\` | \`-v\` | Enable verbose logging | \`false\` |
+| \`--config\` | \`-c\` | Config file path | \`./config.json\` |
+
+## Configuration
+
+Create a \`config.json\` in your project root:
+\`\`\`json
+{
+  "name": "my-project",
+  "output": "./build",
+  "plugins": []
+}
+\`\`\`
+
+## 📄 License
+
+MIT`,
+
+    library: `# 📦 package-name
+
+> A lightweight, zero-dependency library for specific-purpose.
+
+[![npm](https://img.shields.io/badge/npm-v2.0.0-blue)](#)
+[![Bundle Size](https://img.shields.io/badge/size-3.2kB-green)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](#)
+
+## Installation
+
+\`\`\`bash
+npm install package-name
+\`\`\`
+
+## Quick Start
+
+\`\`\`javascript
+import { mainFunction } from 'package-name';
+
+const result = mainFunction('input', { option: true });
+console.log(result);
+\`\`\`
+
+## API Reference
+
+### \`mainFunction(input, options?)\`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| input | string | Yes | The input to process |
+| options | object | No | Configuration options |
+
+**Options:**
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| option | boolean | false | Enable feature |
+| limit | number | 100 | Max results |
+
+**Returns:** \`Result\` object
+
+### \`helperFunction(data)\`
+
+Utility function for common operations.
+
+## TypeScript
+
+Full TypeScript support with exported types:
+\`\`\`typescript
+import { mainFunction, type Options, type Result } from 'package-name';
+
+const options: Options = { option: true };
+const result: Result = mainFunction('input', options);
+\`\`\`
+
+## Browser Support
+
+| Browser | Version |
+|---------|---------|
+| Chrome | 80+ |
+| Firefox | 78+ |
+| Safari | 14+ |
+| Edge | 80+ |
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE) for details.`
+  };
+
+  // Setup template loading
+  if (templatesSelect && mdInput) {
+    templatesSelect.addEventListener('change', () => {
+      const selected = templatesSelect.value;
+      if (selected && templates[selected as keyof typeof templates]) {
+        mdInput.value = templates[selected as keyof typeof templates];
+        triggerPreview();
+      }
+    });
+  }
+
+  // Live Preview Hook
+  if (mdInput) {
+    mdInput.addEventListener('input', triggerPreview);
+  }
+
+  function triggerPreview() {
+    if (!mdInput || !mdPreview) return;
+    const text = mdInput.value;
+    
+    if (!text.trim()) {
+      mdPreview.innerHTML = '<div class="preview-placeholder">Live parsed preview will display here...</div>';
+      return;
+    }
+
+    mdPreview.innerHTML = compileMarkdown(text);
+  }
+
+  // --- COPY TO CLIPBOARD ---
+  if (btnCopyMd && mdInput) {
+    btnCopyMd.addEventListener('click', () => {
+      navigator.clipboard.writeText(mdInput.value).then(() => {
+        btnCopyMd.textContent = 'Copied!';
+        setTimeout(() => { btnCopyMd.textContent = 'Copy MD'; }, 2000);
+      });
+    });
+  }
+
+  // --- HTML / PDF / MD EXPORTS ---
+  if (btnPrintPdf) {
+    btnPrintPdf.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
+  /**
+   * Export the rendered Markdown content as a complete HTML document.
+   * Generates and triggers download of "exported-markdown.html" containing
+   * DOCTYPE, html, head with style block, and body with rendered Markdown.
+   * If input is empty, still generates a valid HTML file with empty body content.
+   */
+  function exportHtml(): void {
+    if (!mdInput) return;
+    const renderedContent = compileMarkdown(mdInput.value);
+    const htmlText = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exported Markdown</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; padding: 2rem; max-width: 800px; margin: 0 auto; color: #333; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+    code { font-family: monospace; background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #eee; }
+    blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; color: #666; font-style: italic; margin-left: 0; }
+  </style>
+</head>
+<body>
+  ${renderedContent}
+</body>
+</html>`;
+    downloadFile(htmlText, 'exported-markdown.html', 'text/html');
+  }
+
+  /**
+   * Export the raw Markdown text as a .md file.
+   * Triggers download of "README.md" containing the raw Markdown from the input panel.
+   * If input is empty, still generates and downloads an empty .md file.
+   */
+  function exportMd(): void {
+    if (!mdInput) return;
+    downloadFile(mdInput.value, 'README.md', 'text/markdown');
+  }
+
+  if (btnDownloadHtml) {
+    btnDownloadHtml.addEventListener('click', exportHtml);
+  }
+
+  if (btnDownloadMd) {
+    btnDownloadMd.addEventListener('click', exportMd);
+  }
+
+  function downloadFile(content: string, filename: string, contentType: string) {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // --- CHEATSHEET ---
+  if (cheatsheetToggle && cheatsheetOverlay) {
+    cheatsheetToggle.addEventListener('click', () => {
+      cheatsheetOverlay.classList.remove('hidden');
+    });
+  }
+  if (cheatsheetClose && cheatsheetOverlay) {
+    cheatsheetClose.addEventListener('click', () => {
+      cheatsheetOverlay.classList.add('hidden');
+    });
+  }
+
+  // --- TOOLBAR SHORTCUTS ---
+  function insertFormat(prefix: string, suffix = "") {
+    if (!mdInput) return;
+    const start = mdInput.selectionStart;
+    const end = mdInput.selectionEnd;
+    const text = mdInput.value;
+    const selectedText = text.substring(start, end);
+    
+    const replacement = prefix + selectedText + suffix;
+    mdInput.value = text.substring(0, start) + replacement + text.substring(end);
+    
+    // Maintain cursor position
+    mdInput.focus();
+    mdInput.selectionStart = start + prefix.length;
+    mdInput.selectionEnd = start + prefix.length + selectedText.length;
+    
+    triggerPreview();
+  }
+
+  if (btnBold) btnBold.addEventListener('click', () => insertFormat("**", "**"));
+  if (btnItalic) btnItalic.addEventListener('click', () => insertFormat("*", "*"));
+  if (btnHeading) btnHeading.addEventListener('click', () => insertFormat("### "));
+  if (btnQuote) btnQuote.addEventListener('click', () => insertFormat("> "));
+  if (btnCode) btnCode.addEventListener('click', () => insertFormat("```\n", "\n```"));
+  if (btnLink) btnLink.addEventListener('click', () => insertFormat("[", "](https://example.com)"));
+
+  // Table Generator Modal triggers
+  if (btnTable && tableModal) {
+    btnTable.addEventListener('click', () => {
+      tableModal.classList.remove('hidden');
+    });
+  }
+  if (btnCancelTable && tableModal) {
+    btnCancelTable.addEventListener('click', () => {
+      tableModal.classList.add('hidden');
+    });
+  }
+  if (btnConfirmTable && tableModal && tableCols && tableRows && mdInput) {
+    btnConfirmTable.addEventListener('click', () => {
+      const cols = Math.max(1, Math.min(10, parseInt(tableCols.value, 10) || 3));
+      const rows = Math.max(1, Math.min(10, parseInt(tableRows.value, 10) || 3));
+
+      const table = generateTable(rows, cols);
+      insertFormat(table);
+      tableModal.classList.add('hidden');
+    });
+  }
+
+  /**
+   * Generate a formatted Markdown table string.
+   * @param rows Number of data rows (1–10)
+   * @param cols Number of columns (1–10)
+   * @returns Markdown table string with header row, separator row, and data rows
+   */
+  function generateTable(rows: number, cols: number): string {
+    let tableMd = "\n";
+    // Header row with placeholder text
+    tableMd += "| " + Array(cols).fill("Header").join(" | ") + " |\n";
+    // Separator row with dashes and pipes
+    tableMd += "| " + Array(cols).fill("---").join(" | ") + " |\n";
+    // Data rows with placeholder text
+    for (let r = 0; r < rows; r++) {
+      tableMd += "| " + Array(cols).fill("Cell").join(" | ") + " |\n";
+    }
+    return tableMd;
+  }
+
+  // --- CUSTOM LINE-BY-LINE MARKDOWN PARSER (Client-Side) ---
+  function compileMarkdown(md: string): string {
+    const lines = md.split('\n');
+    let html = "";
+    
+    let inUnorderedList = false;
+    let inOrderedList = false;
+    let inBlockquote = false;
+    let inCodeBlock = false;
+    let codeContent = "";
+    let codeLang = "";
+    let inTable = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      // Code blocks checker
+      if (line.startsWith('```')) {
+        if (inCodeBlock) {
+          inCodeBlock = false;
+          html += `<pre><code class="language-${codeLang}">${highlightSyntax(codeContent.trimEnd(), codeLang)}</code></pre>`;
+          codeContent = "";
+          codeLang = "";
+        } else {
+          inCodeBlock = true;
+          codeLang = line.slice(3).trim() || "text";
+        }
+        continue;
+      }
+
+      if (inCodeBlock) {
+        codeContent += lines[i] + '\n';
+        continue;
+      }
+
+      // Close open elements if line is empty
+      if (line === "") {
+        if (inUnorderedList) { html += '</ul>'; inUnorderedList = false; }
+        if (inOrderedList) { html += '</ol>'; inOrderedList = false; }
+        if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+        if (inTable) { html += '</tbody></table>'; inTable = false; }
+        continue;
+      }
+
+      // Horizontal rules (---, ***, ___)
+      if (/^([-*_])\1{2,}$/.test(line)) {
+        if (inUnorderedList) { html += '</ul>'; inUnorderedList = false; }
+        if (inOrderedList) { html += '</ol>'; inOrderedList = false; }
+        html += '<hr>';
+        continue;
+      }
+
+      // Headers
+      if (line.startsWith('#')) {
+        const hashCount = line.match(/^#+/)?.[0].length || 1;
+        const text = line.replace(/^#+\s*/, '');
+        const tag = `h${Math.min(6, hashCount)}`;
+        html += `<${tag}>${parseInline(text)}</${tag}>`;
+        continue;
+      }
+
+      // Blockquotes
+      if (line.startsWith('>')) {
+        if (!inBlockquote) {
+          inBlockquote = true;
+          html += '<blockquote>';
+        }
+        html += `<p>${parseInline(line.replace(/^>\s*/, ''))}</p>`;
+        continue;
+      }
+
+      // Unordered lists
+      if (line.startsWith('- ') || line.startsWith('* ')) {
+        if (inOrderedList) { html += '</ol>'; inOrderedList = false; }
+        if (!inUnorderedList) {
+          inUnorderedList = true;
+          html += '<ul>';
+        }
+        html += `<li>${parseInline(line.substring(2))}</li>`;
+        continue;
+      }
+
+      // Ordered lists (numbered)
+      if (/^\d+\.\s/.test(line)) {
+        if (inUnorderedList) { html += '</ul>'; inUnorderedList = false; }
+        if (!inOrderedList) {
+          inOrderedList = true;
+          html += '<ol>';
+        }
+        const text = line.replace(/^\d+\.\s*/, '');
+        html += `<li>${parseInline(text)}</li>`;
+        continue;
+      }
+
+      // Table Parser
+      if (line.startsWith('|') && line.endsWith('|')) {
+        const cells = line.split('|').map(c => c.trim()).filter((_c, idx, arr) => idx > 0 && idx < arr.length - 1);
+        
+        if (!inTable) {
+          inTable = true;
+          html += '<table><thead><tr>';
+          cells.forEach(cell => {
+            html += `<th>${parseInline(cell)}</th>`;
+          });
+          html += '</tr></thead><tbody>';
+          continue;
+        }
+
+        // Skip divider lines e.g. |---|---|
+        if (cells.every(cell => /^[-:]+$/.test(cell))) {
+          continue;
+        }
+
+        // Render standard row
+        html += '<tr>';
+        cells.forEach(cell => {
+          html += `<td>${parseInline(cell)}</td>`;
+        });
+        html += '</tr>';
+        continue;
+      }
+
+      // Standard Paragraph
+      html += `<p>${parseInline(line)}</p>`;
+    }
+
+    // Close any unclosed tags at EOF
+    if (inUnorderedList) html += '</ul>';
+    if (inOrderedList) html += '</ol>';
+    if (inBlockquote) html += '</blockquote>';
+    if (inTable) html += '</tbody></table>';
+
+    return html;
+  }
+
+  function parseInline(text: string): string {
+    let html = escapeHtml(text);
+
+    // Images
+    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
+
+    // Hyperlinks
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    // Code inline
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Bold
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+    // Italic
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    return html;
+  }
+
+  function escapeHtml(text: string) {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // Syntax highlighting for code blocks
+  function highlightSyntax(code: string, lang: string): string {
+    const escaped = escapeHtml(code);
+    
+    const jsKeywords = /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|this|class|extends|import|export|from|default|async|await|try|catch|finally|throw|typeof|instanceof|in|of|yield|delete|void|null|undefined|true|false)\b/g;
+    const pyKeywords = /\b(def|class|import|from|return|if|elif|else|for|while|try|except|finally|raise|with|as|pass|break|continue|yield|lambda|and|or|not|in|is|True|False|None|self|print)\b/g;
+    const htmlTags = /(&lt;\/?)([\w-]+)/g;
+    const htmlAttrs = /\b([a-zA-Z-]+)(=)/g;
+    const strings = /(&quot;[^&]*?&quot;|&#039;[^&]*?&#039;|`[^`]*?`)/g;
+    const comments = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*)/g;
+    const numbers = /\b(\d+\.?\d*)\b/g;
+    const cssProps = /([a-z-]+)(\s*:)/g;
+
+    let result = escaped;
+
+    if (lang === 'javascript' || lang === 'js' || lang === 'typescript' || lang === 'ts') {
+      result = result
+        .replace(comments, '<span style="color:#6b7280;font-style:italic;">$1</span>')
+        .replace(strings, '<span style="color:#a5d6ff;">$1</span>')
+        .replace(jsKeywords, '<span style="color:#ff7b72;">$1</span>')
+        .replace(numbers, '<span style="color:#79c0ff;">$1</span>');
+    } else if (lang === 'python' || lang === 'py') {
+      result = result
+        .replace(comments, '<span style="color:#6b7280;font-style:italic;">$1</span>')
+        .replace(strings, '<span style="color:#a5d6ff;">$1</span>')
+        .replace(pyKeywords, '<span style="color:#ff7b72;">$1</span>')
+        .replace(numbers, '<span style="color:#79c0ff;">$1</span>');
+    } else if (lang === 'html' || lang === 'xml') {
+      result = result
+        .replace(htmlTags, '$1<span style="color:#7ee787;">$2</span>')
+        .replace(strings, '<span style="color:#a5d6ff;">$1</span>');
+    } else if (lang === 'css') {
+      result = result
+        .replace(comments, '<span style="color:#6b7280;font-style:italic;">$1</span>')
+        .replace(cssProps, '<span style="color:#79c0ff;">$1</span>$2')
+        .replace(strings, '<span style="color:#a5d6ff;">$1</span>')
+        .replace(numbers, '<span style="color:#ffa657;">$1</span>');
+    } else if (lang === 'bash' || lang === 'sh' || lang === 'shell') {
+      result = result
+        .replace(comments, '<span style="color:#6b7280;font-style:italic;">$1</span>')
+        .replace(strings, '<span style="color:#a5d6ff;">$1</span>')
+        .replace(/\b(sudo|apt|npm|yarn|git|cd|ls|mkdir|rm|cp|mv|echo|cat|grep|chmod|chown|curl|wget)\b/g, '<span style="color:#ff7b72;">$1</span>');
+    } else if (lang === 'json') {
+      result = result
+        .replace(/(&quot;[^&]*?&quot;)(\s*:)/g, '<span style="color:#79c0ff;">$1</span>$2')
+        .replace(/:\s*(&quot;[^&]*?&quot;)/g, ': <span style="color:#a5d6ff;">$1</span>')
+        .replace(/:\s*(\d+\.?\d*)/g, ': <span style="color:#ffa657;">$1</span>')
+        .replace(/\b(true|false|null)\b/g, '<span style="color:#ff7b72;">$1</span>');
+    } else {
+      // Generic: highlight strings and numbers
+      result = result
+        .replace(strings, '<span style="color:#a5d6ff;">$1</span>')
+        .replace(numbers, '<span style="color:#79c0ff;">$1</span>');
+    }
+
+    return result;
+  }
+</script>

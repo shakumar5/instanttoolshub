@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "CMYK to RGB Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert CMYK print color values to RGB screen values online. Free, instant browser-based CMYK to RGB converter for designers transitioning print to digital.";
+const seoKeywords = "cmyk to rgb, cmyk to rgb converter, convert cmyk to rgb online, print color to screen color";
+
+const howToUse = [
+  "Enter your CMYK percentage values (Cyan, Magenta, Yellow, Key/Black from 0-100%) in the CMYK input field.",
+  "The tool will instantly calculate the matching RGB values (e.g. rgb(20, 184, 166)).",
+  "Click 'Copy' to copy the formatted RGB CSS string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does CMYK to RGB conversion work?",
+    a: "CMYK is a subtractive color model. The formula is: R = 255 × (1-C) × (1-K), G = 255 × (1-M) × (1-K), B = 255 × (1-Y) × (1-K). Each CMYK channel is expressed as a decimal (0-1) before calculation."
+  },
+  {
+    q: "When would I convert CMYK to RGB?",
+    a: "When taking a print design (brochure, business card, poster) and adapting it for digital use (website, social media, email). Screen displays use RGB, so CMYK values must be translated to render correctly on monitors."
+  },
+  {
+    q: "Will CMYK to RGB conversion preserve color accuracy?",
+    a: "The mathematical conversion is precise, but visual perception may differ slightly because screens emit light (additive mixing) while print absorbs light (subtractive mixing). The RGB result is the closest digital equivalent of your print color."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert print CMYK color percentages to digital RGB screen values instantly in your browser.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="cmyk-to-rgb" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

@@ -1,0 +1,833 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "JSON Formatter & Validator";
+const activeTool = "json-formatter";
+const accentColor = "#10b981"; // Emerald
+const accentGlow = "rgba(16, 185, 129, 0.15)";
+
+const seoDescription = "Free online JSON formatter, beautifier, minifier, and validator. Inspect your JSON with an interactive tree view, compare changes with a side-by-side diff checker, and convert JSON to CSV instantly.";
+const seoKeywords = "json formatter, json beautify, json validator, json minifier, json to csv, online json editor, json diff checker";
+
+const howToUse = [
+  "Paste your raw or compressed JSON data into the input text area.",
+  "Click 'Format JSON' to beautify the code, or 'Minify JSON' to compress it into a single line.",
+  "For URL encoded JSON strings, click 'URL Decode & Format' to extract and format in one step.",
+  "Inspect your formatted structure dynamically in the 'Tree View' tab.",
+  "Convert JSON data to comma-separated values in the 'JSON to CSV' tab.",
+  "Use the 'JSON Diff' tab to compare your original raw JSON with your modified version side-by-side."
+];
+
+const faqs = [
+  {
+    q: "Is my JSON data secure on ToolsHub?",
+    a: "Yes, 100%. All processing is executed client-side inside your browser. No JSON data is ever sent to our servers. It is fully secure and private."
+  },
+  {
+    q: "How does the URL Decode & Format feature work?",
+    a: "Frequently, API responses or logs contain JSON embedded inside a URL query parameter (which gets percent-encoded). This button automatically decodes the percent-encoding first and then formats the JSON in a single click. For standalone URL encoding tasks, use our <a href=\"/url-encoder-decoder\">URL Encoder &amp; Decoder</a>."
+  },
+  {
+    q: "What does the JSON Validator check?",
+    a: "It checks if your JSON complies with standard RFC 8259 specifications. If it detects syntax errors (like missing commas, trailing commas, unclosed quotes, or mismatched braces), it highlights the exact error line and provides a helpful warning."
+  },
+  {
+    q: "Can the JSON to CSV converter handle nested arrays?",
+    a: "Yes! The converter flattens standard objects and nested keys (e.g., 'address.city') into a spreadsheet-ready tabular CSV structure automatically. To further reduce file size before deployment, try our <a href=\"/code-minifier-beautifier\">Code Minifier &amp; Beautifier</a>."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Format, minify, validate, and convert JSON data locally in your browser.</p>
+  </div>
+
+  <div class="tool-grid">
+    <!-- Input Panel -->
+    <div class="panel glass">
+      <div class="panel-header">
+        <span>Input JSON</span>
+        <div class="panel-header-actions">
+          <button class="btn btn-outline btn-xs" id="clear-input">Clear</button>
+          <button class="btn btn-outline btn-xs" id="sample-json">Sample</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <textarea id="json-input" placeholder="Paste your raw JSON or URL-encoded JSON here..." class="form-textarea json-textarea"></textarea>
+        <div id="validation-alert" class="validation-alert hidden"></div>
+      </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="panel glass">
+      <div class="panel-header tabbed-header">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="tab-formatted">Beautified</button>
+          <button class="tab-btn" data-tab="tab-tree">Tree View</button>
+          <button class="tab-btn" data-tab="tab-diff">JSON Diff</button>
+          <button class="tab-btn" data-tab="tab-csv">JSON to CSV</button>
+        </div>
+        <div class="panel-header-actions">
+          <button class="btn btn-primary btn-xs copy-btn" id="copy-output">Copy</button>
+        </div>
+      </div>
+      
+      <div class="panel-body tab-content-container">
+        <!-- Beautified Code Tab -->
+        <div class="tab-content active" id="tab-formatted">
+          <div class="code-container">
+            <div class="code-header">
+              <span id="output-meta">Formatted JSON</span>
+            </div>
+            <textarea id="json-output" readonly placeholder="Formatted output will appear here..." class="code-editor json-textarea"></textarea>
+          </div>
+        </div>
+
+        <!-- Tree View Tab -->
+        <div class="tab-content" id="tab-tree">
+          <div class="tree-container" id="tree-view-output">
+            <div class="placeholder-text">Tree view will render here after entering valid JSON.</div>
+          </div>
+        </div>
+
+        <!-- Diff Checker Tab -->
+        <div class="tab-content" id="tab-diff">
+          <div class="diff-container">
+            <div class="diff-panel">
+              <div class="diff-label">Original (Input)</div>
+              <div id="diff-original" class="diff-viewer"></div>
+            </div>
+            <div class="diff-panel">
+              <div class="diff-label">Formatted (Output)</div>
+              <div id="diff-formatted" class="diff-viewer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JSON to CSV Tab -->
+        <div class="tab-content" id="tab-csv">
+          <div class="code-container">
+            <div class="code-header">CSV Raw Output</div>
+            <textarea id="csv-output" readonly placeholder="CSV conversion will appear here..." class="code-editor json-textarea" style="color: #60a5fa;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Panel -->
+    <div class="tool-actions">
+      <div class="action-group">
+        <label class="form-label" style="margin-right: 0.5rem; display: inline-block;">Indentation:</label>
+        <select id="json-indent" class="form-select inline-select">
+          <option value="2">2 Spaces</option>
+          <option value="4">4 Spaces</option>
+          <option value="tab">1 Tab</option>
+        </select>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="btn-format">Format JSON</button>
+        <button class="btn btn-secondary" id="btn-minify">Minify JSON</button>
+        <button class="btn btn-outline" id="btn-url-decode" title="Decodes percent encoding first, then formats">URL Decode & Format</button>
+      </div>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="json-formatter" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .tabbed-header {
+    padding: 0;
+    padding-right: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .panel-header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tab-content-container {
+    height: calc(100% - 45px);
+  }
+
+  .json-textarea {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    border: none;
+    border-radius: 0;
+    padding: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    background: transparent;
+    color: #a7f3d0;
+  }
+
+  textarea#json-input {
+    color: #e2e8f0;
+    background: #030712;
+  }
+
+  .validation-alert {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border-light);
+    z-index: 10;
+  }
+
+  .validation-alert.success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border-top-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .validation-alert.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-top-color: rgba(239, 68, 68, 0.3);
+    font-family: var(--font-mono);
+    white-space: pre-wrap;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Tabs content */
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .tab-content .code-container {
+    height: 100%;
+    border: none;
+  }
+
+  /* Tree View */
+  .tree-container {
+    padding: 1.5rem;
+    height: 100%;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: #04060a;
+  }
+
+  .placeholder-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 3rem;
+  }
+
+  /* Diff Checker */
+  .diff-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    background: #04060a;
+    overflow: hidden;
+  }
+
+  .diff-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .diff-panel:last-child {
+    border-right: none;
+  }
+
+  .diff-label {
+    padding: 0.5rem 1rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .diff-viewer {
+    flex-grow: 1;
+    overflow: auto;
+    padding: 1rem;
+    white-space: pre;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  /* Actions Layout */
+  .inline-select {
+    width: 130px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    display: inline-block;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  /* Styling for Tree elements */
+  :global(.tree-ul) {
+    list-style: none;
+    padding-left: 1.5rem;
+    border-left: 1px dashed rgba(255, 255, 255, 0.08);
+  }
+  :global(.tree-li) {
+    margin: 0.2rem 0;
+    position: relative;
+  }
+  :global(.tree-expander) {
+    cursor: pointer;
+    color: var(--text-muted);
+    user-select: none;
+    margin-right: 0.25rem;
+    display: inline-block;
+    transition: transform var(--transition-fast);
+  }
+  :global(.tree-expander.collapsed) {
+    transform: rotate(-90deg);
+  }
+  :global(.tree-key) {
+    color: #818cf8; /* indigo */
+    font-weight: 500;
+  }
+  :global(.tree-string) {
+    color: #34d399; /* emerald */
+  }
+  :global(.tree-number) {
+    color: #fb923c; /* orange */
+  }
+  :global(.tree-boolean) {
+    color: #38bdf8; /* sky */
+  }
+  :global(.tree-null) {
+    color: #f87171; /* red */
+  }
+</style>
+
+<script>
+  // Elements
+  const jsonInput = document.getElementById('json-input') as HTMLTextAreaElement | null;
+  const jsonOutput = document.getElementById('json-output') as HTMLTextAreaElement | null;
+  const csvOutput = document.getElementById('csv-output') as HTMLTextAreaElement | null;
+  const treeOutput = document.getElementById('tree-view-output');
+  const diffOriginal = document.getElementById('diff-original');
+  const diffFormatted = document.getElementById('diff-formatted');
+  const validationAlert = document.getElementById('validation-alert');
+  const indentSelect = document.getElementById('json-indent') as HTMLSelectElement | null;
+
+  // Buttons
+  const btnFormat = document.getElementById('btn-format');
+  const btnMinify = document.getElementById('btn-minify');
+  const btnUrlDecode = document.getElementById('btn-url-decode');
+  const btnSample = document.getElementById('sample-json');
+  const btnClear = document.getElementById('clear-input');
+  const btnCopy = document.getElementById('copy-output');
+
+  // Sample JSON data
+  const sampleData = {
+    "site": "ToolsHub",
+    "version": 1.0,
+    "active": true,
+    "features": [
+      "JSON Formatter",
+      "Base64 Tool",
+      "JWT Decoder"
+    ],
+    "owner": {
+      "name": "Admin",
+      "email": "contact@toolshub.dev"
+    },
+    "traffic_stats": null
+  };
+
+  // Setup tabs
+  const tabs = document.querySelectorAll('.tab-btn');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetTabId = tab.getAttribute('data-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetTabId) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+
+  // Sample data loader
+  if (btnSample && jsonInput) {
+    btnSample.addEventListener('click', () => {
+      jsonInput.value = JSON.stringify(sampleData, null, 2);
+      processJSON('format');
+    });
+  }
+
+  // Clear input
+  if (btnClear && jsonInput && jsonOutput && csvOutput && treeOutput && diffOriginal && diffFormatted && validationAlert) {
+    btnClear.addEventListener('click', () => {
+      jsonInput.value = "";
+      jsonOutput.value = "";
+      csvOutput.value = "";
+      treeOutput.innerHTML = '<div class="placeholder-text">Tree view will render here after entering valid JSON.</div>';
+      diffOriginal.innerHTML = "";
+      diffFormatted.innerHTML = "";
+      validationAlert.className = "validation-alert hidden";
+    });
+  }
+
+  // Copy output
+  if (btnCopy && jsonOutput) {
+    btnCopy.addEventListener('click', () => {
+      // Find active tab and copy its content
+      const activeTabBtn = document.querySelector('.tab-btn.active');
+      const activeTabId = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : '';
+      let textToCopy = '';
+
+      if (activeTabId === 'tab-formatted') {
+        textToCopy = jsonOutput.value;
+      } else if (activeTabId === 'tab-csv' && csvOutput) {
+        textToCopy = csvOutput.value;
+      } else if (activeTabId === 'tab-tree' && treeOutput) {
+        textToCopy = JSON.stringify(JSON.parse(jsonInput?.value || '{}'), null, 2);
+      } else {
+        textToCopy = jsonOutput.value;
+      }
+
+      if (textToCopy) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          btnCopy.classList.add('copied');
+          btnCopy.textContent = 'Copied!';
+          setTimeout(() => {
+            btnCopy.classList.remove('copied');
+            btnCopy.textContent = 'Copy';
+          }, 2000);
+        });
+      }
+    });
+  }
+
+  // Formatter actions
+  if (btnFormat) btnFormat.addEventListener('click', () => processJSON('format'));
+  if (btnMinify) btnMinify.addEventListener('click', () => processJSON('minify'));
+  if (btnUrlDecode) {
+    btnUrlDecode.addEventListener('click', () => {
+      if (jsonInput && jsonInput.value) {
+        try {
+          const decoded = decodeURIComponent(jsonInput.value);
+          jsonInput.value = decoded;
+          processJSON('format');
+        } catch (e: any) {
+          showError("URL Decode failed: " + e.message);
+        }
+      }
+    });
+  }
+
+  function getIndent() {
+    if (!indentSelect) return 2;
+    const val = indentSelect.value;
+    if (val === 'tab') return '\t';
+    return parseInt(val, 10);
+  }
+
+  function showError(msg: string) {
+    if (validationAlert && jsonOutput) {
+      validationAlert.textContent = msg;
+      validationAlert.className = "validation-alert error";
+      jsonOutput.value = "";
+    }
+  }
+
+  function showSuccess() {
+    if (validationAlert) {
+      validationAlert.textContent = "✓ Valid JSON";
+      validationAlert.className = "validation-alert success";
+    }
+  }
+
+  function processJSON(mode: 'format' | 'minify') {
+    if (!jsonInput || !jsonOutput) return;
+    const inputVal = jsonInput.value.trim();
+
+    if (!inputVal) {
+      showError("Please enter some JSON to format.");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(inputVal);
+      showSuccess();
+
+      // Format code
+      let outputVal = "";
+      if (mode === 'format') {
+        outputVal = JSON.stringify(parsed, null, getIndent());
+      } else {
+        outputVal = JSON.stringify(parsed);
+      }
+      jsonOutput.value = outputVal;
+
+      // Render Tree View
+      renderTreeView(parsed);
+
+      // Render CSV
+      renderCSV(parsed);
+
+      // Render Diff View
+      renderDiff(inputVal, outputVal);
+
+    } catch (e: any) {
+      showError("Invalid JSON: " + e.message);
+    }
+  }
+
+  // Recursive Tree View Generator
+  function renderTreeView(data: any) {
+    if (!treeOutput) return;
+    treeOutput.innerHTML = '';
+    
+    const treeRoot = document.createElement('div');
+    treeRoot.className = 'tree-root';
+    
+    if (typeof data !== 'object' || data === null) {
+      treeRoot.appendChild(createValueSpan(data));
+    } else {
+      treeRoot.appendChild(buildTreeNodes(data, ''));
+    }
+    
+    treeOutput.appendChild(treeRoot);
+  }
+
+  function buildTreeNodes(data: any, key: string): HTMLElement {
+    const isArray = Array.isArray(data);
+    const container = document.createElement('div');
+    container.className = 'tree-li';
+
+    if (key !== '') {
+      const keySpan = document.createElement('span');
+      keySpan.className = 'tree-key';
+      keySpan.textContent = `"${key}": `;
+      container.appendChild(keySpan);
+    }
+
+    const startBrace = isArray ? '[' : '{';
+    const endBrace = isArray ? ']' : '}';
+    const keys = isArray ? data : Object.keys(data);
+    
+    if (keys.length === 0) {
+      const emptySpan = document.createElement('span');
+      emptySpan.textContent = `${startBrace}${endBrace}`;
+      container.appendChild(emptySpan);
+      return container;
+    }
+
+    const expander = document.createElement('span');
+    expander.className = 'tree-expander';
+    expander.textContent = '▼';
+    container.insertBefore(expander, container.firstChild);
+
+    const braceSpan = document.createElement('span');
+    braceSpan.textContent = startBrace;
+    container.appendChild(braceSpan);
+
+    const ul = document.createElement('ul');
+    ul.className = 'tree-ul';
+    
+    if (isArray) {
+      data.forEach((val: any, idx: number) => {
+        const li = document.createElement('li');
+        li.className = 'tree-li';
+        if (typeof val === 'object' && val !== null) {
+          li.appendChild(buildTreeNodes(val, ''));
+        } else {
+          li.appendChild(createValueSpan(val));
+        }
+        ul.appendChild(li);
+      });
+    } else {
+      Object.keys(data).forEach(k => {
+        const val = data[k];
+        const li = document.createElement('li');
+        li.className = 'tree-li';
+        if (typeof val === 'object' && val !== null) {
+          li.appendChild(buildTreeNodes(val, k));
+        } else {
+          const keySpan = document.createElement('span');
+          keySpan.className = 'tree-key';
+          keySpan.textContent = `"${k}": `;
+          li.appendChild(keySpan);
+          li.appendChild(createValueSpan(val));
+        }
+        ul.appendChild(li);
+      });
+    }
+
+    container.appendChild(ul);
+
+    const closeBraceSpan = document.createElement('span');
+    closeBraceSpan.textContent = endBrace;
+    container.appendChild(closeBraceSpan);
+
+    // Click handler for collapsible lists
+    expander.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ul.classList.toggle('hidden');
+      expander.classList.toggle('collapsed');
+      if (ul.classList.contains('hidden')) {
+        expander.textContent = '▶';
+        braceSpan.textContent = `${startBrace}...${endBrace}`;
+        closeBraceSpan.style.display = 'none';
+      } else {
+        expander.textContent = '▼';
+        braceSpan.textContent = startBrace;
+        closeBraceSpan.style.display = 'inline';
+      }
+    });
+
+    return container;
+  }
+
+  function createValueSpan(val: any): HTMLElement {
+    const span = document.createElement('span');
+    if (typeof val === 'string') {
+      span.className = 'tree-string';
+      span.textContent = `"${val}"`;
+    } else if (typeof val === 'number') {
+      span.className = 'tree-number';
+      span.textContent = String(val);
+    } else if (typeof val === 'boolean') {
+      span.className = 'tree-boolean';
+      span.textContent = String(val);
+    } else if (val === null) {
+      span.className = 'tree-null';
+      span.textContent = 'null';
+    }
+    return span;
+  }
+
+  // JSON to CSV flat converter
+  function renderCSV(parsed: any) {
+    if (!csvOutput) return;
+    
+    let arr = [];
+    if (Array.isArray(parsed)) {
+      arr = parsed;
+    } else if (typeof parsed === 'object' && parsed !== null) {
+      // If single object, put it in array
+      arr = [parsed];
+    } else {
+      csvOutput.value = "Unable to convert: JSON is not an object or array.";
+      return;
+    }
+
+    try {
+      // Flatten all objects in the array
+      const flatArray = arr.map((item: any) => flattenObject(item));
+      
+      // Extract all unique headers
+      const headersMap = new Set<string>();
+      flatArray.forEach(item => {
+        Object.keys(item).forEach(key => headersMap.add(key));
+      });
+      const headers = Array.from(headersMap);
+
+      if (headers.length === 0) {
+        csvOutput.value = "No fields found to output in CSV.";
+        return;
+      }
+
+      // Construct CSV output
+      const csvLines = [];
+      csvLines.push(headers.map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+      
+      flatArray.forEach(item => {
+        const line = headers.map(h => {
+          const val = item[h];
+          if (val === undefined || val === null) return '';
+          return `"${String(val).replace(/"/g, '""')}"`;
+        }).join(',');
+        csvLines.push(line);
+      });
+
+      csvOutput.value = csvLines.join('\n');
+    } catch (e: any) {
+      csvOutput.value = "CSV Conversion error: " + e.message;
+    }
+  }
+
+  // Helper to flatten nested object
+  function flattenObject(ob: any): any {
+    const toReturn: any = {};
+    for (const i in ob) {
+      if (!ob.hasOwnProperty(i)) continue;
+      if ((typeof ob[i]) === 'object' && ob[i] !== null) {
+        const flatObject = flattenObject(ob[i]);
+        for (const x in flatObject) {
+          if (!flatObject.hasOwnProperty(x)) continue;
+          toReturn[i + '.' + x] = flatObject[x];
+        }
+      } else {
+        toReturn[i] = ob[i];
+      }
+    }
+    return toReturn;
+  }
+
+  // Visual diff checker
+  function renderDiff(orig: string, form: string) {
+    if (!diffOriginal || !diffFormatted) return;
+    
+    // Simplistic line-by-line diff display
+    const origLines = orig.split('\n');
+    const formLines = form.split('\n');
+    
+    let origHtml = "";
+    let formHtml = "";
+
+    const maxLines = Math.max(origLines.length, formLines.length);
+    for (let i = 0; i < maxLines; i++) {
+      const ol = origLines[i] !== undefined ? origLines[i] : "";
+      const fl = formLines[i] !== undefined ? formLines[i] : "";
+
+      if (ol !== fl) {
+        // Line mismatch
+        if (ol !== "") {
+          origHtml += `<div class="diff-line diff-del" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">${escapeHtml(ol)}</div>`;
+        } else {
+          origHtml += `<div class="diff-line">&nbsp;</div>`;
+        }
+
+        if (fl !== "") {
+          formHtml += `<div class="diff-line diff-add" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">${escapeHtml(fl)}</div>`;
+        } else {
+          formHtml += `<div class="diff-line">&nbsp;</div>`;
+        }
+      } else {
+        origHtml += `<div class="diff-line">${escapeHtml(ol)}</div>`;
+        formHtml += `<div class="diff-line">${escapeHtml(fl)}</div>`;
+      }
+    }
+
+    diffOriginal.innerHTML = origHtml;
+    diffFormatted.innerHTML = formHtml;
+  }
+
+  function escapeHtml(text: string) {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>

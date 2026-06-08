@@ -1,0 +1,151 @@
+---
+interface FAQItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  toolName: string;
+  description: string;
+  howToUse: string[];
+  faqs: FAQItem[];
+}
+
+const { toolName, description, howToUse, faqs } = Astro.props;
+
+// Compile FAQ JSON-LD Schema
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(item => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.a
+    }
+  }))
+};
+---
+
+<section class="seo-section">
+  <div class="seo-info-card glass">
+    <h2>What is the {toolName}?</h2>
+    <p class="tool-seo-desc" set:html={description}></p>
+  </div>
+
+  <div class="seo-info-card glass">
+    <h2>How to use the {toolName}?</h2>
+    <ol class="how-to-list">
+      {howToUse.map(step => (
+        <li>{step}</li>
+      ))}
+    </ol>
+  </div>
+
+  {faqs.length > 0 && (
+    <div class="seo-info-card glass">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3 class="faq-question">{faq.q}</h3>
+            <p class="faq-answer" set:html={faq.a}></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</section>
+
+<!-- Inject FAQ Schema -->
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
+
+<style>
+  .seo-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .seo-info-card {
+    padding: 2rem;
+    border-radius: var(--radius-md);
+  }
+
+  .seo-info-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+  }
+
+  .tool-seo-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .how-to-list {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .how-to-list li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .faq-item {
+    background: rgba(4, 6, 10, 0.3);
+    padding: 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .faq-question {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .faq-answer {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .faq-answer a,
+  .tool-seo-desc a {
+    color: var(--accent-primary, #06b6d4);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .faq-answer a:hover,
+  .tool-seo-desc a:hover {
+    color: #fff;
+  }
+</style>

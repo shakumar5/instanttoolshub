@@ -1,0 +1,1229 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+
+const toolName = "Timestamp & Unix Time Converter";
+const activeTool = "timestamp";
+const accentColor = "#f43f5e"; // Rose
+const accentGlow = "rgba(244, 63, 94, 0.15)";
+
+const seoDescription = "Free online Unix timestamp and epoch converter. Convert epoch seconds to date strings, dates to timestamps, calculate relative time, and parse cron expressions.";
+const seoKeywords = "unix timestamp converter, epoch time converter, timestamp to date, current unix timestamp, timezone converter, cron job parser";
+
+const howToUse = [
+  "Epoch Converter: Enter a Unix timestamp (seconds or milliseconds) in the input block to parse it instantly, or type a date string to generate the epoch timestamp.",
+  "Click 'Current Time' to load the active live clock timestamp.",
+  "Check the Date Details panel to review GMT dates, local zones, relative times, and day numbers.",
+  "Cron Parser: Enter a crontab schedule (e.g. '*/15 * * * *') to parse the schedule into plain English and view the next 5 execution times."
+];
+
+const faqs = [
+  {
+    q: "What is a Unix timestamp (Epoch time)?",
+    a: "The Unix timestamp is the number of seconds that have elapsed since January 1, 1970 (Midnight UTC), not including leap seconds. It is widely used in operating systems and file formats to track points in time."
+  },
+  {
+    q: "What is the difference between seconds vs milliseconds?",
+    a: "Standard Unix timestamps track seconds (10 digits). JavaScript Date objects and modern APIs track milliseconds (13 digits). Our converter automatically detects which format you entered based on the string length."
+  },
+  {
+    q: "How does the Cron parser simulate execution times?",
+    a: "The parser reads the cron pattern and runs a localized client-side simulation starting from the current date. It checks subsequent minutes to find the next 5 times that satisfy your cron filters. To test cron patterns with custom regular expressions, use our <a href=\"/regex-tester\">RegEx Tester</a>."
+  },
+  {
+    q: "Are my timezone conversions secure?",
+    a: "Yes. All calculations are performed entirely in your browser using JavaScript's native Intl.DateTimeFormat and Date APIs. No date queries are transmitted to the network. If you work with JWT tokens that include epoch-based expiration claims, check out our <a href=\"/jwt-decoder\">JWT Decoder</a> as well."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert Unix timestamps to human dates, parse date strings to epoch ticks, compare timezones, and inspect cron schedules.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header tabbed-header">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-converter">Epoch Converter</button>
+        <button class="tab-btn" data-tab="tab-timezone">Timezone Grid</button>
+        <button class="tab-btn" data-tab="tab-cron">Cron Parser</button>
+      </div>
+      <div class="panel-header-actions">
+        <button class="btn btn-secondary btn-xs" id="btn-copy-timestamp">Copy Timestamp</button>
+        <button class="btn btn-outline btn-xs" id="btn-clear-all">Clear All</button>
+        <span class="live-clock-badge">Live: <span id="live-epoch" class="code-font">0000000000</span></span>
+      </div>
+    </div>
+
+    <div class="live-clock-row">
+      <span class="live-clock-item"><strong>UTC:</strong> <span id="live-utc" class="code-font">-</span></span>
+      <span class="live-clock-item"><strong>Local:</strong> <span id="live-local" class="code-font">-</span></span>
+    </div>
+
+    <div class="panel-body tab-content-container">
+      
+      <!-- Epoch Converter Tab -->
+      <div class="tab-content active" id="tab-converter">
+        <div class="converter-layout">
+          <!-- Left Inputs -->
+          <div class="converter-inputs">
+            <div class="form-control">
+              <label class="form-label">Unix Timestamp (Seconds or Milliseconds)</label>
+              <div class="input-btn-row">
+                <input type="text" id="epoch-input" placeholder="e.g. 1778900000" class="form-input code-font" />
+                <button class="btn btn-secondary btn-sm" id="btn-epoch-now">Current Time</button>
+              </div>
+            </div>
+
+            <div class="form-control">
+              <label class="form-label">Human Date String</label>
+              <input type="text" id="date-input" placeholder="e.g. Mon, 08 Jun 2026 10:00:00 GMT" class="form-input" />
+            </div>
+
+            <div class="conversion-actions-row">
+              <button class="btn btn-primary" id="btn-convert-epoch">Convert Epoch →</button>
+              <button class="btn btn-secondary" id="btn-convert-date">← Convert Date</button>
+            </div>
+          </div>
+
+          <!-- Right Details -->
+          <div class="converter-details">
+            <div class="split-label">Date Breakdown</div>
+            <div class="details-table-wrapper">
+              <table class="details-table">
+                <tbody>
+                  <tr>
+                    <td><strong>GMT/UTC Date</strong></td>
+                    <td id="detail-gmt" class="code-font select-all">-</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Local Timezone</strong></td>
+                    <td id="detail-local" class="code-font select-all">-</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Unix (milliseconds)</strong></td>
+                    <td id="detail-unix-ms" class="code-font select-all">-</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Relative Time</strong></td>
+                    <td id="detail-relative" class="highlight-val">-</td>
+                  </tr>
+                  <tr>
+                    <td><strong>ISO 8601 String</strong></td>
+                    <td id="detail-iso" class="code-font select-all">-</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Day of Week</strong></td>
+                    <td id="detail-dayofweek">-</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Day of Year</strong></td>
+                    <td id="detail-dayofyear" class="code-font">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timezone Grid Tab -->
+      <div class="tab-content" id="tab-timezone">
+        <div class="timezone-container">
+          <div class="tz-header-row">
+            <div class="tz-input-group">
+              <label class="form-label">Enter Unix Timestamp or Date String</label>
+              <div class="input-btn-row">
+                <input type="text" id="tz-timestamp-input" placeholder="e.g. 1700000000 or 2024-01-15T10:30:00Z" class="form-input code-font" />
+                <button class="btn btn-primary btn-sm" id="btn-convert-tz">Convert</button>
+              </div>
+              <span class="field-help">Numeric (≤10 digits = seconds, &gt;10 digits = milliseconds) or any parseable date string</span>
+              <div id="tz-error" class="tz-error-msg" style="display: none;" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="tz-grid" id="tz-grid">
+            <div class="tz-card glass">
+              <span class="tz-name">UTC (GMT)</span>
+              <span class="tz-time code-font" id="tz-val-utc">-</span>
+            </div>
+            <div class="tz-card glass">
+              <span class="tz-name">US Eastern (New York)</span>
+              <span class="tz-time code-font" id="tz-val-est">-</span>
+            </div>
+            <div class="tz-card glass">
+              <span class="tz-name">US Pacific (Los Angeles)</span>
+              <span class="tz-time code-font" id="tz-val-pst">-</span>
+            </div>
+            <div class="tz-card glass">
+              <span class="tz-name">CET (Paris)</span>
+              <span class="tz-time code-font" id="tz-val-cet">-</span>
+            </div>
+            <div class="tz-card glass">
+              <span class="tz-name">IST (Kolkata)</span>
+              <span class="tz-time code-font" id="tz-val-ist">-</span>
+            </div>
+            <div class="tz-card glass">
+              <span class="tz-name">JST (Tokyo)</span>
+              <span class="tz-time code-font" id="tz-val-jst">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cron Parser Tab -->
+      <div class="tab-content" id="tab-cron">
+        <div class="cron-container">
+          <div class="cron-input-side">
+            <div class="form-control">
+              <label class="form-label">Cron Expression (5-field)</label>
+              <div class="input-btn-row">
+                <input type="text" id="cron-input" value="*/15 9-17 * * 1-5" placeholder="e.g. */15 * * * *" class="form-input code-font" aria-describedby="cron-error" />
+                <button class="btn btn-primary btn-sm" id="btn-parse-cron">Parse Schedule</button>
+              </div>
+              <span class="field-help">Format: minute(0-59) hour(0-23) day(1-31) month(1-12) day-of-week(0-6)</span>
+              <div id="cron-error" class="cron-error-msg" style="display: none;" aria-live="polite"></div>
+            </div>
+
+            <div class="cron-results-card glass">
+              <h4>Description:</h4>
+              <p id="cron-desc" class="cron-desc-text">Parses into plain English description...</p>
+            </div>
+          </div>
+
+          <div class="cron-output-side">
+            <div class="split-label">Next 5 Execution Runs</div>
+            <div class="cron-runs-list" id="cron-runs-list" aria-live="polite">
+              <div class="placeholder-text">Click Parse Schedule to calculate runs.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <RelatedTools currentTool="timestamp" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .tabbed-header {
+    padding: 0;
+    padding-right: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+  }
+
+  .live-clock-badge {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  #live-epoch {
+    color: #f43f5e;
+    font-weight: bold;
+  }
+
+  .panel-body {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    height: calc(100% - 45px);
+  }
+
+  .live-clock-row {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.4rem 1.25rem;
+    background: rgba(244, 63, 94, 0.04);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .live-clock-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .live-clock-item strong {
+    color: var(--text-muted);
+  }
+
+  .tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .code-font {
+    font-family: var(--font-mono) !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Converter layout */
+  .converter-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .converter-inputs {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow-y: auto;
+  }
+
+  .input-btn-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .input-btn-row input {
+    flex-grow: 1;
+  }
+
+  .conversion-actions-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .converter-details {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .details-table-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+
+  .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .details-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-secondary);
+  }
+
+  .details-table td strong {
+    color: #fff;
+  }
+
+  .details-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .select-all {
+    user-select: all;
+  }
+
+  .highlight-val {
+    color: #f43f5e !important;
+    font-weight: 600;
+  }
+
+  /* Timezone grid layout */
+  .timezone-container {
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: #030712;
+    overflow-y: auto;
+  }
+
+  .tz-header-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .tz-input-group {
+    flex: 1;
+  }
+
+  .tz-error-msg {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-sm);
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .cron-error-msg {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-sm);
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .inline-datetime {
+    max-width: 250px;
+  }
+
+  .tz-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    flex-grow: 1;
+  }
+
+  .tz-card {
+    padding: 1.25rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .tz-name {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tz-time {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f43f5e;
+  }
+
+  /* Cron parser layout */
+  .cron-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    height: 100%;
+    background: #030712;
+  }
+
+  .cron-input-side {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+  }
+
+  .cron-results-card {
+    padding: 1.25rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cron-results-card h4 {
+    color: #fff;
+  }
+
+  .cron-desc-text {
+    color: #f43f5e;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  .cron-output-side {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .cron-runs-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #04060a;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  :global(.cron-run-item) {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+  }
+
+  :global(.cron-run-num) {
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  :global(.cron-run-date) {
+    font-family: var(--font-mono);
+    color: #f43f5e;
+  }
+
+  @media (max-width: 850px) {
+    .converter-layout, .cron-container {
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .converter-inputs, .cron-input-side {
+      border-right: none;
+      border-bottom: 1px solid var(--border-light);
+      height: auto;
+    }
+    .tz-grid {
+      grid-template-columns: 1fr;
+    }
+    .tz-header-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .inline-datetime {
+      max-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Tab Switching
+  const tabs = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-tab');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetId) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+
+  // --- PURE FUNCTIONS ---
+  function detectTimestampFormat(input: string): 'seconds' | 'milliseconds' {
+    // ≤10 digits = seconds, >10 digits = milliseconds
+    return input.replace(/[^0-9]/g, '').length > 10 ? 'milliseconds' : 'seconds';
+  }
+
+  function timestampToDate(ts: number, format: 'seconds' | 'milliseconds'): Date {
+    const ms = format === 'milliseconds' ? ts : ts * 1000;
+    return new Date(ms);
+  }
+
+  function dateToTimestamp(dateStr: string): { seconds: number; milliseconds: number } | null {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return null;
+    const ms = date.getTime();
+    return { seconds: Math.floor(ms / 1000), milliseconds: ms };
+  }
+
+  // --- LIVE CLOCK ---
+  const liveEpoch = document.getElementById('live-epoch');
+  if (liveEpoch) {
+    function updateLiveClock() {
+      const now = new Date();
+      const epochSec = Math.floor(now.getTime() / 1000);
+      if (liveEpoch) {
+        liveEpoch.textContent = String(epochSec);
+      }
+      // Update UTC and local displays if present
+      const liveUtc = document.getElementById('live-utc');
+      const liveLocal = document.getElementById('live-local');
+      if (liveUtc) liveUtc.textContent = now.toUTCString();
+      if (liveLocal) liveLocal.textContent = now.toString();
+    }
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+  }
+
+  // --- EPOCH CONVERTER LOGIC ---
+  const epochInput = document.getElementById('epoch-input') as HTMLInputElement | null;
+  const dateInput = document.getElementById('date-input') as HTMLInputElement | null;
+  const btnEpochNow = document.getElementById('btn-epoch-now');
+  const btnConvertEpoch = document.getElementById('btn-convert-epoch');
+  const btnConvertDate = document.getElementById('btn-convert-date');
+
+  // Details targets
+  const detGmt = document.getElementById('detail-gmt');
+  const detLocal = document.getElementById('detail-local');
+  const detRelative = document.getElementById('detail-relative');
+  const detIso = document.getElementById('detail-iso');
+  const detDayOfWeek = document.getElementById('detail-dayofweek');
+  const detDayOfYear = document.getElementById('detail-dayofyear');
+
+  if (btnEpochNow && epochInput) {
+    btnEpochNow.addEventListener('click', () => {
+      epochInput.value = String(Math.floor(Date.now() / 1000));
+      convertEpoch();
+    });
+  }
+
+  if (btnConvertEpoch) {
+    btnConvertEpoch.addEventListener('click', convertEpoch);
+  }
+
+  if (btnConvertDate) {
+    btnConvertDate.addEventListener('click', convertDate);
+  }
+
+  function convertEpoch() {
+    if (!epochInput || !detGmt || !detLocal || !detRelative || !detIso || !detDayOfWeek || !detDayOfYear || !dateInput) return;
+    
+    let valStr = epochInput.value.trim();
+    if (!valStr) {
+      alert("Please enter a timestamp.");
+      return;
+    }
+
+    // Check for non-numeric input
+    if (!/^\d+$/.test(valStr)) {
+      alert("Invalid numeric timestamp. Please enter digits only.");
+      return;
+    }
+
+    let val = parseInt(valStr, 10);
+    if (isNaN(val)) {
+      alert("Invalid numeric timestamp.");
+      return;
+    }
+
+    // Auto detect seconds vs milliseconds: ≤10 digits = seconds, >10 = milliseconds
+    const format = detectTimestampFormat(valStr);
+    const date = timestampToDate(val, format);
+
+    if (isNaN(date.getTime())) {
+      alert("Invalid timestamp value.");
+      return;
+    }
+
+    // Populate Date String Input
+    dateInput.value = date.toUTCString();
+
+    // Populate Details
+    detGmt.textContent = date.toUTCString();
+    detLocal.textContent = date.toString();
+    detRelative.textContent = getRelativeTimeString(date.getTime());
+    detIso.textContent = date.toISOString();
+    detDayOfWeek.textContent = getDayOfWeekName(date.getDay());
+    detDayOfYear.textContent = String(getDayOfYearNum(date));
+
+    // Show both seconds and milliseconds in the detail panel
+    const detUnixMs = document.getElementById('detail-unix-ms');
+    if (detUnixMs) {
+      const tsInMs = format === 'milliseconds' ? val : val * 1000;
+      detUnixMs.textContent = String(tsInMs);
+    }
+  }
+
+  function convertDate() {
+    if (!dateInput || !epochInput) return;
+    const val = dateInput.value.trim();
+    if (!val) {
+      alert("Please enter a date string.");
+      return;
+    }
+
+    const result = dateToTimestamp(val);
+    if (!result) {
+      alert("Invalid Date String format. Try standard formats e.g. YYYY-MM-DD or RFC 2822.");
+      return;
+    }
+
+    epochInput.value = String(result.seconds);
+    
+    // Update milliseconds display
+    const detUnixMs = document.getElementById('detail-unix-ms');
+    if (detUnixMs) {
+      detUnixMs.textContent = String(result.milliseconds);
+    }
+    
+    convertEpoch();
+  }
+
+  // --- TIMEZONE COMPARATOR LOGIC ---
+  const tzTimestampInput = document.getElementById('tz-timestamp-input') as HTMLInputElement | null;
+  const btnConvertTz = document.getElementById('btn-convert-tz');
+  const tzError = document.getElementById('tz-error');
+  const tzUtc = document.getElementById('tz-val-utc');
+  const tzEst = document.getElementById('tz-val-est');
+  const tzPst = document.getElementById('tz-val-pst');
+  const tzCet = document.getElementById('tz-val-cet');
+  const tzIst = document.getElementById('tz-val-ist');
+  const tzJst = document.getElementById('tz-val-jst');
+
+  if (btnConvertTz && tzTimestampInput) {
+    btnConvertTz.addEventListener('click', convertTimezones);
+    tzTimestampInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') convertTimezones();
+    });
+  }
+
+  function convertTimezones() {
+    if (!tzTimestampInput || !tzUtc || !tzEst || !tzPst || !tzCet || !tzIst || !tzJst || !tzError) return;
+
+    const input = tzTimestampInput.value.trim();
+    if (!input) {
+      showTzError('Please enter a Unix timestamp or date string.');
+      return;
+    }
+
+    let date: Date | null = null;
+
+    // Check if input is purely numeric (Unix timestamp)
+    if (/^\d+$/.test(input)) {
+      // Validate: up to 13 digits allowed
+      if (input.length > 13) {
+        showTzError('Invalid input format. Numeric timestamps must be up to 13 digits.');
+        return;
+      }
+      const numVal = parseInt(input, 10);
+      // ≤10 digits = seconds since epoch, >10 digits = milliseconds since epoch
+      const ms = input.length <= 10 ? numVal * 1000 : numVal;
+      date = new Date(ms);
+    } else {
+      // Try to parse as a date string
+      date = new Date(input);
+    }
+
+    if (!date || isNaN(date.getTime())) {
+      showTzError('Invalid input format. Enter a numeric Unix timestamp (up to 13 digits) or a parseable date string.');
+      return;
+    }
+
+    // Hide error on successful parse
+    hideTzError();
+
+    // Format and display for all 6 timezones using Intl.DateTimeFormat with medium date and short time
+    const fmtOptions: Intl.DateTimeFormatOptions = { dateStyle: 'medium', timeStyle: 'short' };
+
+    tzUtc.textContent = formatTimezone(date, 'UTC', fmtOptions);
+    tzEst.textContent = formatTimezone(date, 'America/New_York', fmtOptions);
+    tzPst.textContent = formatTimezone(date, 'America/Los_Angeles', fmtOptions);
+    tzCet.textContent = formatTimezone(date, 'Europe/Paris', fmtOptions);
+    tzIst.textContent = formatTimezone(date, 'Asia/Kolkata', fmtOptions);
+    tzJst.textContent = formatTimezone(date, 'Asia/Tokyo', fmtOptions);
+  }
+
+  function showTzError(msg: string) {
+    if (tzError) {
+      tzError.textContent = msg;
+      tzError.style.display = 'block';
+    }
+  }
+
+  function hideTzError() {
+    if (tzError) {
+      tzError.textContent = '';
+      tzError.style.display = 'none';
+    }
+  }
+
+  function formatTimezone(date: Date, tz: string, options: Intl.DateTimeFormatOptions) {
+    return new Intl.DateTimeFormat('en-US', { ...options, timeZone: tz }).format(date);
+  }
+
+  // --- CRON PARSER LOGIC ---
+  const cronInput = document.getElementById('cron-input') as HTMLInputElement | null;
+  const btnParseCron = document.getElementById('btn-parse-cron');
+  const cronDesc = document.getElementById('cron-desc');
+  const cronRunsList = document.getElementById('cron-runs-list');
+  const cronError = document.getElementById('cron-error');
+
+  if (btnParseCron && cronInput && cronDesc && cronRunsList) {
+    btnParseCron.addEventListener('click', () => {
+      const expression = cronInput.value.trim();
+      if (!expression) return;
+
+      // Clear previous error
+      hideCronError();
+
+      const result = parseCron(expression);
+      if (result.error) {
+        showCronError(result.error);
+        cronDesc.textContent = 'Parses into plain English description...';
+        cronRunsList.innerHTML = '';
+        return;
+      }
+
+      cronDesc.textContent = result.description!;
+      getNextCronRuns(expression);
+    });
+
+    // Run once on load
+    btnParseCron.click();
+  }
+
+  function showCronError(msg: string) {
+    if (cronError) {
+      cronError.textContent = msg;
+      cronError.style.display = 'block';
+    }
+  }
+
+  function hideCronError() {
+    if (cronError) {
+      cronError.textContent = '';
+      cronError.style.display = 'none';
+    }
+  }
+
+  interface CronParseResult {
+    error?: string;
+    description?: string;
+  }
+
+  const FIELD_NAMES = ['minute', 'hour', 'day-of-month', 'month', 'day-of-week'] as const;
+  const FIELD_RANGES: [number, number][] = [
+    [0, 59],   // minute
+    [0, 23],   // hour
+    [1, 31],   // day-of-month
+    [1, 12],   // month
+    [0, 6],    // day-of-week
+  ];
+
+  function parseCron(cronStr: string): CronParseResult {
+    const fields = cronStr.split(/\s+/);
+
+    // 1. Validate exactly 5 fields
+    if (fields.length !== 5) {
+      return { error: `Invalid field count: expected exactly 5 fields, got ${fields.length}. Format: minute hour day-of-month month day-of-week` };
+    }
+
+    // 2. Validate each field's range
+    for (let i = 0; i < 5; i++) {
+      const fieldError = validateCronField(fields[i], FIELD_RANGES[i][0], FIELD_RANGES[i][1], FIELD_NAMES[i]);
+      if (fieldError) {
+        return { error: fieldError };
+      }
+    }
+
+    // 3. Generate human-readable description
+    const description = generateCronDescription(fields);
+    return { description };
+  }
+
+  function validateCronField(field: string, min: number, max: number, name: string): string | null {
+    // Wildcard
+    if (field === '*') return null;
+
+    // Step value: */n or start/n
+    if (field.includes('/')) {
+      const [base, stepStr] = field.split('/');
+      const step = parseInt(stepStr, 10);
+      if (isNaN(step) || step < 1) {
+        return `Invalid step value in ${name} field: "${field}". Step must be a positive integer.`;
+      }
+      if (base !== '*') {
+        const baseNum = parseInt(base, 10);
+        if (isNaN(baseNum) || baseNum < min || baseNum > max) {
+          return `Out-of-range value in ${name} field: "${field}". ${name} must be between ${min} and ${max}.`;
+        }
+      }
+      return null;
+    }
+
+    // Comma-separated list
+    if (field.includes(',')) {
+      const parts = field.split(',');
+      for (const part of parts) {
+        const trimmed = part.trim();
+        if (trimmed.includes('-')) {
+          const rangeErr = validateRange(trimmed, min, max, name);
+          if (rangeErr) return rangeErr;
+        } else {
+          const num = parseInt(trimmed, 10);
+          if (isNaN(num) || num < min || num > max) {
+            return `Out-of-range value in ${name} field: "${field}". Values must be between ${min} and ${max}.`;
+          }
+        }
+      }
+      return null;
+    }
+
+    // Range: start-end
+    if (field.includes('-')) {
+      return validateRange(field, min, max, name);
+    }
+
+    // Single value
+    const num = parseInt(field, 10);
+    if (isNaN(num) || num < min || num > max) {
+      return `Out-of-range value in ${name} field: "${field}". ${name} must be between ${min} and ${max}.`;
+    }
+    return null;
+  }
+
+  function validateRange(rangeStr: string, min: number, max: number, name: string): string | null {
+    const [startStr, endStr] = rangeStr.split('-');
+    const start = parseInt(startStr, 10);
+    const end = parseInt(endStr, 10);
+    if (isNaN(start) || isNaN(end) || start < min || start > max || end < min || end > max) {
+      return `Out-of-range value in ${name} field: "${rangeStr}". Values must be between ${min} and ${max}.`;
+    }
+    return null;
+  }
+
+  function generateCronDescription(fields: string[]): string {
+    const [min, hour, dom, month, dow] = fields;
+
+    // Special common patterns
+    if (min === '*' && hour === '*' && dom === '*' && month === '*' && dow === '*') {
+      return 'Every minute';
+    }
+
+    if (min.startsWith('*/') && hour === '*' && dom === '*' && month === '*' && dow === '*') {
+      const step = min.substring(2);
+      return `Every ${step} minutes`;
+    }
+
+    if (min === '0' && hour === '*' && dom === '*' && month === '*' && dow === '*') {
+      return 'Every hour';
+    }
+
+    if (min === '0' && hour === '0' && dom === '*' && month === '*' && dow === '*') {
+      return 'Every day at midnight';
+    }
+
+    // Build description from fields
+    let desc = 'At ';
+    desc += describeMinute(min);
+
+    if (hour !== '*') {
+      desc += ' past ' + describeHour(hour);
+    }
+
+    if (dom !== '*') {
+      desc += ', on day ' + describeListOrRange(dom) + ' of the month';
+    }
+
+    if (month !== '*') {
+      desc += ', in ' + describeMonth(month);
+    }
+
+    if (dow !== '*') {
+      desc += ', on ' + describeDow(dow);
+    }
+
+    return desc;
+  }
+
+  function describeMinute(field: string): string {
+    if (field === '*') return 'every minute';
+    if (field.startsWith('*/')) return `every ${field.substring(2)} minutes`;
+    if (field.includes(',')) return `minutes ${field}`;
+    if (field.includes('-')) return `minutes ${field}`;
+    return `minute ${field}`;
+  }
+
+  function describeHour(field: string): string {
+    if (field === '*') return 'every hour';
+    if (field.startsWith('*/')) return `every ${field.substring(2)} hours`;
+    if (field.includes(',')) return `hours ${field}`;
+    if (field.includes('-')) return `hours ${field}`;
+    return `hour ${field}`;
+  }
+
+  function describeListOrRange(field: string): string {
+    return field;
+  }
+
+  function describeMonth(field: string): string {
+    const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    if (field.includes(',')) {
+      return field.split(',').map(m => monthNames[parseInt(m, 10)] || m).join(', ');
+    }
+    if (field.includes('-')) {
+      const [s, e] = field.split('-');
+      return `${monthNames[parseInt(s, 10)] || s} through ${monthNames[parseInt(e, 10)] || e}`;
+    }
+    if (field.startsWith('*/')) return `every ${field.substring(2)} months`;
+    const idx = parseInt(field, 10);
+    return monthNames[idx] || field;
+  }
+
+  function describeDow(field: string): string {
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    if (field.includes(',')) {
+      return field.split(',').map(d => dayNames[parseInt(d, 10)] || d).join(', ');
+    }
+    if (field.includes('-')) {
+      const [s, e] = field.split('-');
+      return `${dayNames[parseInt(s, 10)] || s} through ${dayNames[parseInt(e, 10)] || e}`;
+    }
+    if (field.startsWith('*/')) return `every ${field.substring(2)} days of the week`;
+    const idx = parseInt(field, 10);
+    return dayNames[idx] || field;
+  }
+
+  function getNextCronRuns(cronStr: string) {
+    if (!cronRunsList) return;
+
+    const fields = cronStr.split(/\s+/);
+    const [min, hour, dom, month, dow] = fields;
+
+    cronRunsList.innerHTML = '';
+    const nextRuns: Date[] = [];
+    let checkDate = new Date();
+
+    // Align to start of next minute
+    checkDate.setSeconds(0);
+    checkDate.setMilliseconds(0);
+    checkDate.setMinutes(checkDate.getMinutes() + 1);
+
+    let iterations = 0;
+    while (nextRuns.length < 5 && iterations < 30000) {
+      iterations++;
+
+      const m = checkDate.getMinutes();
+      const h = checkDate.getHours();
+      const d = checkDate.getDate();
+      const mo = checkDate.getMonth() + 1; // getMonth is 0-indexed
+      const dy = checkDate.getDay();
+
+      if (
+        matchCronField(m, min) &&
+        matchCronField(h, hour) &&
+        matchCronField(d, dom) &&
+        matchCronField(mo, month) &&
+        matchCronField(dy, dow)
+      ) {
+        nextRuns.push(new Date(checkDate));
+      }
+
+      // Add 1 minute
+      checkDate.setMinutes(checkDate.getMinutes() + 1);
+    }
+
+    if (nextRuns.length === 0) {
+      cronRunsList.innerHTML = '<div class="placeholder-text">no future schedules found within the simulation window</div>';
+      return;
+    }
+
+    nextRuns.forEach((date, index) => {
+      const el = document.createElement('div');
+      el.className = 'cron-run-item';
+      el.innerHTML = `
+        <span class="cron-run-num">Run #${index + 1}</span>
+        <span class="cron-run-date">${date.toLocaleString()}</span>
+      `;
+      cronRunsList.appendChild(el);
+    });
+  }
+
+  function matchCronField(val: number, field: string): boolean {
+    if (field === '*') return true;
+
+    // Step value: */n or base/n
+    if (field.includes('/')) {
+      const [base, stepStr] = field.split('/');
+      const step = parseInt(stepStr, 10);
+      if (base === '*') {
+        return val % step === 0;
+      }
+      const baseNum = parseInt(base, 10);
+      return val >= baseNum && (val - baseNum) % step === 0;
+    }
+
+    // Comma-separated list (may contain ranges)
+    if (field.includes(',')) {
+      const parts = field.split(',');
+      for (const part of parts) {
+        const trimmed = part.trim();
+        if (trimmed.includes('-')) {
+          const [start, end] = trimmed.split('-').map(Number);
+          if (val >= start && val <= end) return true;
+        } else {
+          if (Number(trimmed) === val) return true;
+        }
+      }
+      return false;
+    }
+
+    // Range: start-end
+    if (field.includes('-')) {
+      const [start, end] = field.split('-').map(Number);
+      return val >= start && val <= end;
+    }
+
+    // Single value
+    return Number(field) === val;
+  }
+
+  // --- MATH/HELPERS ---
+  function getRelativeTimeString(timeMs: number): string {
+    const now = Date.now();
+    const diff = Math.abs(timeMs - now);
+    const secs = Math.floor(diff / 1000);
+    const mins = Math.floor(secs / 60);
+    const hours = Math.floor(mins / 60);
+    const days = Math.floor(hours / 24);
+
+    const suffix = timeMs < now ? "ago" : "from now";
+
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ${suffix}`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ${suffix}`;
+    if (mins > 0) return `${mins} minute${mins > 1 ? 's' : ''} ${suffix}`;
+    return `${secs} second${secs > 1 ? 's' : ''} ${suffix}`;
+  }
+
+  function getDayOfWeekName(day: number): string {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return days[day] || "";
+  }
+
+  function getDayOfYearNum(date: Date): number {
+    const start = new Date(date.getFullYear(), 0, 0);
+    const diff = date.getTime() - start.getTime();
+    const oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay);
+  }
+
+  // Run on init
+  if (epochInput) {
+    epochInput.value = String(Math.floor(Date.now() / 1000));
+    convertEpoch();
+  }
+
+  // --- COPY & CLEAR ---
+  const btnCopyTimestamp = document.getElementById('btn-copy-timestamp');
+  if (btnCopyTimestamp && epochInput) {
+    btnCopyTimestamp.addEventListener('click', () => {
+      navigator.clipboard.writeText(epochInput.value).then(() => {
+        btnCopyTimestamp.textContent = 'Copied!';
+        setTimeout(() => { btnCopyTimestamp.textContent = 'Copy Timestamp'; }, 2000);
+      });
+    });
+  }
+
+  const btnClearAll = document.getElementById('btn-clear-all');
+  if (btnClearAll && epochInput && dateInput && detGmt && detLocal && detRelative && detIso && detDayOfWeek && detDayOfYear) {
+    btnClearAll.addEventListener('click', () => {
+      epochInput.value = '';
+      dateInput.value = '';
+      detGmt.textContent = '-';
+      detLocal.textContent = '-';
+      detRelative.textContent = '-';
+      detIso.textContent = '-';
+      detDayOfWeek.textContent = '-';
+      detDayOfYear.textContent = '-';
+    });
+  }
+</script>

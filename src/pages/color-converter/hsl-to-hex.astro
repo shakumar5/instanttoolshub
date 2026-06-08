@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "HSL to HEX Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6";
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert HSL color values to HEX color codes online. Free, fast, browser-based HSL to HEX converter with visual color picker and instant results.";
+const seoKeywords = "hsl to hex, hsl to hex converter, convert hsl to hex online, hsl color to hexadecimal";
+
+const howToUse = [
+  "Enter your HSL values (Hue 0-360, Saturation 0-100%, Lightness 0-100%) in the HSL input field.",
+  "The tool will instantly output the matching HEX color code (e.g. #14b8a6).",
+  "Click 'Copy' to copy the formatted HEX string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does HSL to HEX conversion work?",
+    a: "HSL (Hue, Saturation, Lightness) is first converted to RGB by calculating the chroma, intermediate value, and match based on the hue sector. Each RGB channel (0-255) is then converted to a two-digit hexadecimal value and concatenated to form the 6-digit HEX code."
+  },
+  {
+    q: "When should I use HSL over HEX?",
+    a: "HSL is more intuitive for humans — you can adjust brightness or saturation without complex math. HEX is the standard for CSS and design tools. Converting HSL to HEX lets you design intuitively, then use the resulting code in production stylesheets."
+  },
+  {
+    q: "Can I convert HSL with alpha to HEX?",
+    a: "Standard HEX codes are 6 digits (no alpha). However, 8-digit HEX (e.g. #14b8a680) supports transparency. Our converter outputs the standard 6-digit HEX for maximum compatibility."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert HSL (Hue, Saturation, Lightness) color values to hexadecimal color codes instantly in your browser.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="hsl-to-hex" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

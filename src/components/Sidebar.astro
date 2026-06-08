@@ -1,0 +1,365 @@
+---
+const { activeTool = "" } = Astro.props;
+
+const tools = [
+  {
+    id: "json-formatter",
+    name: "JSON Formatter",
+    href: "/json-formatter",
+    desc: "Format, minify, validate, tree view",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"></path><path d="M10 12h10"></path><path d="m16 8 4 4-4 4"></path></svg>`,
+    color: "#10b981", /* Emerald */
+    glow: "rgba(16, 185, 129, 0.15)"
+  },
+  {
+    id: "base64",
+    name: "Base64 Tool",
+    href: "/base64",
+    desc: "Encode/decode text, files & images",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2zm0-4h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path><path d="M12 11h4"></path><path d="M12 15h4"></path><path d="M8 7h8"></path></svg>`,
+    color: "#06b6d4", /* Cyan */
+    glow: "rgba(6, 182, 212, 0.15)"
+  },
+  {
+    id: "url-encoder-decoder",
+    name: "URL Encoder/Decoder",
+    href: "/url-encoder-decoder",
+    desc: "Percent encode, parse queries & UTMs",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+    color: "#3b82f6", /* Blue */
+    glow: "rgba(59, 130, 246, 0.15)"
+  },
+  {
+    id: "regex-tester",
+    name: "RegEx Tester & AI",
+    href: "/regex-tester",
+    desc: "Live regex tester & English generator",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m8 8 8 8"></path><path d="m16 8-8 8"></path></svg>`,
+    color: "#f59e0b", /* Amber */
+    glow: "rgba(245, 158, 11, 0.15)"
+  },
+  {
+    id: "jwt-decoder",
+    name: "JWT Decoder",
+    href: "/jwt-decoder",
+    desc: "Decode & verify JSON Web Tokens",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>`,
+    color: "#8b5cf6", /* Violet */
+    glow: "rgba(139, 92, 246, 0.15)"
+  },
+  {
+    id: "code-minifier-beautifier",
+    name: "Code Minifier",
+    href: "/code-minifier-beautifier",
+    desc: "Minify & beautify CSS/JS/HTML",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg>`,
+    color: "#ec4899", /* Pink */
+    glow: "rgba(236, 72, 153, 0.15)"
+  },
+  {
+    id: "markdown-editor",
+    name: "Markdown & README",
+    href: "/markdown-editor",
+    desc: "Live MD editor & GitHub templates",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`,
+    color: "#a855f7", /* Purple */
+    glow: "rgba(168, 85, 247, 0.15)"
+  },
+  {
+    id: "color-converter",
+    name: "Color Picker & Conv",
+    href: "/color-converter",
+    desc: "HEX, RGB, HSL, CMYK & palettes",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.35857 19.5 5.5 20 5.5 20.5C5.5 21.3284 6.17157 22 7 22H12Z"></path><circle cx="7.5" cy="10.5" r="1.5"></circle><circle cx="11.5" cy="7.5" r="1.5"></circle><circle cx="16.5" cy="9.5" r="1.5"></circle><circle cx="15.5" cy="14.5" r="1.5"></circle></svg>`,
+    color: "#14b8a6", /* Teal */
+    glow: "rgba(20, 184, 166, 0.15)"
+  },
+  {
+    id: "timestamp",
+    name: "Timestamp Converter",
+    href: "/timestamp",
+    desc: "Unix epoch to human & Cron parser",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+    color: "#f43f5e", /* Rose */
+    glow: "rgba(244, 63, 94, 0.15)"
+  },
+  {
+    id: "hash-generator",
+    name: "Hash & HMAC Gen",
+    href: "/hash-generator",
+    desc: "SHA256, MD5, SHA512 & files",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+    color: "#e11d48", /* Crimson */
+    glow: "rgba(225, 29, 72, 0.15)"
+  }
+];
+---
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <a href="/" class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="logo-icon"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+      <span>Tools<span>Hub</span></span>
+    </a>
+  </div>
+  
+  <div class="sidebar-search">
+    <div class="search-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="tool-search" placeholder="Search tools..." autocomplete="off" />
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul id="tools-list">
+      {tools.map(tool => (
+        <li class="tool-item" data-name={tool.name.toLowerCase()} data-desc={tool.desc.toLowerCase()}>
+          <a 
+            href={tool.href} 
+            class={`tool-link ${activeTool === tool.id ? "active" : ""}`}
+            style={`--tool-color: ${tool.color}; --tool-glow: ${tool.glow};`}
+          >
+            <span class="tool-icon" fragment set:html={tool.icon} />
+            <div class="tool-info">
+              <span class="tool-name">{tool.name}</span>
+              <span class="tool-desc">{tool.desc}</span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+    
+    <div id="no-results" class="no-results" style="display: none;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.5rem; opacity: 0.5;"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+      <span>No tools found</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="/blog" class="footer-link">Blog</a>
+    <span class="dot">•</span>
+    <a href="/privacy" class="footer-link">Privacy</a>
+    <span class="dot">•</span>
+    <a href="/about" class="footer-link">About</a>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #0b0f19;
+    border-right: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+  }
+
+  .sidebar-brand {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    color: var(--accent-primary);
+  }
+
+  .logo span span {
+    color: var(--accent-primary);
+  }
+
+  .sidebar-search {
+    padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+  }
+
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  #tool-search {
+    width: 100%;
+    padding: 0.625rem 0.75rem 0.625rem 2.25rem;
+    background: #04060a;
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    outline: none;
+    transition: all var(--transition-fast);
+  }
+
+  #tool-search:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+  }
+
+  .sidebar-nav {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sidebar-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .tool-link {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+  }
+
+  .tool-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: color var(--transition-fast);
+    flex-shrink: 0;
+  }
+
+  .tool-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .tool-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tool-desc {
+    font-size: 0.725rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  /* Hover and Active styles (uses tool specific accent colors passed via style variable) */
+  .tool-link:hover {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: var(--border-light);
+  }
+
+  .tool-link:hover .tool-icon {
+    color: var(--tool-color);
+  }
+
+  .tool-link.active {
+    background: var(--tool-glow);
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .tool-link.active .tool-icon {
+    color: var(--tool-color);
+  }
+
+  .tool-link.active .tool-name {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .footer-link {
+    color: var(--text-muted);
+  }
+  .footer-link:hover {
+    color: var(--text-secondary);
+  }
+  .dot {
+    opacity: 0.3;
+  }
+</style>
+
+<script>
+  // Instant search functionality
+  const searchInput = document.getElementById('tool-search') as HTMLInputElement | null;
+  const toolItems = document.querySelectorAll('.tool-item');
+  const noResults = document.getElementById('no-results');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = (e.target as HTMLInputElement).value.trim().toLowerCase();
+      let matchCount = 0;
+
+      toolItems.forEach((item) => {
+        const name = item.getAttribute('data-name') || '';
+        const desc = item.getAttribute('data-desc') || '';
+        
+        if (name.includes(query) || desc.includes(query)) {
+          (item as HTMLElement).style.display = 'block';
+          matchCount++;
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+
+      if (noResults) {
+        noResults.style.display = matchCount === 0 ? 'flex' : 'none';
+      }
+    });
+  }
+</script>

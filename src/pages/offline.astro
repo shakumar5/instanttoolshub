@@ -1,0 +1,181 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="You're Offline" 
+  description="You are currently offline. Browse cached tools or reconnect to continue."
+>
+  <section class="offline-section">
+    <div class="offline-content">
+      <div class="offline-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+          <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+          <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+          <path d="M10.71 5.05A16 16 0 0 1 22.56 9"></path>
+          <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+          <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+      </div>
+      <h1>You're Offline</h1>
+      <p>It looks like you've lost your internet connection. Don't worry — your previously visited tools may still be available from cache.</p>
+
+      <div class="offline-tools">
+        <h2>Available Tools</h2>
+        <p class="tools-hint">These pages may load from cache if you've visited them before.</p>
+        <nav class="tools-grid" aria-label="Developer tools">
+          <a href="/json-formatter" class="tool-link">
+            <span class="tool-name">JSON Formatter</span>
+            <span class="tool-path">/json-formatter</span>
+          </a>
+          <a href="/base64" class="tool-link">
+            <span class="tool-name">Base64</span>
+            <span class="tool-path">/base64</span>
+          </a>
+          <a href="/url-encoder-decoder" class="tool-link">
+            <span class="tool-name">URL Encoder/Decoder</span>
+            <span class="tool-path">/url-encoder-decoder</span>
+          </a>
+          <a href="/regex-tester" class="tool-link">
+            <span class="tool-name">RegEx Tester</span>
+            <span class="tool-path">/regex-tester</span>
+          </a>
+          <a href="/jwt-decoder" class="tool-link">
+            <span class="tool-name">JWT Decoder</span>
+            <span class="tool-path">/jwt-decoder</span>
+          </a>
+          <a href="/code-minifier-beautifier" class="tool-link">
+            <span class="tool-name">Code Minifier</span>
+            <span class="tool-path">/code-minifier-beautifier</span>
+          </a>
+          <a href="/markdown-editor" class="tool-link">
+            <span class="tool-name">Markdown Editor</span>
+            <span class="tool-path">/markdown-editor</span>
+          </a>
+          <a href="/color-converter" class="tool-link">
+            <span class="tool-name">Color Converter</span>
+            <span class="tool-path">/color-converter</span>
+          </a>
+          <a href="/timestamp" class="tool-link">
+            <span class="tool-name">Timestamp Converter</span>
+            <span class="tool-path">/timestamp</span>
+          </a>
+          <a href="/hash-generator" class="tool-link">
+            <span class="tool-name">Hash Generator</span>
+            <span class="tool-path">/hash-generator</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .offline-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+  }
+
+  .offline-content {
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .offline-icon {
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+  }
+
+  .offline-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+
+  .offline-content > p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .offline-tools {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-light);
+    width: 100%;
+  }
+
+  .offline-tools h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .tools-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    text-align: left;
+  }
+
+  .tool-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.85rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .tool-link:hover {
+    border-color: var(--accent-primary);
+    background: var(--accent-glow);
+  }
+
+  .tool-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .tool-link:hover .tool-name {
+    color: var(--accent-primary);
+  }
+
+  .tool-path {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 768px) {
+    .tools-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .offline-content h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

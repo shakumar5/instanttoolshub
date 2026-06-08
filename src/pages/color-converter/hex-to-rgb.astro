@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import ColorConverterTool from '../../components/tools/ColorConverterTool.astro';
+
+const toolName = "HEX to RGB Converter";
+const activeTool = "color-converter";
+const accentColor = "#14b8a6"; // Teal
+const accentGlow = "rgba(20, 184, 166, 0.15)";
+
+const seoDescription = "Convert HEX color codes to RGB values online. Easy, fast, and local in-browser hex to rgb color converter, palette builder, and visual picker.";
+const seoKeywords = "hex to rgb, hex to rgb converter, convert hex to rgb online, hex color code to rgb";
+
+const howToUse = [
+  "Enter your 3-digit or 6-digit HEX color code (e.g. #14b8a6 or #fff) in the HEX input box.",
+  "The tool will instantly output the matching RGB values (e.g. rgb(20, 184, 166)) in the RGB field.",
+  "Click 'Copy' to copy the formatted RGB CSS string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "How does HEX to RGB conversion work?",
+    a: "HEX represents colors in base-16 (hexadecimal) where pairs of characters denote Red, Green, and Blue intensities (from 00 to FF). RGB represents these intensities as base-10 integers from 0 to 255. For example, #FF0000 has R=FF (255), G=00 (0), and B=00 (0)."
+  },
+  {
+    q: "Can I use shorthand 3-digit HEX codes?",
+    a: "Yes! Shorthand HEX codes like #F00 are converted by doubling each character (producing #FF0000) before calculating RGB values."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Convert hexadecimal color codes to decimal Red, Green, Blue values instantly in your browser.</p>
+  </div>
+
+  <ColorConverterTool initialColor="#14b8a6" pageMode="hex-to-rgb" />
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>

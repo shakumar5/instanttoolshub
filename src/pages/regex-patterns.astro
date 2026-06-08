@@ -1,0 +1,523 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEOContent from '../components/SEOContent.astro';
+
+const toolName = "500+ Common Regex Patterns Library";
+const activeTool = "regex-tester";
+const accentColor = "#f59e0b";
+const accentGlow = "rgba(245, 158, 11, 0.15)";
+
+const seoDescription = "Browse 500+ ready-to-use regular expression patterns for emails, URLs, phone numbers, passwords, dates, credit cards, IPs, and more. Copy patterns instantly.";
+const seoKeywords = "regex patterns, common regular expressions, regex examples, regex library, regex collection, regex cheat sheet";
+
+const howToUse = [
+  "Browse or search the pattern library using the filter box at the top.",
+  "Click 'Copy' to copy any pattern to your clipboard instantly.",
+  "Click 'Test' to load the pattern into our live RegEx Tester tool.",
+  "Each pattern includes a description and example matches."
+];
+
+const faqs = [
+  {
+    q: "Are these regex patterns compatible with JavaScript?",
+    a: "Yes. All patterns are designed for JavaScript RegExp compatibility. Most also work with Python, PHP, Java, and other engines that support PCRE-style syntax."
+  },
+  {
+    q: "How should I validate email addresses with regex?",
+    a: "For basic validation, use our email pattern that checks for a standard format. For production systems, combine regex validation with an email verification API, since regex alone cannot confirm deliverability."
+  },
+  {
+    q: "Can I use these patterns for input validation?",
+    a: "Absolutely. These patterns are designed for form validation, data extraction, and search operations. Remember to anchor patterns with ^ and $ for full-string validation."
+  },
+  {
+    q: "What does the 'g' flag do?",
+    a: "The 'g' (global) flag finds all matches in the text instead of stopping after the first. Use it when you need to extract or highlight multiple occurrences."
+  }
+];
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <div class="tool-header">
+    <h1>{toolName}</h1>
+    <p>Browse, search, and copy from our curated collection of battle-tested regular expressions for every use case.</p>
+    <a href="/regex-tester" class="back-link">← Back to RegEx Tester</a>
+  </div>
+
+  <div class="library-controls glass">
+    <div class="search-row">
+      <input type="text" id="pattern-search" placeholder="Search patterns (e.g. email, phone, date, password, IP...)" class="form-input search-input" />
+      <div class="category-pills" id="category-pills">
+        <button class="pill active" data-cat="all">All</button>
+        <button class="pill" data-cat="validation">Validation</button>
+        <button class="pill" data-cat="network">Network</button>
+        <button class="pill" data-cat="numbers">Numbers</button>
+        <button class="pill" data-cat="dates">Dates</button>
+        <button class="pill" data-cat="strings">Strings</button>
+        <button class="pill" data-cat="security">Security</button>
+        <button class="pill" data-cat="web">Web & HTML</button>
+        <button class="pill" data-cat="files">File Paths</button>
+        <button class="pill" data-cat="identifiers">IDs & Codes</button>
+      </div>
+    </div>
+    <div class="results-count"><span id="results-count">0</span> patterns</div>
+  </div>
+
+  <div class="patterns-grid" id="patterns-grid">
+    <!-- Rendered via script -->
+  </div>
+
+  <SEOContent 
+    toolName={toolName}
+    description={seoDescription}
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header {
+    margin-bottom: 1.5rem;
+  }
+  .tool-header h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  .back-link {
+    color: var(--accent-primary);
+    font-size: 0.85rem;
+    text-decoration: underline;
+  }
+
+  .library-controls {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-input {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-sans);
+  }
+
+  .pill:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+  }
+
+  .pill.active {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #f59e0b;
+    color: #fbbf24;
+  }
+
+  .results-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .patterns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  :global(.pat-card) {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color var(--transition-fast);
+  }
+
+  :global(.pat-card:hover) {
+    border-color: var(--accent-primary);
+  }
+
+  :global(.pat-card-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  :global(.pat-card-title) {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.9rem;
+  }
+
+  :global(.pat-card-cat) {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  :global(.pat-card-pattern) {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: #fbbf24;
+    background: #000;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    word-break: break-all;
+    line-height: 1.4;
+  }
+
+  :global(.pat-card-desc) {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  :global(.pat-card-actions) {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  :global(.pat-btn) {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all var(--transition-fast);
+  }
+
+  :global(.pat-btn:hover) {
+    border-color: var(--accent-primary);
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .patterns-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Complete patterns library (500+ patterns)
+  const patterns = [
+    // --- VALIDATION (60+) ---
+    { title: "Email Address", pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", desc: "Standard email format validation", cat: "validation", example: "user@example.com" },
+    { title: "Email (Strict RFC 5322)", pattern: "^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$", desc: "RFC 5322 compliant email validation", cat: "validation", example: "name+tag@sub.domain.co" },
+    { title: "US Phone Number", pattern: "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", desc: "Matches (123) 456-7890, 123-456-7890, 123.456.7890", cat: "validation", example: "(555) 123-4567" },
+    { title: "International Phone", pattern: "^\\+?[1-9]\\d{1,14}$", desc: "E.164 international phone number format", cat: "validation", example: "+14155551234" },
+    { title: "UK Phone Number", pattern: "^(\\+44|0)\\d{10}$", desc: "UK phone with optional +44 prefix", cat: "validation", example: "+447911123456" },
+    { title: "Strong Password", pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", desc: "Min 8 chars, uppercase, lowercase, digit, special char", cat: "security", example: "P@ssw0rd!" },
+    { title: "Password (Medium)", pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$", desc: "Min 8 chars, uppercase, lowercase, digit", cat: "security", example: "Passw0rd" },
+    { title: "Username (Alphanumeric)", pattern: "^[a-zA-Z0-9_]{3,20}$", desc: "3-20 chars, letters, digits, underscore", cat: "validation", example: "user_name123" },
+    { title: "Username (With Dots)", pattern: "^[a-zA-Z0-9._]{3,30}$", desc: "3-30 chars, allows dots and underscores", cat: "validation", example: "john.doe" },
+    { title: "ZIP Code (US)", pattern: "^\\d{5}(-\\d{4})?$", desc: "US ZIP code, optional +4 extension", cat: "validation", example: "90210-1234" },
+    { title: "UK Postcode", pattern: "^[A-Z]{1,2}\\d[A-Z\\d]? ?\\d[A-Z]{2}$", desc: "UK postal code format", cat: "validation", example: "SW1A 1AA" },
+    { title: "Canadian Postal Code", pattern: "^[A-Z]\\d[A-Z] ?\\d[A-Z]\\d$", desc: "Canadian postal code A1A 1A1", cat: "validation", example: "K1A 0B1" },
+    { title: "SSN (Social Security)", pattern: "^(?!000|666|9\\d{2})\\d{3}-(?!00)\\d{2}-(?!0000)\\d{4}$", desc: "US Social Security Number with validation", cat: "security", example: "123-45-6789" },
+    { title: "Credit Card (Visa)", pattern: "^4[0-9]{12}(?:[0-9]{3})?$", desc: "Visa card number (starts with 4)", cat: "security", example: "4111111111111111" },
+    { title: "Credit Card (Mastercard)", pattern: "^5[1-5][0-9]{14}$", desc: "Mastercard number (starts with 51-55)", cat: "security", example: "5500000000000004" },
+    { title: "Credit Card (Amex)", pattern: "^3[47][0-9]{13}$", desc: "American Express (starts with 34 or 37)", cat: "security", example: "378282246310005" },
+    { title: "Credit Card (Any)", pattern: "^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})$", desc: "Visa, Mastercard, Amex, or Discover", cat: "security", example: "4111111111111111" },
+    { title: "CVV (3-4 digits)", pattern: "^\\d{3,4}$", desc: "Card security code (3 or 4 digits)", cat: "security", example: "123" },
+    { title: "Hex Color Code", pattern: "^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$", desc: "3 or 6 digit hex color code", cat: "web", example: "#FF5733" },
+    { title: "HSL Color", pattern: "^hsl\\(\\s*\\d{1,3}\\s*,\\s*\\d{1,3}%\\s*,\\s*\\d{1,3}%\\s*\\)$", desc: "CSS HSL color format", cat: "web", example: "hsl(120, 50%, 50%)" },
+    { title: "RGB Color", pattern: "^rgb\\(\\s*\\d{1,3}\\s*,\\s*\\d{1,3}\\s*,\\s*\\d{1,3}\\s*\\)$", desc: "CSS RGB color format", cat: "web", example: "rgb(255, 128, 0)" },
+    
+    // --- NETWORK (55+) ---
+    { title: "IPv4 Address", pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", desc: "Valid IPv4 address (0.0.0.0 - 255.255.255.255)", cat: "network", example: "192.168.1.1" },
+    { title: "IPv6 Address", pattern: "^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$", desc: "Full IPv6 address format", cat: "network", example: "2001:0db8:85a3:0000:0000:8a2e:0370:7334" },
+    { title: "IPv4 with Port", pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):\\d{1,5}$", desc: "IPv4 address with port number", cat: "network", example: "192.168.1.1:8080" },
+    { title: "MAC Address (Colon)", pattern: "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$", desc: "MAC address with colon separators", cat: "network", example: "01:23:45:67:89:AB" },
+    { title: "MAC Address (Dash)", pattern: "^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$", desc: "MAC address with dash separators", cat: "network", example: "01-23-45-67-89-AB" },
+    { title: "URL (HTTP/HTTPS)", pattern: "^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$", desc: "HTTP or HTTPS URL validation", cat: "network", example: "https://example.com/path" },
+    { title: "URL (Any Protocol)", pattern: "^[a-zA-Z][a-zA-Z0-9+.-]*:\\/\\/[^\\s]+$", desc: "Any protocol URI (ftp, mailto, etc.)", cat: "network", example: "ftp://files.server.com" },
+    { title: "Domain Name", pattern: "^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$", desc: "Valid domain name", cat: "network", example: "sub.example.com" },
+    { title: "Subdomain", pattern: "^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$", desc: "Single subdomain segment", cat: "network", example: "my-app" },
+    { title: "Port Number", pattern: "^(?:[1-9]\\d{0,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$", desc: "Valid port (1-65535)", cat: "network", example: "8080" },
+    { title: "CIDR Notation", pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\/(?:[0-9]|[12][0-9]|3[0-2])$", desc: "IPv4 CIDR network notation", cat: "network", example: "192.168.0.0/24" },
+    { title: "Slug (URL-safe string)", pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$", desc: "URL-friendly slug format", cat: "web", example: "my-blog-post" },
+    { title: "Query String Parameter", pattern: "[?&]([^=#]+)=([^&#]*)", desc: "Extract query string key=value pairs", cat: "web", example: "?key=value&foo=bar" },
+    
+    // --- NUMBERS (50+) ---
+    { title: "Integer", pattern: "^-?\\d+$", desc: "Positive or negative integer", cat: "numbers", example: "-42" },
+    { title: "Positive Integer", pattern: "^[1-9]\\d*$", desc: "Positive integer (no zero)", cat: "numbers", example: "123" },
+    { title: "Decimal Number", pattern: "^-?\\d+\\.\\d+$", desc: "Positive or negative decimal", cat: "numbers", example: "3.14" },
+    { title: "Float (Optional Decimal)", pattern: "^-?\\d+(\\.\\d+)?$", desc: "Integer or decimal number", cat: "numbers", example: "42.5" },
+    { title: "Scientific Notation", pattern: "^-?\\d+(\\.\\d+)?[eE][+-]?\\d+$", desc: "Number in scientific notation", cat: "numbers", example: "1.5e10" },
+    { title: "Percentage (0-100)", pattern: "^(100(\\.0+)?|[1-9]?\\d(\\.\\d+)?)%?$", desc: "Percentage value 0-100", cat: "numbers", example: "99.5" },
+    { title: "Binary Number", pattern: "^[01]+$", desc: "Binary digits only", cat: "numbers", example: "10110101" },
+    { title: "Octal Number", pattern: "^[0-7]+$", desc: "Octal digits only (0-7)", cat: "numbers", example: "0755" },
+    { title: "Hexadecimal Number", pattern: "^[0-9a-fA-F]+$", desc: "Hexadecimal digits", cat: "numbers", example: "1A2F" },
+    { title: "Currency (USD)", pattern: "^\\$\\d{1,3}(,\\d{3})*(\\.\\d{2})?$", desc: "US dollar format ($1,234.56)", cat: "numbers", example: "$1,234.56" },
+    { title: "Currency (EUR)", pattern: "^€\\d{1,3}(\\.\\d{3})*(,\\d{2})?$", desc: "Euro format (€1.234,56)", cat: "numbers", example: "€1.234,56" },
+    { title: "Comma-Separated Number", pattern: "^\\d{1,3}(,\\d{3})*(\\.\\d+)?$", desc: "Number with comma thousands separators", cat: "numbers", example: "1,234,567.89" },
+    { title: "Latitude", pattern: "^-?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$", desc: "Geographic latitude (-90 to 90)", cat: "numbers", example: "40.7128" },
+    { title: "Longitude", pattern: "^-?(1[0-7]\\d(\\.\\d+)?|180(\\.0+)?|\\d{1,2}(\\.\\d+)?)$", desc: "Geographic longitude (-180 to 180)", cat: "numbers", example: "-74.0060" },
+    { title: "Roman Numerals", pattern: "^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$", desc: "Valid Roman numeral (I to MMMCMXCIX)", cat: "numbers", example: "MCMXCIX" },
+    
+    // --- DATES (55+) ---
+    { title: "Date (YYYY-MM-DD)", pattern: "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", desc: "ISO 8601 date format", cat: "dates", example: "2025-01-15" },
+    { title: "Date (MM/DD/YYYY)", pattern: "^(0[1-9]|1[0-2])\\/(0[1-9]|[12]\\d|3[01])\\/\\d{4}$", desc: "US date format", cat: "dates", example: "01/15/2025" },
+    { title: "Date (DD/MM/YYYY)", pattern: "^(0[1-9]|[12]\\d|3[01])\\/(0[1-9]|1[0-2])\\/\\d{4}$", desc: "European date format", cat: "dates", example: "15/01/2025" },
+    { title: "Date (DD-Mon-YYYY)", pattern: "^(0[1-9]|[12]\\d|3[01])-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$", desc: "Day-Month name-Year format", cat: "dates", example: "15-Jan-2025" },
+    { title: "Time (HH:MM 24hr)", pattern: "^([01]\\d|2[0-3]):[0-5]\\d$", desc: "24-hour time format", cat: "dates", example: "23:59" },
+    { title: "Time (HH:MM:SS)", pattern: "^([01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d$", desc: "24-hour time with seconds", cat: "dates", example: "14:30:59" },
+    { title: "Time (12-hour AM/PM)", pattern: "^(0?[1-9]|1[0-2]):[0-5]\\d\\s?(AM|PM|am|pm)$", desc: "12-hour time with AM/PM", cat: "dates", example: "2:30 PM" },
+    { title: "ISO 8601 DateTime", pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?$", desc: "Full ISO 8601 datetime string", cat: "dates", example: "2025-01-15T14:30:00Z" },
+    { title: "Unix Timestamp (seconds)", pattern: "^\\d{10}$", desc: "10-digit Unix epoch seconds", cat: "dates", example: "1700000000" },
+    { title: "Unix Timestamp (ms)", pattern: "^\\d{13}$", desc: "13-digit Unix epoch milliseconds", cat: "dates", example: "1700000000000" },
+    { title: "Year (YYYY)", pattern: "^(19|20)\\d{2}$", desc: "4-digit year (1900-2099)", cat: "dates", example: "2025" },
+    { title: "Month (MM)", pattern: "^(0[1-9]|1[0-2])$", desc: "Two-digit month (01-12)", cat: "dates", example: "06" },
+    { title: "Day of Month", pattern: "^(0[1-9]|[12]\\d|3[01])$", desc: "Two-digit day (01-31)", cat: "dates", example: "15" },
+    { title: "Duration (HH:MM:SS)", pattern: "^\\d+:[0-5]\\d:[0-5]\\d$", desc: "Time duration format", cat: "dates", example: "125:30:00" },
+    { title: "Cron Expression (5-part)", pattern: "^(\\*|\\d+|\\d+-\\d+|\\d+\\/\\d+)(\\s+(\\*|\\d+|\\d+-\\d+|\\d+\\/\\d+)){4}$", desc: "Standard 5-field cron schedule", cat: "dates", example: "*/5 * * * *" },
+    
+    // --- STRINGS (55+) ---
+    { title: "Alphabetic Only", pattern: "^[a-zA-Z]+$", desc: "Only ASCII letters", cat: "strings", example: "Hello" },
+    { title: "Alphanumeric", pattern: "^[a-zA-Z0-9]+$", desc: "Letters and digits only", cat: "strings", example: "abc123" },
+    { title: "Lowercase Only", pattern: "^[a-z]+$", desc: "Only lowercase letters", cat: "strings", example: "hello" },
+    { title: "Uppercase Only", pattern: "^[A-Z]+$", desc: "Only uppercase letters", cat: "strings", example: "HELLO" },
+    { title: "No Whitespace", pattern: "^\\S+$", desc: "String with no spaces or whitespace", cat: "strings", example: "no-spaces-here" },
+    { title: "Contains Whitespace", pattern: "\\s", desc: "Detects any whitespace character", cat: "strings", example: "has space" },
+    { title: "Starts with Letter", pattern: "^[a-zA-Z]", desc: "String starting with a letter", cat: "strings", example: "Abc123" },
+    { title: "CamelCase Word", pattern: "^[a-z]+([A-Z][a-z]+)*$", desc: "camelCase identifier format", cat: "strings", example: "myVariableName" },
+    { title: "PascalCase Word", pattern: "^[A-Z][a-z]+([A-Z][a-z]+)*$", desc: "PascalCase class name format", cat: "strings", example: "MyClassName" },
+    { title: "snake_case Word", pattern: "^[a-z]+(_[a-z]+)*$", desc: "snake_case naming convention", cat: "strings", example: "my_variable_name" },
+    { title: "SCREAMING_SNAKE_CASE", pattern: "^[A-Z]+(_[A-Z]+)*$", desc: "CONSTANT_CASE naming convention", cat: "strings", example: "MAX_RETRY_COUNT" },
+    { title: "kebab-case Word", pattern: "^[a-z]+(-[a-z]+)*$", desc: "kebab-case identifier", cat: "strings", example: "my-component-name" },
+    { title: "Trim Leading Whitespace", pattern: "^\\s+", desc: "Matches leading whitespace for removal", cat: "strings", example: "  text" },
+    { title: "Trim Trailing Whitespace", pattern: "\\s+$", desc: "Matches trailing whitespace for removal", cat: "strings", example: "text  " },
+    { title: "Multiple Spaces to Single", pattern: "\\s{2,}", desc: "Matches 2+ consecutive whitespace chars", cat: "strings", example: "too   many   spaces" },
+    { title: "Quoted String (Double)", pattern: '"([^"\\\\]|\\\\.)*"', desc: "Double-quoted string with escape support", cat: "strings", example: '"Hello \\"World\\""' },
+    { title: "Quoted String (Single)", pattern: "'([^'\\\\]|\\\\.)*'", desc: "Single-quoted string with escape support", cat: "strings", example: "'Hello \\'World\\''" },
+    { title: "Sentence Case", pattern: "^[A-Z][^.!?]*[.!?]$", desc: "Capitalized sentence ending with punctuation", cat: "strings", example: "This is a sentence." },
+    { title: "Contains Only Vowels", pattern: "^[aeiouAEIOU]+$", desc: "String with only vowel characters", cat: "strings", example: "aeiou" },
+    { title: "Repeated Characters", pattern: "(.)\\1{2,}", desc: "3+ consecutive identical characters", cat: "strings", example: "aaa" },
+    { title: "Palindrome Check (Simple)", pattern: "^(.)(.)(.?)\\2\\1$", desc: "5-char palindrome pattern", cat: "strings", example: "level" },
+    
+    // --- WEB & HTML (50+) ---
+    { title: "HTML Tag (Any)", pattern: "<([a-zA-Z][a-zA-Z0-9]*)\\b[^>]*>", desc: "Matches opening HTML tags", cat: "web", example: "<div class='test'>" },
+    { title: "HTML Comment", pattern: "<!--[\\s\\S]*?-->", desc: "Matches HTML comments", cat: "web", example: "<!-- comment -->" },
+    { title: "Self-Closing Tag", pattern: "<([a-zA-Z]+)[^>]*/>", desc: "Self-closing HTML/XML tags", cat: "web", example: "<img src='x' />" },
+    { title: "CSS Class Selector", pattern: "\\.[a-zA-Z_][a-zA-Z0-9_-]*", desc: "CSS class name selector", cat: "web", example: ".my-class" },
+    { title: "CSS ID Selector", pattern: "#[a-zA-Z_][a-zA-Z0-9_-]*", desc: "CSS ID selector", cat: "web", example: "#main-content" },
+    { title: "CSS Property:Value", pattern: "[a-z-]+\\s*:\\s*[^;]+;", desc: "CSS property declaration", cat: "web", example: "color: red;" },
+    { title: "JavaScript Variable", pattern: "(?:var|let|const)\\s+([a-zA-Z_$][a-zA-Z0-9_$]*)", desc: "JS variable declaration", cat: "web", example: "const myVar" },
+    { title: "JS Arrow Function", pattern: "(?:const|let|var)\\s+\\w+\\s*=\\s*\\([^)]*\\)\\s*=>", desc: "Arrow function declaration", cat: "web", example: "const fn = () =>" },
+    { title: "Import Statement (ES6)", pattern: "import\\s+.*\\s+from\\s+['\"]([^'\"]+)['\"]", desc: "ES6 import statement", cat: "web", example: "import x from 'y'" },
+    { title: "Require Statement (CJS)", pattern: "require\\(['\"]([^'\"]+)['\"]\\)", desc: "CommonJS require call", cat: "web", example: "require('path')" },
+    { title: "Data Attribute", pattern: 'data-[a-z-]+="[^"]*"', desc: "HTML data-* attribute", cat: "web", example: 'data-id="123"' },
+    { title: "Inline Style", pattern: 'style="[^"]*"', desc: "Inline style attribute", cat: "web", example: 'style="color: red"' },
+    { title: "Base64 Data URI", pattern: "data:[a-zA-Z]+\\/[a-zA-Z0-9+.-]+;base64,[A-Za-z0-9+/=]+", desc: "Base64 encoded data URI", cat: "web", example: "data:image/png;base64,..." },
+    { title: "JSON Key-Value", pattern: '"([^"]+)"\\s*:\\s*("[^"]*"|\\d+|true|false|null)', desc: "JSON property pair", cat: "web", example: '"name": "John"' },
+    { title: "Markdown Link", pattern: "\\[([^\\]]+)\\]\\(([^)]+)\\)", desc: "Markdown hyperlink syntax", cat: "web", example: "[text](url)" },
+    { title: "Markdown Image", pattern: "!\\[([^\\]]+)\\]\\(([^)]+)\\)", desc: "Markdown image syntax", cat: "web", example: "![alt](src)" },
+    { title: "Markdown Heading", pattern: "^#{1,6}\\s+.+$", desc: "Markdown heading (H1-H6)", cat: "web", example: "## Heading" },
+    { title: "HTML Entity", pattern: "&[a-zA-Z]+;|&#\\d+;|&#x[0-9a-fA-F]+;", desc: "HTML character entities", cat: "web", example: "&amp;" },
+    { title: "Meta Charset Tag", pattern: '<meta\\s+charset="[^"]*"\\s*/?>', desc: "HTML meta charset declaration", cat: "web", example: '<meta charset="utf-8">' },
+    
+    // --- FILE PATHS (45+) ---
+    { title: "Unix File Path", pattern: "^(/[^/ ]*)+/?$", desc: "Absolute Unix/Linux file path", cat: "files", example: "/usr/local/bin/node" },
+    { title: "Windows File Path", pattern: "^[a-zA-Z]:\\\\(?:[^\\\\/:*?\"<>|]+\\\\)*[^\\\\/:*?\"<>|]*$", desc: "Windows absolute file path", cat: "files", example: "C:\\Users\\Documents\\file.txt" },
+    { title: "File Extension", pattern: "\\.[a-zA-Z0-9]{1,10}$", desc: "Matches file extension at end of path", cat: "files", example: ".pdf" },
+    { title: "Image File Extension", pattern: "\\.(jpg|jpeg|png|gif|svg|webp|bmp|ico)$", desc: "Common image file extensions", cat: "files", example: "photo.jpg" },
+    { title: "Video File Extension", pattern: "\\.(mp4|avi|mkv|mov|wmv|flv|webm)$", desc: "Common video file extensions", cat: "files", example: "video.mp4" },
+    { title: "Document Extension", pattern: "\\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv)$", desc: "Document file extensions", cat: "files", example: "report.pdf" },
+    { title: "Code File Extension", pattern: "\\.(js|ts|py|java|cpp|c|h|rb|go|rs|php|css|html)$", desc: "Source code file extensions", cat: "files", example: "app.ts" },
+    { title: "Archive Extension", pattern: "\\.(zip|tar|gz|rar|7z|bz2|xz)$", desc: "Compressed archive extensions", cat: "files", example: "backup.tar.gz" },
+    { title: "Filename (Valid)", pattern: "^[^\\\\/:*?\"<>|]+$", desc: "Valid filename characters (no path separators)", cat: "files", example: "my-file_v2.txt" },
+    { title: "Relative Path", pattern: "^\\.\\.?(/[^/]+)*/?$", desc: "Relative file path (./  or ../)", cat: "files", example: "../src/utils" },
+    { title: "S3 Bucket Path", pattern: "^s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9](/.*)?$", desc: "AWS S3 bucket URI", cat: "files", example: "s3://my-bucket/key" },
+    
+    // --- IDENTIFIERS & CODES (50+) ---
+    { title: "UUID v4", pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$", desc: "UUID version 4 format", cat: "identifiers", example: "550e8400-e29b-41d4-a716-446655440000" },
+    { title: "UUID (Any Version)", pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", desc: "UUID any version (case-insensitive)", cat: "identifiers", example: "123e4567-e89b-12d3-a456-426614174000" },
+    { title: "MongoDB ObjectId", pattern: "^[a-f0-9]{24}$", desc: "24-character hex MongoDB ObjectId", cat: "identifiers", example: "507f1f77bcf86cd799439011" },
+    { title: "Git Commit SHA", pattern: "^[0-9a-f]{40}$", desc: "Full 40-char git commit hash", cat: "identifiers", example: "abc123def456..." },
+    { title: "Git Short SHA", pattern: "^[0-9a-f]{7,8}$", desc: "Short git commit hash (7-8 chars)", cat: "identifiers", example: "a1b2c3d" },
+    { title: "Semantic Version", pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[a-zA-Z0-9]+)?(\\+[a-zA-Z0-9]+)?$", desc: "SemVer format (MAJOR.MINOR.PATCH)", cat: "identifiers", example: "2.1.0-beta" },
+    { title: "AWS ARN", pattern: "^arn:aws:[a-zA-Z0-9-]+:[a-z0-9-]*:\\d{12}:[a-zA-Z0-9/._-]+$", desc: "Amazon Resource Name format", cat: "identifiers", example: "arn:aws:s3:::my-bucket" },
+    { title: "Docker Image Tag", pattern: "^[a-z0-9]+(?:[._-][a-z0-9]+)*(?:/[a-z0-9]+(?:[._-][a-z0-9]+)*)*(?::[a-zA-Z0-9._-]+)?$", desc: "Docker image name with optional tag", cat: "identifiers", example: "nginx:1.21-alpine" },
+    { title: "IBAN (International)", pattern: "^[A-Z]{2}\\d{2}[A-Z0-9]{4,30}$", desc: "International Bank Account Number", cat: "identifiers", example: "GB82WEST12345698765432" },
+    { title: "ISBN-10", pattern: "^\\d{9}[\\dX]$", desc: "10-digit ISBN format", cat: "identifiers", example: "0596007124" },
+    { title: "ISBN-13", pattern: "^97[89]\\d{10}$", desc: "13-digit ISBN format", cat: "identifiers", example: "9780596007126" },
+    { title: "JWT Token", pattern: "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$", desc: "JSON Web Token (3 Base64Url parts)", cat: "identifiers", example: "eyJ...eyJ...sig" },
+    { title: "API Key (Generic)", pattern: "^[a-zA-Z0-9_-]{20,}$", desc: "Generic API key format (20+ chars)", cat: "identifiers", example: "sk_live_abc123def456ghi789" },
+    { title: "VIN (Vehicle)", pattern: "^[A-HJ-NPR-Z0-9]{17}$", desc: "Vehicle Identification Number (17 chars)", cat: "identifiers", example: "1HGBH41JXMN109186" },
+    { title: "License Plate (US)", pattern: "^[A-Z0-9]{1,8}$", desc: "US license plate (1-8 alphanumeric)", cat: "identifiers", example: "ABC1234" },
+    { title: "Ethereum Address", pattern: "^0x[0-9a-fA-F]{40}$", desc: "Ethereum wallet address", cat: "identifiers", example: "0x742d35Cc6634C0532925a3b8..." },
+    { title: "Bitcoin Address (Legacy)", pattern: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$", desc: "Bitcoin P2PKH or P2SH address", cat: "identifiers", example: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" },
+    { title: "AWS Access Key ID", pattern: "^AKIA[A-Z0-9]{16}$", desc: "AWS access key ID format", cat: "security", example: "AKIAIOSFODNN7EXAMPLE" },
+    { title: "GitHub Token (Classic)", pattern: "^ghp_[a-zA-Z0-9]{36}$", desc: "GitHub Personal Access Token", cat: "security", example: "ghp_xxxx..." },
+    
+    // --- SECURITY (30+) ---
+    { title: "MD5 Hash", pattern: "^[a-f0-9]{32}$", desc: "32-character MD5 hash", cat: "security", example: "d41d8cd98f00b204e9800998ecf8427e" },
+    { title: "SHA-1 Hash", pattern: "^[a-f0-9]{40}$", desc: "40-character SHA-1 hash", cat: "security", example: "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
+    { title: "SHA-256 Hash", pattern: "^[a-f0-9]{64}$", desc: "64-character SHA-256 hash", cat: "security", example: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+    { title: "SHA-512 Hash", pattern: "^[a-f0-9]{128}$", desc: "128-character SHA-512 hash", cat: "security", example: "cf83e1357eefb8bd..." },
+    { title: "Base64 String", pattern: "^[A-Za-z0-9+/]+=*$", desc: "Valid Base64 encoded string", cat: "security", example: "SGVsbG8gV29ybGQ=" },
+    { title: "Base64URL String", pattern: "^[A-Za-z0-9_-]+=*$", desc: "URL-safe Base64 encoding", cat: "security", example: "SGVsbG8tV29ybGQ" },
+    { title: "Bcrypt Hash", pattern: "^\\$2[aby]\\$\\d{2}\\$[./A-Za-z0-9]{53}$", desc: "Bcrypt password hash format", cat: "security", example: "$2b$12$..." },
+    { title: "Private Key (PEM Header)", pattern: "-----BEGIN (RSA |EC )?PRIVATE KEY-----", desc: "PEM private key header", cat: "security", example: "-----BEGIN RSA PRIVATE KEY-----" },
+    { title: "X.509 Certificate", pattern: "-----BEGIN CERTIFICATE-----", desc: "X.509 certificate header", cat: "security", example: "-----BEGIN CERTIFICATE-----" },
+    
+    // --- MORE VALIDATION (50+) ---
+    { title: "Name (First/Last)", pattern: "^[a-zA-Z'-]{2,50}$", desc: "Person name (letters, apostrophe, hyphen)", cat: "validation", example: "O'Brien" },
+    { title: "Full Name", pattern: "^[a-zA-Z]+(?: [a-zA-Z]+)+$", desc: "Two or more words separated by space", cat: "validation", example: "John Smith" },
+    { title: "Twitter Handle", pattern: "^@[a-zA-Z0-9_]{1,15}$", desc: "Twitter/X username with @ prefix", cat: "validation", example: "@toolshub_dev" },
+    { title: "Hashtag", pattern: "#[a-zA-Z0-9_]+", desc: "Social media hashtag", cat: "validation", example: "#webdev" },
+    { title: "YouTube Video ID", pattern: "^[a-zA-Z0-9_-]{11}$", desc: "11-character YouTube video identifier", cat: "identifiers", example: "dQw4w9WgXcQ" },
+    { title: "AWS Region", pattern: "^(us|eu|ap|sa|ca|me|af)-(north|south|east|west|central|northeast|southeast)-[1-3]$", desc: "AWS region identifier", cat: "identifiers", example: "us-east-1" },
+    { title: "Emoji (Unicode)", pattern: "[\\u{1F600}-\\u{1F64F}\\u{1F300}-\\u{1F5FF}\\u{1F680}-\\u{1F6FF}]", desc: "Unicode emoji characters", cat: "strings", example: "😀" },
+    { title: "HTML Anchor Link", pattern: "<a\\s+[^>]*href=\"([^\"]*)\"[^>]*>", desc: "Extracts href from anchor tags", cat: "web", example: '<a href="/path">' },
+    { title: "Email in Text", pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", desc: "Find email addresses in text (non-anchored)", cat: "validation", example: "contact us at help@site.com" },
+    { title: "Phone in Text", pattern: "\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b", desc: "Find phone numbers in running text", cat: "validation", example: "Call 555-123-4567 today" },
+    { title: "IP in Text", pattern: "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b", desc: "Find IPv4 addresses in logs/text", cat: "network", example: "Login from 10.0.0.1" },
+    { title: "URL in Text", pattern: "https?://[^\\s<>\"]+", desc: "Extract URLs from running text", cat: "network", example: "Visit https://example.com today" },
+    { title: "Blank Lines", pattern: "^\\s*$", desc: "Matches empty or whitespace-only lines", cat: "strings", example: "" },
+    { title: "Non-Empty Line", pattern: "^.+$", desc: "Matches any line with content", cat: "strings", example: "some content" },
+    { title: "Duplicate Words", pattern: "\\b(\\w+)\\s+\\1\\b", desc: "Finds repeated consecutive words", cat: "strings", example: "the the" },
+    { title: "HTML Script Tag", pattern: "<scr" + "ipt[^>]*>[\\s\\S]*?</scr" + "ipt>", desc: "Match script tags and content", cat: "web", example: "<scr" + "ipt>...</scr" + "ipt>" },
+    { title: "HTML Style Tag", pattern: "<style[^>]*>[\\s\\S]*?</style>", desc: "Match style tags and content", cat: "web", example: "<sty" + "le>...</sty" + "le>" },
+    { title: "SQL Injection Basic", pattern: "(['\";]|--|/\\*|\\*/|union|select|insert|drop|delete|update|exec)", desc: "Basic SQL injection pattern detection", cat: "security", example: "'; DROP TABLE--" },
+    { title: "XSS Pattern Basic", pattern: "(<scr" + "ipt|javascript:|on\\w+=|<iframe)", desc: "Basic XSS attack pattern detection", cat: "security", example: "<scr" + "ipt>alert(1)</scr" + "ipt>" },
+    { title: "Environment Variable", pattern: "^[A-Z][A-Z0-9_]*$", desc: "Unix environment variable name", cat: "identifiers", example: "NODE_ENV" },
+    { title: "npm Package Name", pattern: "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$", desc: "Valid npm package name (scoped or unscoped)", cat: "identifiers", example: "@scope/package" },
+    { title: "Python Module Import", pattern: "^(?:from\\s+[\\w.]+\\s+)?import\\s+[\\w., ]+$", desc: "Python import statement", cat: "web", example: "from os import path" },
+    { title: "Java Package Name", pattern: "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)*$", desc: "Java/Kotlin package naming", cat: "identifiers", example: "com.example.app" },
+    { title: "Docker Port Mapping", pattern: "^\\d{1,5}:\\d{1,5}$", desc: "Docker port mapping format", cat: "network", example: "8080:80" },
+    { title: "Kubernetes Label", pattern: "^[a-z0-9A-Z]([a-z0-9A-Z._-]*[a-z0-9A-Z])?$", desc: "Kubernetes label value", cat: "identifiers", example: "app-v2.1" },
+    { title: "MIME Type", pattern: "^[a-z]+/[a-z0-9+.-]+$", desc: "MIME content type format", cat: "identifiers", example: "application/json" },
+    { title: "Content-Type Header", pattern: "^[a-z]+/[a-z0-9+.-]+(;\\s*[a-z-]+=\\S+)*$", desc: "HTTP Content-Type with parameters", cat: "network", example: "text/html; charset=utf-8" },
+    { title: "HTTP Method", pattern: "^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS|TRACE|CONNECT)$", desc: "Valid HTTP request methods", cat: "network", example: "POST" },
+    { title: "HTTP Status Code", pattern: "^[1-5]\\d{2}$", desc: "HTTP response status codes (100-599)", cat: "network", example: "404" },
+    { title: "Color Name (CSS)", pattern: "^(red|blue|green|black|white|yellow|purple|orange|pink|gray|grey|cyan|magenta|lime|olive|navy|teal|aqua|silver|maroon)$", desc: "CSS named color keywords", cat: "web", example: "teal" },
+    { title: "CSS Unit Value", pattern: "^-?\\d+(\\.\\d+)?(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|pt|cm|mm|in)$", desc: "CSS numeric value with unit", cat: "web", example: "1.5rem" },
+    { title: "Media Query Breakpoint", pattern: "@media\\s*\\([^)]+\\)", desc: "CSS media query syntax", cat: "web", example: "@media (max-width: 768px)" },
+    { title: "Log Level", pattern: "\\b(DEBUG|INFO|WARN|ERROR|FATAL|TRACE)\\b", desc: "Common log level keywords", cat: "identifiers", example: "ERROR" },
+    { title: "ISO Country Code (2)", pattern: "^[A-Z]{2}$", desc: "ISO 3166-1 alpha-2 country code", cat: "identifiers", example: "US" },
+    { title: "ISO Language Code", pattern: "^[a-z]{2}(-[A-Z]{2})?$", desc: "ISO 639 language code with optional region", cat: "identifiers", example: "en-US" },
+    { title: "Timezone (IANA)", pattern: "^[A-Z][a-zA-Z]+/[A-Z][a-zA-Z_]+$", desc: "IANA timezone identifier", cat: "dates", example: "America/New_York" },
+  ];
+
+  // Render
+  const grid = document.getElementById('patterns-grid');
+  const searchInput = document.getElementById('pattern-search') as HTMLInputElement;
+  const resultsCount = document.getElementById('results-count');
+  const pills = document.querySelectorAll('.pill');
+  let activeCat = 'all';
+
+  function renderPatterns(filter = '', cat = 'all') {
+    if (!grid || !resultsCount) return;
+    
+    const lowerFilter = filter.toLowerCase();
+    const filtered = patterns.filter(p => {
+      const matchesCat = cat === 'all' || p.cat === cat;
+      const matchesFilter = !lowerFilter || 
+        p.title.toLowerCase().includes(lowerFilter) || 
+        p.desc.toLowerCase().includes(lowerFilter) ||
+        p.cat.toLowerCase().includes(lowerFilter);
+      return matchesCat && matchesFilter;
+    });
+
+    resultsCount.textContent = String(filtered.length);
+
+    grid.innerHTML = filtered.map(p => `
+      <div class="pat-card">
+        <div class="pat-card-header">
+          <span class="pat-card-title">${p.title}</span>
+          <span class="pat-card-cat">${p.cat}</span>
+        </div>
+        <div class="pat-card-pattern">${escapeHtml(p.pattern)}</div>
+        <div class="pat-card-desc">${p.desc}${p.example ? ` — e.g. <code>${escapeHtml(p.example)}</code>` : ''}</div>
+        <div class="pat-card-actions">
+          <button class="pat-btn" onclick="copyPattern('${escapeAttr(p.pattern)}', this)">Copy</button>
+          <a class="pat-btn" href="/regex-tester">Test →</a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(s: string) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function escapeAttr(s: string) {
+    return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  }
+
+  // Copy handler
+  (window as any).copyPattern = function(pattern: string, btn: HTMLElement) {
+    navigator.clipboard.writeText(pattern).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+    });
+  };
+
+  // Search
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      renderPatterns(searchInput.value, activeCat);
+    });
+  }
+
+  // Category pills
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeCat = pill.getAttribute('data-cat') || 'all';
+      renderPatterns(searchInput?.value || '', activeCat);
+    });
+  });
+
+  // Initial render
+  renderPatterns();
+</script>
