@@ -1,0 +1,109 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { autoLinkTools } from '../../utils/autolink';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Format dates to ISO 8601 for JSON-LD
+const datePublished = post.data.datePublished instanceof Date
+  ? post.data.datePublished.toISOString()
+  : String(post.data.datePublished);
+
+const dateModified = post.data.dateModified instanceof Date
+  ? post.data.dateModified.toISOString()
+  : String(post.data.dateModified);
+
+// Topic display name for category
+const topicDisplay = post.data.topic.charAt(0).toUpperCase() + post.data.topic.slice(1);
+---
+
+<BlogLayout
+  title={post.data.title}
+  description={post.data.description}
+  publishDate={datePublished}
+  dateModified={dateModified}
+  author={post.data.author}
+  category={topicDisplay}
+>
+  <div class="blog-content" id="blog-content">
+    <Content />
+  </div>
+</BlogLayout>
+
+<script define:vars={{ tools: post.data.tools }}>
+  // Client-side auto-linking: link first occurrence of each tool name to its page
+  const TOOL_MAP = {
+    'json-formatter': { displayName: 'JSON Formatter', path: '/json-formatter' },
+    'base64': { displayName: 'Base64', path: '/base64' },
+    'regex-tester': { displayName: 'RegEx Tester', path: '/regex-tester' },
+    'jwt-decoder': { displayName: 'JWT Decoder', path: '/jwt-decoder' },
+    'hash-generator': { displayName: 'Hash Generator', path: '/hash-generator' },
+    'url-encoder-decoder': { displayName: 'URL Encoder', path: '/url-encoder-decoder' },
+    'timestamp': { displayName: 'Timestamp Converter', path: '/timestamp' },
+    'markdown-editor': { displayName: 'Markdown Editor', path: '/markdown-editor' },
+    'color-converter': { displayName: 'Color Converter', path: '/color-converter' },
+    'code-minifier-beautifier': { displayName: 'Code Minifier', path: '/code-minifier-beautifier' },
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('blog-content');
+    if (!container || !tools || tools.length === 0) return;
+
+    for (const toolId of tools) {
+      const tool = TOOL_MAP[toolId];
+      if (!tool) continue; // silently ignore invalid identifiers
+
+      const { displayName, path } = tool;
+
+      // Walk through text nodes to find and link the first occurrence
+      const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        null
+      );
+
+      let found = false;
+      let node;
+      while ((node = walker.nextNode()) && !found) {
+        // Skip text nodes inside anchor tags
+        if (node.parentElement && node.parentElement.closest('a')) continue;
+
+        const text = node.textContent || '';
+        const regex = new RegExp(`\\b${displayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+        const match = regex.exec(text);
+
+        if (match) {
+          const before = text.substring(0, match.index);
+          const matched = text.substring(match.index, match.index + match[0].length);
+          const after = text.substring(match.index + match[0].length);
+
+          const parent = node.parentNode;
+          if (!parent) continue;
+
+          const beforeNode = document.createTextNode(before);
+          const link = document.createElement('a');
+          link.href = path;
+          link.textContent = matched;
+          const afterNode = document.createTextNode(after);
+
+          parent.insertBefore(beforeNode, node);
+          parent.insertBefore(link, node);
+          parent.insertBefore(afterNode, node);
+          parent.removeChild(node);
+
+          found = true;
+        }
+      }
+    }
+  });
+</script>

@@ -66,11 +66,8 @@ const faqs = [
     </div>
 
     <div class="panel-body tab-content-container">
-      
-      <!-- RegEx Tester Tab -->
       <div class="tab-content active" id="tab-tester">
         <div class="tester-container">
-          <!-- Left Control Panel -->
           <div class="tester-input-side">
             <div class="form-control">
               <label class="form-label">Regular Expression</label>
@@ -81,8 +78,6 @@ const faqs = [
                 <div class="regex-flags-tags" id="flags-display-tags">g</div>
               </div>
             </div>
-
-            <!-- Flags Checkboxes -->
             <div class="flags-selector-box">
               <span class="form-label">Expression Flags</span>
               <div class="flags-grid">
@@ -109,21 +104,17 @@ const faqs = [
               <textarea id="regex-text-input" placeholder="Type your sample text here to test the regular expression matches...&#10;Example: contact@toolshub.dev or support@google.com" class="form-textarea tester-text-field">Test email matching: contact@toolshub.dev and developer@my-site.org. If you input invalid emails like test@com, they won't match.</textarea>
             </div>
           </div>
-
-          <!-- Right Match Visualizer -->
           <div class="tester-output-side">
             <div class="split-label">Highlighted Matches</div>
             <div class="match-highlighter-block" id="regex-highlight-view"></div>
             
             <div class="split-label">Matches & Groups (<span id="match-count">0</span>)</div>
-            <div class="matches-list-panel" id="matches-list-output">
+            <div class="matches-list-panel" id="matches-list-output" aria-live="polite">
               <div class="placeholder-text">Matches will be listed here.</div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- AI RegEx Generator Tab -->
       <div class="tab-content" id="tab-ai">
         <div class="ai-tool-container">
           <div class="ai-form-side">
@@ -157,7 +148,7 @@ const faqs = [
               <div class="spinner"></div>
               <span>Asking Gemini AI...</span>
             </div>
-            <div id="ai-result-card" class="ai-result-card hidden">
+            <div id="ai-result-card" class="ai-result-card hidden" aria-live="polite">
               <div class="ai-regex-box">
                 <span class="ai-regex-text" id="ai-regex-val"></span>
                 <button class="btn btn-secondary btn-xs" id="btn-load-ai-regex">Load into Tester</button>
@@ -189,8 +180,6 @@ const faqs = [
           </div>
         </div>
       </div>
-
-      <!-- Common Patterns Tab -->
       <div class="tab-content" id="tab-library">
         <div class="library-container">
           <div class="library-search">
@@ -198,12 +187,9 @@ const faqs = [
             <a href="/regex-patterns" class="view-all-link">View Full 500+ Patterns Library →</a>
           </div>
           <div class="library-grid" id="library-grid-output">
-            <!-- Rendered via script -->
           </div>
         </div>
       </div>
-
-      <!-- Cheatsheet Tab -->
       <div class="tab-content" id="tab-cheatsheet">
         <div class="cheatsheet-container">
           <div class="cheatsheet-column">
@@ -784,6 +770,32 @@ const faqs = [
 </style>
 
 <script>
+  // --- Inline Error Helpers (Requirement 12.7, 12.8) ---
+  function showInlineError(inputEl: HTMLElement, errorId: string, message: string): void {
+    clearInlineError(inputEl);
+    const errorEl = document.createElement('span');
+    errorEl.id = errorId;
+    errorEl.className = 'inline-error';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.textContent = message;
+    inputEl.setAttribute('aria-describedby', errorId);
+    const container = inputEl.closest('.form-control');
+    if (container) {
+      container.appendChild(errorEl);
+    } else {
+      inputEl.insertAdjacentElement('afterend', errorEl);
+    }
+  }
+
+  function clearInlineError(inputEl: HTMLElement): void {
+    const describedBy = inputEl.getAttribute('aria-describedby');
+    if (describedBy) {
+      const existing = document.getElementById(describedBy);
+      if (existing) existing.remove();
+      inputEl.removeAttribute('aria-describedby');
+    }
+  }
+
   // Tab Switching
   const tabs = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -1005,19 +1017,28 @@ const faqs = [
     geminiKeyInput.addEventListener('change', () => {
       localStorage.setItem('toolshub_gemini_key', geminiKeyInput.value.trim());
     });
+    // Clear error on input (Requirement 12.7)
+    geminiKeyInput.addEventListener('input', () => clearInlineError(geminiKeyInput));
+  }
+
+  // Clear error on prompt input (Requirement 12.7)
+  if (aiPrompt) {
+    aiPrompt.addEventListener('input', () => clearInlineError(aiPrompt));
   }
 
   if (btnAiGenerate && aiPrompt && geminiKeyInput && aiLoading && aiResultCard && aiPlaceholder) {
     btnAiGenerate.addEventListener('click', async () => {
+      clearInlineError(geminiKeyInput);
+      clearInlineError(aiPrompt);
       const apiKey = geminiKeyInput.value.trim();
       const prompt = aiPrompt.value.trim();
 
       if (!apiKey) {
-        alert("Please enter a valid Google Gemini API Key first.");
+        showInlineError(geminiKeyInput, "gemini-key-error", "Please enter a valid Google Gemini API Key first.");
         return;
       }
       if (!prompt) {
-        alert("Please describe the pattern you want to generate.");
+        showInlineError(aiPrompt, "ai-prompt-error", "Please describe the pattern you want to generate.");
         return;
       }
 
@@ -1093,7 +1114,7 @@ const faqs = [
         aiResultCard.classList.remove('hidden');
 
       } catch (e: any) {
-        alert("Failed to generate pattern: " + e.message + "\nEnsure you entered a correct Gemini API Key and describe your request clearly.");
+        showInlineError(aiPrompt, "ai-prompt-error", "Failed to generate pattern: " + e.message + " Ensure you entered a correct Gemini API Key and describe your request clearly.");
         aiPlaceholder.classList.remove('hidden');
       } finally {
         aiLoading.classList.add('hidden');
@@ -1177,6 +1198,24 @@ const faqs = [
   // Initial render
   renderLibrary();
   updateFlagsDisplay();
+
+  // --- QUERY PARAMETER LOADING ---
+  // Load pattern from ?pattern= query parameter (e.g., from Regex Pattern Library links)
+  (function loadPatternFromQueryParam() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const encodedPattern = params.get('pattern');
+      if (encodedPattern !== null && encodedPattern !== '') {
+        const decoded = decodeURIComponent(encodedPattern);
+        if (regexPatternInput && decoded) {
+          regexPatternInput.value = decoded;
+        }
+      }
+    } catch (e) {
+      // Malformed URI encoding — leave input field blank, show default empty-state
+    }
+  })();
+
   runRegExTest();
 
   function escapeHtml(text: string) {

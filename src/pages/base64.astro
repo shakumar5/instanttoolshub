@@ -50,8 +50,6 @@ const faqs = [
     <h1>{toolName}</h1>
     <p>Encode and decode text, images, or files to and from Base64 representation locally.</p>
   </div>
-
-  <!-- Tabs Nav -->
   <div class="panel glass">
     <div class="panel-header tabbed-header">
       <div class="tabs">
@@ -63,11 +61,7 @@ const faqs = [
         <button class="btn btn-primary btn-xs copy-btn" id="copy-action">Copy Output</button>
       </div>
     </div>
-
-    <!-- Panel Content -->
     <div class="panel-body tab-content-container">
-      
-      <!-- Text Tab -->
       <div class="tab-content active" id="tab-text">
         <div class="text-split-container">
           <div class="split-box">
@@ -81,15 +75,12 @@ const faqs = [
           </div>
           <div class="split-box">
             <div class="split-label">Base64 Output</div>
-            <textarea id="text-output" placeholder="Encoded Base64 or decoded text will appear here..." class="split-textarea code-font"></textarea>
+            <textarea id="text-output" placeholder="Encoded Base64 or decoded text will appear here..." class="split-textarea code-font" aria-live="polite"></textarea>
           </div>
         </div>
       </div>
-
-      <!-- Image Tab -->
       <div class="tab-content" id="tab-image">
         <div class="image-tool-container">
-          <!-- Image to Base64 -->
           <div class="image-side">
             <div class="split-label">Convert Image to Base64</div>
             <div class="drag-zone" id="drop-zone-img">
@@ -100,8 +91,6 @@ const faqs = [
             </div>
             <div id="image-meta" class="file-meta hidden"></div>
           </div>
-          
-          <!-- Base64 to Image -->
           <div class="image-side">
             <div class="split-label">Convert Base64 to Image Preview</div>
             <div class="preview-actions">
@@ -113,14 +102,12 @@ const faqs = [
             </div>
             <div class="image-preview-box" id="img-preview-container">
               <div class="preview-placeholder">Image preview will display here</div>
-              <img id="rendered-image" class="hidden" alt="Base64 Render Output" />
+              <img id="rendered-image" class="hidden" alt="Base64 Render Output" width="400" height="220" />
               <a id="download-rendered-img" class="btn btn-outline btn-xs hidden" download="rendered-base64-image.png">Download Image</a>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- File Tab -->
       <div class="tab-content" id="tab-file">
         <div class="file-tool-container">
           <div class="file-upload-section">
@@ -141,7 +128,7 @@ const faqs = [
                 <input type="checkbox" id="include-data-uri" /> Include Data URI Header
               </label>
             </div>
-            <textarea id="file-base64-output" readonly placeholder="Base64 text will appear here..." class="file-output-textarea code-font"></textarea>
+            <textarea id="file-base64-output" readonly placeholder="Base64 text will appear here..." class="file-output-textarea code-font" aria-live="polite"></textarea>
           </div>
         </div>
       </div>
@@ -510,6 +497,32 @@ const faqs = [
 </style>
 
 <script>
+  // --- Inline Error Helpers (Requirement 12.7, 12.8) ---
+  function showInlineError(inputEl: HTMLElement, errorId: string, message: string): void {
+    clearInlineError(inputEl);
+    const errorEl = document.createElement('span');
+    errorEl.id = errorId;
+    errorEl.className = 'inline-error';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.textContent = message;
+    inputEl.setAttribute('aria-describedby', errorId);
+    const container = inputEl.closest('.form-control');
+    if (container) {
+      container.appendChild(errorEl);
+    } else {
+      inputEl.insertAdjacentElement('afterend', errorEl);
+    }
+  }
+
+  function clearInlineError(inputEl: HTMLElement): void {
+    const describedBy = inputEl.getAttribute('aria-describedby');
+    if (describedBy) {
+      const existing = document.getElementById(describedBy);
+      if (existing) existing.remove();
+      inputEl.removeAttribute('aria-describedby');
+    }
+  }
+
   // Active Tab management
   const tabs = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -656,7 +669,8 @@ const faqs = [
 
   function handleImageFile(file: File) {
     if (!file.type.startsWith('image/')) {
-      alert('Selected file is not an image.');
+      const dropZone = document.getElementById('drop-zone-img');
+      if (dropZone) showInlineError(dropZone, "img-upload-error", "Selected file is not an image.");
       return;
     }
     const reader = new FileReader();
@@ -682,6 +696,11 @@ const faqs = [
     reader.readAsDataURL(file);
   }
 
+  // Clear error on input change (Requirement 12.7)
+  if (base64ImgInput) {
+    base64ImgInput.addEventListener('input', () => clearInlineError(base64ImgInput));
+  }
+
   if (btnRenderImg && base64ImgInput) {
     btnRenderImg.addEventListener('click', () => {
       const val = base64ImgInput.value.trim();
@@ -691,9 +710,11 @@ const faqs = [
 
   function renderBase64Image(str: string) {
     if (!renderedImg || !downloadImgBtn || !previewPlaceholder) return;
+    const imgInput = document.getElementById('base64-img-input');
+    if (imgInput) clearInlineError(imgInput);
     
     if (!str) {
-      alert("Base64 string is empty.");
+      if (imgInput) showInlineError(imgInput, "base64-img-error", "Base64 string is empty.");
       return;
     }
 
@@ -721,7 +742,8 @@ const faqs = [
     };
 
     renderedImg.onerror = () => {
-      alert("Failed to render image. Ensure the string is a valid Base64 encoded image.");
+      const imgInput = document.getElementById('base64-img-input');
+      if (imgInput) showInlineError(imgInput, "base64-img-error", "Failed to render image. Ensure the string is a valid Base64 encoded image.");
       renderedImg.classList.add('hidden');
       downloadImgBtn.classList.add('hidden');
       previewPlaceholder.style.display = 'block';

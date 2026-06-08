@@ -50,11 +50,8 @@ const faqs = [
     <h1>{toolName}</h1>
     <p>Compose Markdown documents, generate professional GitHub profile READMEs, and download outputs instantly.</p>
   </div>
-
-  <!-- Main Editor Workspace -->
   <div class="panel glass">
     <div class="panel-header toolbar-header">
-      <!-- Toolbar buttons -->
       <div class="editor-toolbar">
         <select id="readme-templates" class="form-select toolbar-select">
           <option value="">-- Choose README Template --</option>
@@ -89,24 +86,17 @@ const faqs = [
         <button class="btn btn-primary btn-xs" id="btn-download-md">Export MD</button>
       </div>
     </div>
-
-    <!-- Workspace split container -->
     <div class="panel-body editor-workspace">
       <div class="split-editor-container">
-        <!-- Editor Input Panel -->
         <div class="editor-side">
           <textarea id="markdown-input" placeholder="# Write your Markdown here...&#10;&#10;Use the toolbar above or choose a README template to get started!" class="markdown-textarea code-font"></textarea>
         </div>
-
-        <!-- Rendered Preview Panel -->
         <div class="preview-side">
-          <div class="markdown-body" id="markdown-preview">
+          <div class="markdown-body" id="markdown-preview" aria-live="polite">
             <div class="preview-placeholder">Live parsed preview will display here...</div>
           </div>
         </div>
       </div>
-
-      <!-- Quick cheatsheet overlay -->
       <div class="cheatsheet-overlay hidden" id="cheatsheet-overlay">
         <div class="cheatsheet-box glass">
           <div class="cheatsheet-box-header">
@@ -129,8 +119,6 @@ const faqs = [
       </div>
     </div>
   </div>
-
-  <!-- Table Generator Modal Dialog -->
   <div class="modal-backdrop hidden" id="table-modal">
     <div class="modal-box glass">
       <h3>Insert Table</h3>

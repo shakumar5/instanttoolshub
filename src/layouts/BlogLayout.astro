@@ -21,6 +21,7 @@ interface Props {
   description: string;
   keywords?: string;
   publishDate?: string;
+  dateModified?: string;
   author?: string;
   category?: string;
 }
@@ -30,6 +31,7 @@ const {
   description, 
   keywords = "developer blog, web development, programming tutorials",
   publishDate = "",
+  dateModified = "",
   author = "ToolsHub Team",
   category = "Development"
 } = Astro.props;
@@ -69,15 +71,15 @@ const fullTitle = `${title} | ToolsHub Blog`;
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#080c14" />
 
-    <!-- Article Schema -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": title,
       "description": description,
-      "author": { "@type": "Organization", "name": "ToolsHub" },
+      "author": { "@type": "Person", "name": author },
       "publisher": { "@type": "Organization", "name": "ToolsHub", "logo": { "@type": "ImageObject", "url": "https://toolshub.dev/favicon.svg" } },
       "datePublished": publishDate,
+      "dateModified": dateModified || publishDate,
       "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl.href }
     })} />
   </head>

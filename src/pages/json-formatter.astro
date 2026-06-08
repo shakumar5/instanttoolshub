@@ -54,7 +54,6 @@ const faqs = [
   </div>
 
   <div class="tool-grid">
-    <!-- Input Panel -->
     <div class="panel glass">
       <div class="panel-header">
         <span>Input JSON</span>
@@ -68,8 +67,6 @@ const faqs = [
         <div id="validation-alert" class="validation-alert hidden"></div>
       </div>
     </div>
-
-    <!-- Output Panel -->
     <div class="panel glass">
       <div class="panel-header tabbed-header">
         <div class="tabs">
@@ -84,24 +81,19 @@ const faqs = [
       </div>
       
       <div class="panel-body tab-content-container">
-        <!-- Beautified Code Tab -->
         <div class="tab-content active" id="tab-formatted">
           <div class="code-container">
             <div class="code-header">
               <span id="output-meta">Formatted JSON</span>
             </div>
-            <textarea id="json-output" readonly placeholder="Formatted output will appear here..." class="code-editor json-textarea"></textarea>
+            <textarea id="json-output" readonly placeholder="Formatted output will appear here..." class="code-editor json-textarea" aria-live="polite"></textarea>
           </div>
         </div>
-
-        <!-- Tree View Tab -->
         <div class="tab-content" id="tab-tree">
-          <div class="tree-container" id="tree-view-output">
+          <div class="tree-container" id="tree-view-output" aria-live="polite">
             <div class="placeholder-text">Tree view will render here after entering valid JSON.</div>
           </div>
         </div>
-
-        <!-- Diff Checker Tab -->
         <div class="tab-content" id="tab-diff">
           <div class="diff-container">
             <div class="diff-panel">
@@ -114,18 +106,14 @@ const faqs = [
             </div>
           </div>
         </div>
-
-        <!-- JSON to CSV Tab -->
         <div class="tab-content" id="tab-csv">
           <div class="code-container">
             <div class="code-header">CSV Raw Output</div>
-            <textarea id="csv-output" readonly placeholder="CSV conversion will appear here..." class="code-editor json-textarea" style="color: #60a5fa;"></textarea>
+            <textarea id="csv-output" readonly placeholder="CSV conversion will appear here..." class="code-editor json-textarea" style="color: #60a5fa;" aria-live="polite"></textarea>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Actions Panel -->
     <div class="tool-actions">
       <div class="action-group">
         <label class="form-label" style="margin-right: 0.5rem; display: inline-block;">Indentation:</label>

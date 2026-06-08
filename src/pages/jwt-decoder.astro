@@ -65,11 +65,8 @@ const faqs = [
     </div>
 
     <div class="panel-body tab-content-container">
-      
-      <!-- Decode Token Tab -->
       <div class="tab-content active" id="tab-decode">
         <div class="jwt-container">
-          <!-- Left Input Panel -->
           <div class="jwt-input-panel">
             <div class="split-label">Encoded Token</div>
             <textarea id="jwt-input" placeholder="Paste your encoded JWT (header.payload.signature) here..." class="jwt-textarea code-font"></textarea>
@@ -85,27 +82,20 @@ const faqs = [
               </div>
             </div>
           </div>
-
-          <!-- Right Decode Panel -->
           <div class="jwt-output-panel">
-            <!-- Header Block -->
             <div class="decode-block">
               <div class="split-label header-label">Header: Algorithm & Token Type</div>
               <div class="code-container">
-                <textarea id="jwt-header-output" readonly class="decoded-textarea" style="color: #f87171;"></textarea>
+                <textarea id="jwt-header-output" readonly class="decoded-textarea" style="color: #f87171;" aria-live="polite"></textarea>
               </div>
             </div>
-
-            <!-- Payload Block -->
             <div class="decode-block">
               <div class="split-label payload-label">Payload: Claims / Data</div>
               <div class="code-container">
-                <textarea id="jwt-payload-output" readonly class="decoded-textarea" style="color: #c084fc;"></textarea>
+                <textarea id="jwt-payload-output" readonly class="decoded-textarea" style="color: #c084fc;" aria-live="polite"></textarea>
               </div>
               <div id="jwt-expiry-alert" class="expiry-alert hidden"></div>
             </div>
-
-            <!-- Signature Verification Block -->
             <div class="decode-block">
               <div class="split-label signature-label">Signature Verification (HS256 only)</div>
               <div class="verify-signature-box">
@@ -113,17 +103,14 @@ const faqs = [
                   <input type="text" id="verify-secret" placeholder="Enter HS256 secret key (1-256 chars)..." class="form-input secret-input" minlength="1" maxlength="256" />
                   <button class="btn btn-secondary btn-sm" id="btn-verify-sig">Verify Signature</button>
                 </div>
-                <div id="signature-status" class="signature-status">Enter your token and secret above to test integrity.</div>
+                <div id="signature-status" class="signature-status" aria-live="polite">Enter your token and secret above to test integrity.</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Generate Test Token Tab -->
       <div class="tab-content" id="tab-generate">
         <div class="jwt-container">
-          <!-- Left Form Area -->
           <div class="jwt-input-panel" style="padding: 1.25rem; overflow-y: auto;">
             <div class="split-label">Token Configuration</div>
             
@@ -152,11 +139,9 @@ const faqs = [
             <div id="gen-error-message" class="gen-error-message hidden" role="alert" aria-live="polite"></div>
             <button class="btn btn-primary" id="btn-generate-token" style="margin-top: 0.5rem;">Generate Token</button>
           </div>
-
-          <!-- Right Generated Output Area -->
           <div class="jwt-output-panel" style="padding: 1.25rem;">
             <div class="split-label">Generated JWT Token</div>
-            <textarea id="gen-token-output" readonly placeholder="Your generated token will appear here..." class="jwt-output-textarea code-font" style="margin-top: 1rem;"></textarea>
+            <textarea id="gen-token-output" readonly placeholder="Your generated token will appear here..." class="jwt-output-textarea code-font" style="margin-top: 1rem;" aria-live="polite"></textarea>
             <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
               <button class="btn btn-outline copy-btn" id="btn-copy-gen-token">Copy Token</button>
               <button class="btn btn-secondary" id="btn-load-gen-token">Load into Decoder</button>

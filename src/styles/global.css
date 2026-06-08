@@ -56,6 +56,15 @@
   padding: 0;
 }
 
+/* Ensure all img elements with explicit width/height maintain aspect ratio
+   and remain responsive, preventing Cumulative Layout Shift (CLS).
+   All @fontsource packages (Inter, Outfit, Fira Code) include font-display: swap
+   in their @font-face rules, ensuring text remains visible during font load. */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 html, body {
   height: 100%;
   background-color: var(--bg-primary);
@@ -259,6 +268,26 @@ main {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+/* ─── Visible Focus Indicators (WCAG 2.4.7 / 2.4.11) ─── */
+/* 2px solid outline with ≥3:1 contrast against --bg-primary (#080c14) */
+:focus-visible {
+  outline: 2px solid var(--accent-primary, #6366f1);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--accent-glow, rgba(99, 102, 241, 0.15));
+}
+
+/* Ensure outline is never removed on focusable elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent-primary, #6366f1) !important;
+  outline-offset: 2px;
+}
+
 .form-textarea {
   min-height: 120px;
   resize: vertical;
@@ -365,6 +394,24 @@ main {
   aside {
     display: none; /* simple toggle or drawer on mobile */
   }
+
+  /* Touch target minimum size (WCAG 2.5.5 / Requirement 12.6) */
+  button, input, a, select, textarea, [role="tab"], [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Inline validation error messages (Requirement 12.7) */
+.inline-error {
+  color: var(--color-error);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-left: 3px solid var(--color-error);
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 2px;
+  display: block;
 }
 
 /* SEO Educational Section */

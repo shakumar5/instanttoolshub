@@ -63,11 +63,8 @@ const faqs = [
     </div>
 
     <div class="panel-body tab-content-container">
-      
-      <!-- Text Hash Tab -->
       <div class="tab-content active" id="tab-text">
         <div class="hash-split-container">
-          <!-- Left Input Panel -->
           <div class="hash-input-side">
             <div class="form-control" style="flex-grow: 1; display: flex; flex-direction: column;">
               <label class="form-label">Input Text</label>
@@ -85,9 +82,7 @@ const faqs = [
               </div>
             </div>
           </div>
-
-          <!-- Right Output Lists -->
-          <div class="hash-output-side">
+          <div class="hash-output-side" aria-live="polite">
             <div class="hash-output-item">
               <div class="hash-meta-row">
                 <span class="hash-alg-label" id="label-md5">MD5</span>
@@ -122,8 +117,6 @@ const faqs = [
           </div>
         </div>
       </div>
-
-      <!-- File Checksum Tab -->
       <div class="tab-content" id="tab-file">
         <div class="file-hash-container">
           <div class="file-hash-upload">
@@ -137,7 +130,7 @@ const faqs = [
             <div id="file-hash-meta" class="file-meta hidden"></div>
           </div>
 
-          <div class="file-hash-outputs">
+          <div class="file-hash-outputs" aria-live="polite">
             <div class="split-label">File Checksums</div>
             <div class="hash-output-item" style="margin-top: 1rem;">
               <div class="hash-meta-row">

@@ -71,11 +71,8 @@ const faqs = [
     </div>
 
     <div class="panel-body tab-content-container">
-      
-      <!-- Epoch Converter Tab -->
       <div class="tab-content active" id="tab-converter">
         <div class="converter-layout">
-          <!-- Left Inputs -->
           <div class="converter-inputs">
             <div class="form-control">
               <label class="form-label">Unix Timestamp (Seconds or Milliseconds)</label>
@@ -95,8 +92,6 @@ const faqs = [
               <button class="btn btn-secondary" id="btn-convert-date">← Convert Date</button>
             </div>
           </div>
-
-          <!-- Right Details -->
           <div class="converter-details">
             <div class="split-label">Date Breakdown</div>
             <div class="details-table-wrapper">
@@ -136,8 +131,6 @@ const faqs = [
           </div>
         </div>
       </div>
-
-      <!-- Timezone Grid Tab -->
       <div class="tab-content" id="tab-timezone">
         <div class="timezone-container">
           <div class="tz-header-row">
@@ -152,7 +145,7 @@ const faqs = [
             </div>
           </div>
 
-          <div class="tz-grid" id="tz-grid">
+          <div class="tz-grid" id="tz-grid" aria-live="polite">
             <div class="tz-card glass">
               <span class="tz-name">UTC (GMT)</span>
               <span class="tz-time code-font" id="tz-val-utc">-</span>
@@ -180,8 +173,6 @@ const faqs = [
           </div>
         </div>
       </div>
-
-      <!-- Cron Parser Tab -->
       <div class="tab-content" id="tab-cron">
         <div class="cron-container">
           <div class="cron-input-side">
@@ -197,7 +188,7 @@ const faqs = [
 
             <div class="cron-results-card glass">
               <h4>Description:</h4>
-              <p id="cron-desc" class="cron-desc-text">Parses into plain English description...</p>
+              <p id="cron-desc" class="cron-desc-text" aria-live="polite">Parses into plain English description...</p>
             </div>
           </div>
 
@@ -597,6 +588,33 @@ const faqs = [
 </style>
 
 <script>
+  // --- Inline Error Helpers (Requirement 12.7, 12.8) ---
+  function showInlineError(inputEl: HTMLElement, errorId: string, message: string): void {
+    clearInlineError(inputEl);
+    const errorEl = document.createElement('span');
+    errorEl.id = errorId;
+    errorEl.className = 'inline-error';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.textContent = message;
+    inputEl.setAttribute('aria-describedby', errorId);
+    // Place error after the parent container (e.g. form-control) or after input directly
+    const container = inputEl.closest('.form-control');
+    if (container) {
+      container.appendChild(errorEl);
+    } else {
+      inputEl.insertAdjacentElement('afterend', errorEl);
+    }
+  }
+
+  function clearInlineError(inputEl: HTMLElement): void {
+    const describedBy = inputEl.getAttribute('aria-describedby');
+    if (describedBy) {
+      const existing = document.getElementById(describedBy);
+      if (existing) existing.remove();
+      inputEl.removeAttribute('aria-describedby');
+    }
+  }
+
   // Tab Switching
   const tabs = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -683,24 +701,29 @@ const faqs = [
     btnConvertDate.addEventListener('click', convertDate);
   }
 
+  // Clear errors on input change (Requirement 12.7)
+  if (epochInput) epochInput.addEventListener('input', () => clearInlineError(epochInput));
+  if (dateInput) dateInput.addEventListener('input', () => clearInlineError(dateInput));
+
   function convertEpoch() {
     if (!epochInput || !detGmt || !detLocal || !detRelative || !detIso || !detDayOfWeek || !detDayOfYear || !dateInput) return;
+    clearInlineError(epochInput);
     
     let valStr = epochInput.value.trim();
     if (!valStr) {
-      alert("Please enter a timestamp.");
+      showInlineError(epochInput, "epoch-error", "Please enter a timestamp.");
       return;
     }
 
     // Check for non-numeric input
     if (!/^\d+$/.test(valStr)) {
-      alert("Invalid numeric timestamp. Please enter digits only.");
+      showInlineError(epochInput, "epoch-error", "Invalid numeric timestamp. Please enter digits only.");
       return;
     }
 
     let val = parseInt(valStr, 10);
     if (isNaN(val)) {
-      alert("Invalid numeric timestamp.");
+      showInlineError(epochInput, "epoch-error", "Invalid numeric timestamp.");
       return;
     }
 
@@ -709,7 +732,7 @@ const faqs = [
     const date = timestampToDate(val, format);
 
     if (isNaN(date.getTime())) {
-      alert("Invalid timestamp value.");
+      showInlineError(epochInput, "epoch-error", "Invalid timestamp value.");
       return;
     }
 
@@ -734,15 +757,16 @@ const faqs = [
 
   function convertDate() {
     if (!dateInput || !epochInput) return;
+    clearInlineError(dateInput);
     const val = dateInput.value.trim();
     if (!val) {
-      alert("Please enter a date string.");
+      showInlineError(dateInput, "date-error", "Please enter a date string.");
       return;
     }
 
     const result = dateToTimestamp(val);
     if (!result) {
-      alert("Invalid Date String format. Try standard formats e.g. YYYY-MM-DD or RFC 2822.");
+      showInlineError(dateInput, "date-error", "Invalid Date String format. Try standard formats e.g. YYYY-MM-DD or RFC 2822.");
       return;
     }
 

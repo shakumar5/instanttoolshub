@@ -14,11 +14,13 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.2",
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource/fira-code": "^5.2.7",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
-    "astro": "^6.4.4"
+    "astro": "^6.4.4",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "fast-check": "^4.8.0",

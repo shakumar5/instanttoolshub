@@ -129,18 +129,13 @@ const toolListSchema = {
   description="ToolsHub is a collection of 10+ free, blazing-fast, 100% client-side developer utilities including JSON formatting, Base64 conversion, URL encoding, RegEx testing, JWT decoding, code minification, Markdown editing, color conversion, timestamp converter, and hash generation. No data ever leaves your browser."
   keywords="developer tools, json formatter online, base64 encoder decoder, url encoder online, regex tester, jwt decoder, code minifier, markdown editor, color converter, unix timestamp, hash generator, free online tools, web developer utilities"
 >
-  <!-- ItemList Schema for Rich Carousel -->
   <script type="application/ld+json" is:inline set:html={JSON.stringify(toolListSchema)} />
-
-  <!-- Hero Section -->
   <section class="hero-section" id="hero">
     <div class="hero-content">
       <div class="badge">⚡ 100% Client-Side • Zero Latency • Maximum Privacy</div>
       <h1>The Ultimate Free Developer Toolkit</h1>
       <p class="hero-subtitle">Format JSON, encode Base64, test RegEx, decode JWTs, minify code, and more — all instantly in your browser. Your data never touches a server.</p>
     </div>
-    
-    <!-- Stats Bar -->
     <div class="stats-bar">
       {stats.map(stat => (
         <div class="stat-item">
@@ -156,8 +151,6 @@ const toolListSchema = {
       <kbd class="search-kbd">/</kbd>
     </div>
   </section>
-
-  <!-- Tools Grid Section -->
   <section class="tools-section" id="tools" aria-label="Developer tools list">
     <h2 class="section-title">All Tools</h2>
     <div class="dashboard-grid" id="dashboard-grid">
@@ -188,8 +181,6 @@ const toolListSchema = {
       <p>Try searching for core keywords like 'json', 'url', 'base64', 'css', or 'date'.</p>
     </div>
   </section>
-
-  <!-- Why ToolsHub Section -->
   <section class="educational-section glass" id="features">
     <h2 class="edu-section-title">Why Developers Choose ToolsHub</h2>
     <div class="edu-grid">
@@ -215,8 +206,6 @@ const toolListSchema = {
       </div>
     </div>
   </section>
-
-  <!-- SEO Long-Form Content Section -->
   <section class="seo-content-section" id="about">
     <h2>Free Online Developer Tools — Trusted by Thousands of Engineers</h2>
     <div class="seo-text-grid">

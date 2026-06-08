@@ -70,8 +70,7 @@ const faqs = [
     <div class="results-count"><span id="results-count">0</span> patterns</div>
   </div>
 
-  <div class="patterns-grid" id="patterns-grid">
-    <!-- Rendered via script -->
+  <div class="patterns-grid" id="patterns-grid" aria-live="polite">
   </div>
 
   <SEOContent 
@@ -235,6 +234,19 @@ const faqs = [
   :global(.pat-btn:hover) {
     border-color: var(--accent-primary);
     color: #fff;
+  }
+
+  :global(.pat-btn-test) {
+    text-decoration: none;
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+  }
+
+  :global(.pat-btn-test:hover) {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #f59e0b;
+    color: #fbbf24;
   }
 
   @media (max-width: 768px) {
@@ -479,7 +491,7 @@ const faqs = [
         <div class="pat-card-desc">${p.desc}${p.example ? ` — e.g. <code>${escapeHtml(p.example)}</code>` : ''}</div>
         <div class="pat-card-actions">
           <button class="pat-btn" onclick="copyPattern('${escapeAttr(p.pattern)}', this)">Copy</button>
-          <a class="pat-btn" href="/regex-tester">Test →</a>
+          <a class="pat-btn pat-btn-test" href="/regex-tester?pattern=${encodeURIComponent(p.pattern)}">Test in RegEx Tester</a>
         </div>
       </div>
     `).join('');

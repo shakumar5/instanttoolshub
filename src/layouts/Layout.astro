@@ -45,7 +45,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary Meta Tags -->
     <title>{fullTitle}</title>
     <meta name="title" content={fullTitle} />
     <meta name="description" content={description} />
@@ -54,7 +53,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href={canonicalUrl.href} />
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:title" content={fullTitle} />
@@ -63,14 +61,12 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta property="og:site_name" content="ToolsHub" />
     <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalUrl.href} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://toolshub.dev/og-image.png" />
 
-    <!-- Icons & PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
@@ -80,7 +76,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Schema.org WebSite + SearchAction (Sitelinks Search Box) -->
     <script type="application/ld+json" is:inline>
       {
         "@context": "https://schema.org",
@@ -96,7 +91,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       }
     </script>
 
-    <!-- Schema.org SoftwareApplication Markup -->
     <script type="application/ld+json" is:inline>
       {
         "@context": "https://schema.org",
@@ -112,7 +106,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       }
     </script>
 
-    <!-- Schema.org Organization -->
     <script type="application/ld+json" is:inline>
       {
         "@context": "https://schema.org",
@@ -123,7 +116,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       }
     </script>
 
-    <!-- Schema.org BreadcrumbList -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -150,25 +142,13 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       style={`--accent-primary: ${accentColor}; --accent-glow: ${accentGlow}; --accent-hover: ${accentColor}dd;`}
     >
       <div id="mobile-sidebar-backdrop" class="sidebar-backdrop"></div>
-      
-      <!-- Sidebar Column -->
       <div id="sidebar-container" class="sidebar-container">
         <Sidebar activeTool={activeTool} />
       </div>
-
-      <!-- Main Column -->
       <div class="content-container">
         <Header />
-        <main>
-          <slot />
-        </main>
-        
-        <!-- AdSense Placeholder (non-render-blocking) -->
-        <div class="ad-container" id="ad-footer-unit" aria-hidden="true">
-          <div class="ad-placeholder">
-            <span>Advertisement</span>
-          </div>
-        </div>
+        <main><slot /></main>
+        <div class="ad-container" id="ad-footer-unit" aria-hidden="true"></div>
 
         <footer class="app-footer">
           <div class="footer-content">
@@ -202,7 +182,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         </footer>
       </div>
     </div>
-
     <style>
       .layout-wrapper {
         display: grid;
@@ -252,26 +231,16 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         z-index: 90;
       }
 
-      /* Ad Container */
+      /* Ad Container - fixed dimensions for zero CLS contribution */
       .ad-container {
-        max-width: var(--max-width);
-        margin: 2rem auto;
-        padding: 0 2rem;
+        height: 90px;
         width: 100%;
-      }
-
-      .ad-placeholder {
-        background: rgba(15, 23, 42, 0.25);
-        border: 1px dashed var(--border-light);
-        border-radius: var(--radius-sm);
-        min-height: 90px;
+        max-width: 728px;
+        margin: 1rem auto;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
       }
 
       /* Footer styling */
@@ -396,31 +365,220 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       }
     </style>
 
+    <script is:inline type="module">
+      (function() {
+        function loadAdSense() {
+          var containers = document.querySelectorAll('.ad-container');
+          if (!containers.length) return;
+
+          var adScript = document.createElement('script');
+          adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+          adScript.async = true;
+          adScript.crossOrigin = 'anonymous';
+
+          var fillTimeout;
+
+          function collapseAllContainers() {
+            containers.forEach(function(container) {
+              container.style.height = '0px';
+              container.style.overflow = 'hidden';
+              container.style.padding = '0';
+              container.style.margin = '0';
+              container.style.border = 'none';
+              container.style.background = 'none';
+              container.style.transition = 'none';
+              var placeholder = container.querySelector('.ad-placeholder');
+              if (placeholder) {
+                placeholder.style.height = '0px';
+                placeholder.style.overflow = 'hidden';
+                placeholder.style.minHeight = '0';
+                placeholder.style.border = 'none';
+                placeholder.style.background = 'none';
+                placeholder.style.transition = 'none';
+              }
+            });
+          }
+
+          adScript.onload = function() {
+            // Initialize ad slots
+            try {
+              containers.forEach(function() {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+              });
+            } catch (e) {
+              collapseAllContainers();
+              return;
+            }
+
+            // Set 10-second timeout for no-fill detection
+            fillTimeout = setTimeout(function() {
+              containers.forEach(function(container) {
+                var ins = container.querySelector('ins.adsbygoogle');
+                // If no ins element or it has no content/data-ad-status is unfilled
+                if (!ins || ins.getAttribute('data-ad-status') === 'unfilled' || ins.innerHTML.trim() === '') {
+                  container.style.height = '0px';
+                  container.style.overflow = 'hidden';
+                  container.style.padding = '0';
+                  container.style.margin = '0';
+                  container.style.border = 'none';
+                  container.style.background = 'none';
+                  container.style.transition = 'none';
+                  var placeholder = container.querySelector('.ad-placeholder');
+                  if (placeholder) {
+                    placeholder.style.height = '0px';
+                    placeholder.style.overflow = 'hidden';
+                    placeholder.style.minHeight = '0';
+                    placeholder.style.border = 'none';
+                    placeholder.style.background = 'none';
+                    placeholder.style.transition = 'none';
+                  }
+                }
+              });
+            }, 10000);
+          };
+
+          adScript.onerror = function() {
+            collapseAllContainers();
+          };
+
+          document.head.appendChild(adScript);
+        }
+
+        // Use requestIdleCallback with setTimeout 5s fallback
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadAdSense);
+        } else {
+          setTimeout(loadAdSense, 5000);
+        }
+      })();
+    </script>
     <script>
-      // Manage mobile sidebar drawer
+      // Manage mobile sidebar drawer with focus management
       const menuToggle = document.getElementById('mobile-menu-toggle');
       const layoutWrapper = document.getElementById('app-layout');
       const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      const sidebarContainer = document.getElementById('sidebar-container');
+      const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
 
-      function toggleSidebar() {
-        if (layoutWrapper) {
-          layoutWrapper.classList.toggle('mobile-sidebar-open');
+      function isMobileViewport(): boolean {
+        return window.innerWidth < 768;
+      }
+
+      function getFocusableElements(): HTMLElement[] {
+        if (!sidebarContainer) return [];
+        const selectors = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        return Array.from(sidebarContainer.querySelectorAll<HTMLElement>(selectors))
+          .filter(el => {
+            const style = window.getComputedStyle(el);
+            return style.display !== 'none' && style.visibility !== 'hidden';
+          });
+      }
+
+      function openSidebar() {
+        if (!layoutWrapper || !sidebarContainer) return;
+        layoutWrapper.classList.add('mobile-sidebar-open');
+
+        if (isMobileViewport()) {
+          // Set dialog role and aria-modal for mobile drawer
+          sidebarContainer.setAttribute('role', 'dialog');
+          sidebarContainer.setAttribute('aria-modal', 'true');
+          sidebarContainer.setAttribute('aria-label', 'Navigation menu');
+
+          // Move focus to close button after transition
+          requestAnimationFrame(() => {
+            if (sidebarCloseBtn) {
+              sidebarCloseBtn.focus();
+            }
+          });
         }
       }
 
       function closeSidebar() {
-        if (layoutWrapper) {
-          layoutWrapper.classList.remove('mobile-sidebar-open');
+        if (!layoutWrapper || !sidebarContainer) return;
+        layoutWrapper.classList.remove('mobile-sidebar-open');
+
+        if (isMobileViewport()) {
+          // Remove dialog role attributes
+          sidebarContainer.removeAttribute('role');
+          sidebarContainer.removeAttribute('aria-modal');
+          sidebarContainer.removeAttribute('aria-label');
+
+          // Return focus to hamburger button
+          if (menuToggle) {
+            menuToggle.focus();
+          }
         }
       }
 
+      function toggleSidebar() {
+        if (!layoutWrapper) return;
+        if (layoutWrapper.classList.contains('mobile-sidebar-open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
+
+      // Focus trap handler for Tab/Shift+Tab
+      function handleFocusTrap(e: KeyboardEvent) {
+        if (!isMobileViewport()) return;
+        if (!layoutWrapper?.classList.contains('mobile-sidebar-open')) return;
+
+        if (e.key === 'Tab') {
+          const focusableEls = getFocusableElements();
+          if (focusableEls.length === 0) return;
+
+          const firstFocusable = focusableEls[0];
+          const lastFocusable = focusableEls[focusableEls.length - 1];
+
+          if (e.shiftKey) {
+            // Shift+Tab: if on first element, wrap to last
+            if (document.activeElement === firstFocusable) {
+              e.preventDefault();
+              lastFocusable.focus();
+            }
+          } else {
+            // Tab: if on last element, wrap to first
+            if (document.activeElement === lastFocusable) {
+              e.preventDefault();
+              firstFocusable.focus();
+            }
+          }
+        }
+      }
+
+      // Escape key handler
+      function handleEscapeKey(e: KeyboardEvent) {
+        if (e.key === 'Escape' && isMobileViewport() && layoutWrapper?.classList.contains('mobile-sidebar-open')) {
+          e.preventDefault();
+          closeSidebar();
+        }
+      }
+
+      // Event listeners
       if (menuToggle) {
         menuToggle.addEventListener('click', toggleSidebar);
+      }
+
+      if (sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', closeSidebar);
       }
 
       if (backdrop) {
         backdrop.addEventListener('click', closeSidebar);
       }
+
+      document.addEventListener('keydown', handleEscapeKey);
+      document.addEventListener('keydown', handleFocusTrap);
+
+      // Clean up dialog attributes on resize to desktop
+      window.addEventListener('resize', () => {
+        if (!isMobileViewport() && sidebarContainer) {
+          sidebarContainer.removeAttribute('role');
+          sidebarContainer.removeAttribute('aria-modal');
+          sidebarContainer.removeAttribute('aria-label');
+        }
+      });
 
       // Register Service Worker for PWA offline support
       if ('serviceWorker' in navigator) {

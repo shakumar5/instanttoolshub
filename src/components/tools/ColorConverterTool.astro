@@ -8,9 +8,7 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
 ---
 
 <div class="color-tool-wrapper" data-page-mode={pageMode} data-initial-color={initialColor}>
-  <!-- Top Split: Picker & Conversions -->
   <div class="color-main-grid">
-    <!-- Picker panel -->
     <div class="color-panel glass">
       <div class="split-label">Visual Color Picker</div>
       <div class="picker-box">
@@ -24,7 +22,6 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
       </div>
     </div>
 
-    <!-- Conversions panel -->
     <div class="color-panel glass">
       <div class="split-label">Color Conversions</div>
       <div class="conversions-form">
@@ -60,7 +57,6 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
     </div>
   </div>
 
-  <!-- Bottom Tabs: Palettes, Gradients, Image Extractor, Contrast Checker -->
   <div class="color-secondary-tabs glass">
     <div class="tabs-header-bar">
       <button class="color-tab-btn active" data-color-tab="tab-palettes">Palette Generator</button>
@@ -71,9 +67,8 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
 
     <div class="color-tab-content-container">
       
-      <!-- Palette Generator Content -->
       <div class="color-tab-content active" id="tab-palettes">
-        <div class="palette-sections">
+        <div class="palette-sections" aria-live="polite">
           <div class="palette-block">
             <h4 class="palette-title">Complementary Palette</h4>
             <div class="palette-row" id="palette-complementary"></div>
@@ -93,7 +88,6 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
         </div>
       </div>
 
-      <!-- Gradient Builder Content -->
       <div class="color-tab-content" id="tab-gradients">
         <div class="gradient-workspace">
           <div class="gradient-controls-side">
@@ -118,7 +112,7 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
             </div>
             <div class="form-control">
               <label class="form-label">CSS Code</label>
-              <textarea id="grad-css-output" readonly class="form-textarea code-font" style="min-height: 60px;"></textarea>
+              <textarea id="grad-css-output" readonly class="form-textarea code-font" style="min-height: 60px;" aria-live="polite"></textarea>
             </div>
             <button class="btn btn-primary btn-sm copy-btn" id="btn-copy-gradient">Copy CSS</button>
           </div>
@@ -128,7 +122,6 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
         </div>
       </div>
 
-      <!-- Color from Image Content -->
       <div class="color-tab-content" id="tab-extractor">
         <div class="extractor-workspace">
           <div class="extractor-left">
@@ -162,7 +155,6 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
         </div>
       </div>
 
-      <!-- Contrast Checker Content -->
       <div class="color-tab-content" id="tab-contrast">
         <div class="contrast-workspace">
           <div class="contrast-inputs">
@@ -182,7 +174,7 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
             </div>
           </div>
 
-          <div class="contrast-results">
+          <div class="contrast-results" aria-live="polite">
             <div class="contrast-preview-card" id="contrast-preview-card">
               <span id="contrast-preview-text">Sample Text Display</span>
             </div>

@@ -100,7 +100,7 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 8: Batch File Minification Per-File Correctness**
     - **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
 
-- [~] 5. Checkpoint - Core tool engines
+- [x] 5. Checkpoint - Core tool engines
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 6. Markdown Editor Templates and Export
@@ -194,10 +194,10 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 16: File Checksum Determinism**
     - **Validates: Requirements 7.1**
 
-- [~] 10. Checkpoint - All tool engines complete
+- [x] 10. Checkpoint - All tool engines complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Service Worker Rewrite
+- [x] 11. Service Worker Rewrite
   - [x] 11.1 Implement service worker with caching strategies
     - Rewrite `public/sw.js` with cache-first strategy for static assets (CSS, JS, fonts, images) and network-first (3-second timeout) for HTML navigation
     - Precache all 10 tool pages + /offline + app shell assets on install
@@ -209,13 +209,13 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - Configure service worker to serve /offline when no cache + no network for HTML requests
     - _Requirements: 9.3, 9.6_
 
-  - [-] 11.3 Implement LRU cache eviction
+  - [x] 11.3 Implement LRU cache eviction
     - Track cache entry metadata (URL, lastAccessed timestamp, size, isAppShell flag)
     - On each cache write, check total size against 50 MB threshold
     - Evict entries in ascending last-access-time order, exempt app shell assets
     - _Requirements: 9.4_
 
-  - [-] 11.4 Implement update toast notification
+  - [x] 11.4 Implement update toast notification
     - On `controllerchange` event, inject toast DOM at bottom-center viewport
     - Auto-dismiss after 8 seconds or on dismiss button click
     - _Requirements: 9.5_
@@ -224,7 +224,7 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 18: LRU Cache Eviction Ordering**
     - **Validates: Requirements 9.4**
 
-- [ ] 12. Blog Migration to Content Collections
+- [x] 12. Blog Migration to Content Collections
   - [x] 12.1 Set up Content Collections schema and configuration
     - Create `src/content/config.ts` with blog collection Zod schema (title, description, author, datePublished, dateModified, topic, tools, excerpt)
     - Validate field constraints: title max 100, description max 160, excerpt max 200, topic enum, tools enum array
@@ -241,13 +241,13 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - Implement client-side category and topic filter UI, show all by default, update without page reload
     - _Requirements: 10.2, 10.3, 14.5_
 
-  - [-] 12.4 Implement blog auto-linking and JSON-LD
+  - [x] 12.4 Implement blog auto-linking and JSON-LD
     - Create utility to auto-link first occurrence of each tool name from frontmatter tools array to correct tool page path
     - Handle invalid tool identifiers gracefully (ignore, process remaining)
     - Add Article schema JSON-LD to blog post layout with author, datePublished, dateModified in ISO 8601
     - _Requirements: 10.4, 10.5, 10.6_
 
-  - [-] 12.5 Create regex email validation blog article
+  - [x] 12.5 Create regex email validation blog article
     - Create blog post at `/blog/regex-email-validation` titled "How to Write Regex for Email Validation"
     - Include target keyword in H1, unique meta description (50–160 chars), at least one link to /regex-tester
     - Frontmatter: topic "tutorial", tools ["regex-tester"], all required schema fields
@@ -259,21 +259,21 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 21: Blog Post JSON-LD Schema Correctness**
     - **Validates: Requirements 10.2, 10.4, 10.6**
 
-- [ ] 13. AdSense Lazy Loading
-  - [~] 13.1 Implement AdSense loader with requestIdleCallback
+- [x] 13. AdSense Lazy Loading
+  - [x] 13.1 Implement AdSense loader with requestIdleCallback
     - Add inline script to `src/layouts/Layout.astro` that loads AdSense via requestIdleCallback after FCP
     - Implement setTimeout 5-second fallback for browsers without requestIdleCallback
     - On script load, initialize ad slots; on failure or no fill after 10s, collapse container to 0px (no transition, border, or background)
     - _Requirements: 11.1, 11.3_
 
-  - [~] 13.2 Add ad container elements with fixed dimensions
+  - [x] 13.2 Add ad container elements with fixed dimensions
     - Add Ad_Container elements (90px height, 100% width, max 728px) in DOM positions below tool content, above footer
     - Ensure containers never overlap or sit between tool inputs/outputs/controls
     - Maximum 3 per page
     - _Requirements: 11.2, 11.4, 11.5, 11.6_
 
-- [ ] 14. Color Sub-Page PageMode Activation
-  - [-] 14.1 Implement PageMode activation logic
+- [x] 14. Color Sub-Page PageMode Activation
+  - [x] 14.1 Implement PageMode activation logic
     - Update `src/components/tools/ColorConverterTool.astro` client script to read `data-page-mode` attribute on mount
     - Parse source/target format from pageMode string (e.g., "hex-to-rgb")
     - Set focus on source input, apply `.conversion-highlight` class to target output
@@ -281,7 +281,7 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - Default to HEX active with no highlights when no pageMode
     - _Requirements: 13.1, 13.2, 13.3, 13.4_
 
-  - [~] 14.2 Verify pageMode prop passing on all color sub-pages
+  - [x] 14.2 Verify pageMode prop passing on all color sub-pages
     - Confirm all 12 color sub-pages under `/color-converter/` pass correct pageMode prop to ColorConverterTool
     - _Requirements: 13.1_
 
@@ -289,13 +289,13 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 22: PageMode Focus and Highlight Activation**
     - **Validates: Requirements 13.2, 13.3**
 
-- [ ] 15. SEO Content - Regex Pattern Library Links
-  - [~] 15.1 Add "Test in RegEx Tester" links to pattern library
+- [x] 15. SEO Content - Regex Pattern Library Links
+  - [x] 15.1 Add "Test in RegEx Tester" links to pattern library
     - Update `src/pages/regex-patterns.astro` to include a "Test in RegEx Tester" link for each pattern
     - Link href: `/regex-tester?pattern={URI-encoded pattern}`
     - _Requirements: 14.2_
 
-  - [~] 15.2 Implement query parameter loading on RegEx Tester page
+  - [x] 15.2 Implement query parameter loading on RegEx Tester page
     - Update `src/pages/regex-tester.astro` to read `pattern` query parameter on load
     - URI-decode value and populate regex input field
     - Handle empty or undecodable parameter: leave field blank, show default empty-state
@@ -305,23 +305,23 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 23: Regex Pattern Library Link Round-Trip**
     - **Validates: Requirements 14.2, 14.3**
 
-- [~] 16. Checkpoint - Infrastructure and content complete
+- [x] 16. Checkpoint - Infrastructure and content complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 17. Accessibility and UX Polish
-  - [~] 17.1 Implement focus indicators and ARIA live regions
+- [x] 17. Accessibility and UX Polish
+  - [x] 17.1 Implement focus indicators and ARIA live regions
     - Add CSS for visible focus indicators (min 2px outline, ≥3:1 contrast) on all focusable elements in `src/styles/global.css`
     - Add `aria-live="polite"` to all dynamic tool output areas across tool pages
     - _Requirements: 12.1, 12.2_
 
-  - [~] 17.2 Implement mobile drawer focus management
+  - [x] 17.2 Implement mobile drawer focus management
     - Update `src/components/Sidebar.astro` to add `role="dialog"` and `aria-modal="true"` on drawer container (viewports <768px)
     - Move focus to close button on open, trap Tab/Shift+Tab within drawer
     - Return focus to hamburger button on close
     - Close drawer on Escape key press and return focus
     - _Requirements: 12.3, 12.4, 12.5_
 
-  - [~] 17.3 Implement touch targets and inline validation errors
+  - [x] 17.3 Implement touch targets and inline validation errors
     - Ensure all interactive elements have min 44×44px touch targets on viewports <768px
     - Implement inline error message pattern: adjacent to input, associated via `aria-describedby`, removed when input becomes valid
     - Remove all `alert()` calls from tool scripts
@@ -331,24 +331,24 @@ This plan implements 15 feature gaps across tool engine enhancements, infrastruc
     - **Property 24: Inline Validation Error Association**
     - **Validates: Requirements 12.7**
 
-- [ ] 18. Performance Hardening
-  - [~] 18.1 Implement font-display and image dimension attributes
+- [x] 18. Performance Hardening
+  - [x] 18.1 Implement font-display and image dimension attributes
     - Ensure all @fontsource font-face rules include `font-display: swap`
     - Add explicit width and height attributes to all `<img>` elements across pages
     - _Requirements: 15.1, 15.2, 15.6_
 
-  - [~] 18.2 Verify build output and script loading
+  - [x] 18.2 Verify build output and script loading
     - Confirm `compressHTML: true` produces minified HTML (no comments, no excess whitespace)
     - Ensure all inline tool scripts use `type="module"` for deferred parsing
     - _Requirements: 15.3, 15.4_
 
-  - [~] 18.3 Run Lighthouse audit and resolve performance issues
+  - [x] 18.3 Run Lighthouse audit and resolve performance issues
     - Run Lighthouse mobile audit on key pages
     - Target: Performance ≥98, LCP <1.5s, FCP <1.0s, TBT <150ms
     - Fix any issues identified to meet thresholds
     - _Requirements: 15.5_
 
-- [~] 19. Final Checkpoint - All features complete
+- [x] 19. Final Checkpoint - All features complete
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

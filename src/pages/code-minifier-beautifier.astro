@@ -67,8 +67,6 @@ const faqs = [
     </div>
 
     <div class="panel-body tab-content-container">
-      
-      <!-- CSS, JS, HTML Common Editor layout (represented dynamically) -->
       <div class="tab-content active" id="tab-css">
         <div class="editor-grid">
           <div class="editor-side">
@@ -77,7 +75,7 @@ const faqs = [
           </div>
           <div class="editor-side">
             <div class="split-label">Optimized CSS Output</div>
-            <textarea id="css-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;"></textarea>
+            <textarea id="css-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;" aria-live="polite"></textarea>
           </div>
         </div>
       </div>
@@ -90,7 +88,7 @@ const faqs = [
           </div>
           <div class="editor-side">
             <div class="split-label">Optimized JS Output</div>
-            <textarea id="js-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;"></textarea>
+            <textarea id="js-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;" aria-live="polite"></textarea>
           </div>
         </div>
       </div>
@@ -103,12 +101,10 @@ const faqs = [
           </div>
           <div class="editor-side">
             <div class="split-label">Optimized HTML Output</div>
-            <textarea id="html-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;"></textarea>
+            <textarea id="html-output" readonly placeholder="Output will render here..." class="editor-textarea code-font" style="color: #f472b6;" aria-live="polite"></textarea>
           </div>
         </div>
       </div>
-
-      <!-- Batch File Processing Tab -->
       <div class="tab-content" id="tab-batch">
         <div class="batch-container">
           <div class="upload-area">
@@ -129,11 +125,8 @@ const faqs = [
       </div>
 
     </div>
-
-    <!-- Stats and Actions Bar -->
     <div class="tool-actions-row">
-      <!-- Stats Container -->
-      <div class="compression-stats-card" id="stats-card">
+      <div class="compression-stats-card" id="stats-card" aria-live="polite">
         <div class="stat-item">
           <span class="stat-label">Original:</span>
           <span class="stat-value" id="stat-orig">0 B</span>
