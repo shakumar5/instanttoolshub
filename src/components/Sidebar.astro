@@ -139,11 +139,9 @@ const tools = [
   </nav>
 
   <div class="sidebar-footer">
-    <a href="/blog" class="footer-link">Blog</a>
-    <span class="dot">•</span>
-    <a href="/privacy" class="footer-link">Privacy</a>
-    <span class="dot">•</span>
-    <a href="/about" class="footer-link">About</a>
+    <a href="/blog" class="footer-link">📝 Blog</a>
+    <a href="/privacy" class="footer-link">🔒 Privacy</a>
+    <a href="/about" class="footer-link">ℹ️ About</a>
   </div>
 </aside>
 
@@ -344,23 +342,22 @@ const tools = [
   }
 
   .sidebar-footer {
-    padding: 1rem;
+    padding: 1rem 1.25rem;
     border-top: 1px solid var(--border-light);
     display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.9rem;
   }
 
   .footer-link {
-    color: var(--text-muted);
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 0.35rem 0;
+    transition: color 0.15s ease;
   }
   .footer-link:hover {
-    color: var(--text-secondary);
-  }
-  .dot {
-    opacity: 0.3;
+    color: #fff;
   }
 </style>
 

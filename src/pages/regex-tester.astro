@@ -3,39 +3,82 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "RegEx Tester & AI Generator";
+const toolName = "RegEx Tester & Debugger Online — Free, Instant, Private";
+const pageHeading = "RegEx Tester & Debugger";
 const activeTool = "regex-tester";
 const accentColor = "#f59e0b"; // Amber
 const accentGlow = "rgba(245, 158, 11, 0.15)";
 
-const seoDescription = "Free online Regular Expression (RegEx) tester and generator. Test expressions with live match highlighting, inspect capture groups, search a common patterns library, and generate RegEx from English descriptions using AI.";
-const seoKeywords = "regex tester, regex checker online, test regex, regex generator, regex to text, ai regex generator, regex cheatsheet";
+const seoDescription = "Test, debug, and build regular expressions with real-time match highlighting. Supports JavaScript regex flags, match groups, and a pattern library — 100% client-side, no data uploaded.";
+const seoKeywords = "regex tester, regex debugger, regular expression tester online, regex validator, regex pattern tester, test regex online free, javascript regex tester";
 
 const howToUse = [
-  "Choose your tool from the tabs: 'RegEx Tester', 'AI RegEx Generator', 'Patterns Library', or 'Cheatsheet'.",
-  "RegEx Tester: Enter your regular expression (without outer slashes) and check desired flags (e.g., g, i, m). Type test text below to see live highlights.",
-  "AI RegEx Generator: Enter a Gemini API key (saved locally in your browser), describe what pattern you need in plain English (e.g. 'Match US zip codes'), and click Generate.",
-  "Patterns Library: Browse common developer expressions (emails, passwords, numbers, etc.) and click 'Use Pattern' to load them instantly."
+  "Enter your regular expression in the pattern input field (without enclosing slashes). The tool validates syntax as you type and flags errors instantly.",
+  "Select the flags you need: g (global — find all matches), i (case-insensitive), m (multiline — anchors match line boundaries), s (dotAll — dot matches newlines), or u (unicode).",
+  "Paste or type your test string in the text area below the pattern. Matches are highlighted in real-time with alternating colours so overlapping groups are easy to distinguish.",
+  "Inspect capture groups in the Matches panel on the right. Group 0 shows the full match; Groups 1, 2, etc. show each capturing parenthesis result.",
+  "Browse the 'Common Patterns' tab to load pre-built expressions for emails, URLs, phone numbers, dates, and more. Click 'Use Pattern' to load any pattern into the tester instantly.",
+  "Use the 'AI Generator' tab to describe what you want to match in plain English, and let AI produce a regex pattern with explanation and test examples.",
+  "Click 'Copy Pattern' to copy your final regex (with flags) to the clipboard. All processing runs entirely in your browser — no data is ever uploaded to a server."
 ];
 
 const faqs = [
   {
-    q: "Is my test text or API key sent to any server?",
-    a: "No. The regex evaluation runs entirely in your local browser using standard JavaScript RegExp objects. Your Gemini API key is stored securely in your browser's localStorage and is sent directly to Google's official Gemini endpoint. No intermediary server is used."
+    q: "Is this regex tester safe for sensitive text?",
+    a: "Yes, runs entirely in browser. Test text and patterns never leave your device."
   },
   {
-    q: "How do I get a Gemini API key?",
-    a: "Google provides free developer API keys for Gemini. Go to Google AI Studio (aistudio.google.com), click 'Create API Key', and paste it into our AI generator tab. It takes less than 60 seconds."
+    q: "What is a regular expression?",
+    a: "A sequence of characters defining a search pattern. Used for matching, finding, and replacing text in strings. Supported by all major programming languages."
   },
   {
-    q: "What do the flags g, i, and m mean?",
-    a: "g (Global) matches all occurrences in the text rather than stopping after the first match. i (Case-Insensitive) ignores capital vs lowercase differences. m (Multiline) makes anchors like ^ and $ match the beginning and end of individual lines, not just the whole string. To validate URL patterns you write, try them in the <a href=\"/url-encoder-decoder\">URL Encoder &amp; Decoder</a>."
+    q: "What regex flags are supported?",
+    a: "g (global), i (case-insensitive), m (multiline), s (dotAll), u (unicode), y (sticky). Toggle them in the flags panel."
   },
   {
-    q: "How are Capture Groups displayed?",
-    a: "When a match contains capturing parentheses, they are broken down in the Matches panel. Group 0 represents the full matched string, while Group 1, Group 2, etc. display the contents captured by your custom parenthesis blocks. For testing JSON payloads matched by your patterns, use the <a href=\"/json-formatter\">JSON Formatter</a>."
+    q: "Why isn't my regex matching?",
+    a: "Common issues: forgetting to escape special characters (. * + ? ^ $ [ ] { }), missing anchors (^ $), incorrect flag usage, or greedy vs lazy quantifiers. Use the match highlighter to debug visually."
+  },
+  {
+    q: "What is a capture group?",
+    a: "Parentheses ( ) create groups that extract portions of a match. Access groups by index in match results. Named groups use <code>(?&lt;name&gt;pattern)</code> syntax."
+  },
+  {
+    q: "Can I test patterns from the pattern library?",
+    a: "Yes, each pattern in the Pattern Library page has a \"Test in RegEx Tester\" link that pre-loads the pattern into this tester."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RegEx Tester & Debugger",
+  "url": "https://instanttoolshub.com/regex-tester",
+  "description": "Free online regex tester with real-time match highlighting, flag support, group extraction, and a curated pattern library.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Real-time regex match highlighting",
+    "JavaScript regex flag support (g, i, m, s, u, y)",
+    "Match group extraction",
+    "Pattern library with test links",
+    "Client-side processing — no data uploaded",
+    "Copy matches to clipboard"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -46,8 +89,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Test expressions with live capture highlights, build regex patterns using AI, and explore a library of common patterns.</p>
   </div>
 
@@ -101,7 +145,7 @@ const faqs = [
 
             <div class="form-control" style="flex-grow: 1;">
               <label class="form-label">Test Text</label>
-              <textarea id="regex-text-input" placeholder="Type your sample text here to test the regular expression matches...&#10;Example: contact@toolshub.dev or support@google.com" class="form-textarea tester-text-field">Test email matching: contact@toolshub.dev and developer@my-site.org. If you input invalid emails like test@com, they won't match.</textarea>
+              <textarea id="regex-text-input" placeholder="Type your sample text here to test the regular expression matches...&#10;Example: contact@instanttoolshub.com or support@google.com" class="form-textarea tester-text-field">Test email matching: contact@instanttoolshub.com and developer@my-site.org. If you input invalid emails like test@com, they won't match.</textarea>
             </div>
           </div>
           <div class="tester-output-side">
@@ -233,11 +277,54 @@ const faqs = [
   <RelatedTools currentTool="regex-tester" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="Regular expressions (regex) are powerful pattern-matching sequences used across every major programming language, text editor, and command-line tool to search, validate, and transform text. Whether you're parsing log files, validating form input, extracting data from HTML, or building search functionality, regex provides a concise syntax for describing complex text patterns. This tester lets you build and debug patterns interactively with real-time match highlighting, capture group inspection, and flag toggling — all running entirely in your browser with zero data uploads."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>RegEx Tester Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Real-Time Match Highlighting</h3>
+          <p>Matches are highlighted instantly as you type your pattern or test string. Alternating colours distinguish overlapping matches so you can visually scan results without confusion.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Capture Group Inspector</h3>
+          <p>View every capturing group breakdown for each match. Group 0 shows the full match; numbered groups display individual sub-expression results with their position indexes.</p>
+        </div>
+        <div class="feature-item">
+          <h3>JavaScript Regex Flag Support (g/i/m/s/u/y)</h3>
+          <p>Toggle flags on and off with checkboxes. See immediately how global, case-insensitive, multiline, dotAll, unicode, and sticky modes affect your pattern results.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Curated Pattern Library</h3>
+          <p>Browse pre-built patterns for emails, URLs, phone numbers, dates, IP addresses, passwords, and more. Click to load any pattern directly into the tester for immediate testing.</p>
+        </div>
+        <div class="feature-item">
+          <h3>AI Regex Generator</h3>
+          <p>Describe what you want to match in plain English and let AI produce a working regex pattern with an explanation, suggested flags, and test examples.</p>
+        </div>
+        <div class="feature-item">
+          <h3>100% Client-Side &amp; Private</h3>
+          <p>All regex evaluation runs locally in your browser using the native JavaScript RegExp engine. No test data or patterns are ever sent to a server.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Building or debugging patterns? These tools on InstantToolsHub pair well with the RegEx Tester:</p>
+      <ul class="related-links-list">
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format and inspect JSON data extracted with regex capture groups</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Encode or decode special characters in URLs matched by your regex patterns</li>
+        <li><a href="/code-minifier-beautifier"><strong>Code Minifier & Beautifier</strong></a> — Minify or beautify code before or after regex-based transformations</li>
+        <li><a href="/hash-generator"><strong>Hash & HMAC Generator</strong></a> — Generate checksums to fingerprint or verify text matched by your patterns</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -764,6 +851,84 @@ const faqs = [
       height: auto;
     }
     .cheatsheet-container, .library-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* SEO Section */
+  .seo-section {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .seo-info-card {
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .seo-info-card h2 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .seo-info-card p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .features-list {
       grid-template-columns: 1fr;
     }
   }

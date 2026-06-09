@@ -3,13 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "Markdown Editor & README Generator";
+const toolName = "Markdown Editor & README Generator Online — Free, Instant, Private";
+const pageHeading = "Markdown Editor & README Generator";
 const activeTool = "markdown-editor";
 const accentColor = "#a855f7"; // Purple
 const accentGlow = "rgba(168, 85, 247, 0.15)";
 
-const seoDescription = "Free online Markdown editor with live preview. Generate beautiful GitHub README files using pre-made profile templates, compile tables, and export code to HTML or PDF.";
-const seoKeywords = "markdown editor online, markdown preview, markdown to html, readme generator, github readme template generator, markdown table generator";
+const seoDescription = "Write Markdown with live preview, generate GitHub README files from templates, insert tables, and export to HTML or .md — all instantly in your browser, no data uploaded.";
+const seoKeywords = "markdown editor online, markdown preview, markdown to html, readme generator, github readme template, markdown table generator, markdown export, readme maker free";
 
 const howToUse = [
   "Select a template from the 'README Templates' dropdown to kickstart your project profile, or type your own Markdown.",
@@ -20,22 +21,63 @@ const howToUse = [
 
 const faqs = [
   {
-    q: "How does the GitHub README profile generator work?",
-    a: "Select the 'Developer Profile' template from the dropdown. It will load a structured README template complete with SVG badges, project headers, skill matrices, and social links. You can edit the text to reflect your portfolio, then copy it into your GitHub repository."
+    q: "Is this Markdown editor safe and private?",
+    a: "Yes. This editor runs entirely in your browser using JavaScript. Your content is never sent to any server — it stays on your device. Files are generated and downloaded locally, making it safe for private documentation, internal READMEs, and sensitive project notes."
   },
   {
-    q: "Can I export my document as a PDF?",
-    a: "Yes! Click the 'Print / PDF' button. It will open your browser's print utility, formatted with a stylesheet that hides the editor side and headers, giving you a clean, document-ready print of your rendered markdown."
+    q: "What is Markdown?",
+    a: "Markdown is a lightweight markup language that uses plain-text formatting syntax (like # for headings, ** for bold, - for lists) to create structured documents. It is widely used for README files on GitHub, documentation sites, blogs, and technical writing because it is simple to read and write."
   },
   {
-    q: "Is a library loaded to compile the Markdown?",
-    a: "No. To maximize PageSpeed and load performance, we built a highly optimized line-by-line Markdown parser in pure Javascript that translates formatting instantly with zero external payload. For further reducing your web asset sizes, try the <a href=\"/code-minifier-beautifier\">Code Minifier &amp; Beautifier</a>."
+    q: "How do the README templates work?",
+    a: "Select a template from the dropdown (e.g., 'Developer Profile', 'API Documentation', 'Open Source Project'). The editor loads a pre-structured Markdown document with placeholder content, badges, and sections. Edit the text to match your project, then export as .md and commit it to your repository."
   },
   {
-    q: "Is my documentation data safe?",
-    a: "Absolutely. The editor holds your data in local browser storage, and files are generated and downloaded directly on your client machine. No data is sent to our servers. If you need to validate JSON config files alongside your docs, check the <a href=\"/json-formatter\">JSON Formatter &amp; Validator</a>."
+    q: "Can I export to PDF?",
+    a: "Yes. Click the 'Print / PDF' button. It opens your browser's print dialog with a clean stylesheet that hides the editor UI, giving you a document-ready print. Choose 'Save as PDF' in the print dialog to download a PDF file."
+  },
+  {
+    q: "What Markdown syntax is supported?",
+    a: "The editor supports headings (H1–H6), bold, italic, inline code, fenced code blocks with syntax highlighting, blockquotes, ordered and unordered lists, tables, horizontal rules, images, and hyperlinks. It covers the most common Markdown features used in GitHub-flavoured documents."
+  },
+  {
+    q: "How does the table generator work?",
+    a: "Click the table icon in the toolbar, specify the number of columns and rows, then click 'Insert'. The editor generates a properly formatted Markdown table with header row, separator row, and data rows — ready for you to fill in."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Markdown Editor & README Generator",
+  "url": "https://instanttoolshub.com/markdown-editor",
+  "description": "Free online Markdown editor with live preview. Generate GitHub README files from templates, insert tables, and export to HTML or .md — all client-side.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Live Markdown preview with syntax highlighting",
+    "README template library (8 templates)",
+    "Markdown table generator",
+    "Export to HTML with embedded styles",
+    "Export to .md file",
+    "Toolbar formatting shortcuts",
+    "Print/PDF export",
+    "Client-side processing — no data uploaded"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -46,8 +88,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Compose Markdown documents, generate professional GitHub profile READMEs, and download outputs instantly.</p>
   </div>
   <div class="panel glass">
@@ -142,11 +185,54 @@ const faqs = [
   <RelatedTools currentTool="markdown-editor" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="Markdown is the standard plain-text formatting language for developer documentation, GitHub README files, blogs, and technical writing. This free online Markdown editor gives you a split-pane workspace — type Markdown on the left, see it rendered in real time on the right. Choose from 8 pre-built README templates (project docs, developer profiles, API references, CLI tools, and more) to scaffold professional documentation in seconds. Insert formatted tables with the table generator, apply toolbar shortcuts for bold, italic, headings, and code blocks, then export your finished document as clean HTML or a downloadable .md file. Everything runs client-side — your content never leaves your browser."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>Markdown Editor Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Live Preview</h3>
+          <p>See your Markdown rendered instantly as you type. The split-pane editor shows source on the left and formatted output on the right with no delay.</p>
+        </div>
+        <div class="feature-item">
+          <h3>README Template Library</h3>
+          <p>8 professional README templates for projects, developer profiles, APIs, CLI tools, open-source repos, startups, and libraries. Select, customize, and export in seconds.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Table Generator</h3>
+          <p>Specify rows and columns, click Insert, and get a properly formatted Markdown table with header separators ready to fill in — no manual pipe-alignment needed.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Export to HTML</h3>
+          <p>Download a standalone HTML file with embedded styles. Use it for documentation hosting, email content, or static site pages.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Syntax Highlighting</h3>
+          <p>Fenced code blocks support language-specific syntax highlighting for JavaScript, TypeScript, Python, Bash, HTML, CSS, and JSON.</p>
+        </div>
+        <div class="feature-item">
+          <h3>100% Private</h3>
+          <p>No data is sent to any server. All parsing, rendering, and file generation happens in your browser. Safe for internal documentation and private project notes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Building documentation or working on code? These tools on InstantToolsHub complement the Markdown editor:</p>
+      <ul class="related-links-list">
+        <li><a href="/code-minifier-beautifier"><strong>Code Minifier &amp; Beautifier</strong></a> — Minify or format HTML, CSS, and JavaScript assets alongside your docs</li>
+        <li><a href="/json-formatter"><strong>JSON Formatter &amp; Validator</strong></a> — Format and validate JSON config files referenced in your README</li>
+        <li><a href="/regex-tester"><strong>Regex Tester</strong></a> — Test and debug regular expressions documented in your project</li>
+        <li><a href="/hash-generator"><strong>Hash &amp; HMAC Generator</strong></a> — Generate checksums for file integrity verification in release notes</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -420,6 +506,10 @@ const faqs = [
     }
   }
 
+  .hidden {
+    display: none !important;
+  }
+
   @media (max-width: 850px) {
     .split-editor-container {
       grid-template-columns: 1fr;
@@ -430,6 +520,56 @@ const faqs = [
       border-bottom: 1px solid var(--border-light);
       height: 250px;
     }
+    .features-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
   }
 </style>
 
@@ -540,7 +680,7 @@ A passionate frontend engineer crafting responsive web experiences.
 ![Your Github Stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=dark)
 
 ## 📌 Projects
-- **[ToolsHub](https://toolshub.dev):** A premium developer client-side suite.
+- **[ToolsHub](https://instanttoolshub.com):** A premium developer client-side suite.
 - **[AstroStarter](https://github.com):** A static site builder template.
 
 ## 📫 Connect with me:

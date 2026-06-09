@@ -35,7 +35,7 @@ const {
   accentGlow = "rgba(99, 102, 241, 0.15)"
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://toolshub.dev");
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://instanttoolshub.com");
 const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Developer Tools";
 ---
 
@@ -44,6 +44,14 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0G0S0R595C" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0G0S0R595C');
+    </script>
 
     <title>{fullTitle}</title>
     <meta name="title" content={fullTitle} />
@@ -57,7 +65,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="https://toolshub.dev/og-image.png" />
+    <meta property="og:image" content="https://instanttoolshub.com/og-image.jpg" />
     <meta property="og:site_name" content="ToolsHub" />
     <meta property="og:locale" content="en_US" />
 
@@ -65,7 +73,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta name="twitter:url" content={canonicalUrl.href} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://toolshub.dev/og-image.png" />
+    <meta name="twitter:image" content="https://instanttoolshub.com/og-image.jpg" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
@@ -81,11 +89,11 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "ToolsHub",
-        "url": "https://toolshub.dev",
+        "url": "https://instanttoolshub.com",
         "description": "Free, secure, client-side developer tools for formatting, encoding, decoding, and debugging.",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://toolshub.dev/?q={search_term_string}",
+          "target": "https://instanttoolshub.com/?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       }
@@ -111,8 +119,8 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "ToolsHub",
-        "url": "https://toolshub.dev",
-        "logo": "https://toolshub.dev/favicon.svg"
+        "url": "https://instanttoolshub.com",
+        "logo": "https://instanttoolshub.com/favicon.svg"
       }
     </script>
 
@@ -124,7 +132,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://toolshub.dev/"
+          "item": "https://instanttoolshub.com/"
         },
         ...(activeTool ? [{
           "@type": "ListItem",
@@ -136,6 +144,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     })} />
   </head>
   <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <div 
       class="layout-wrapper" 
       id="app-layout"
@@ -147,7 +156,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       </div>
       <div class="content-container">
         <Header />
-        <main><slot /></main>
+        <main id="main-content"><slot /></main>
         <div class="ad-container" id="ad-footer-unit" aria-hidden="true"></div>
 
         <footer class="app-footer">
@@ -174,6 +183,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
             <nav class="footer-links" aria-label="Footer navigation">
               <a href="/">Home</a>
               <a href="/blog">Blog</a>
+              <a href="https://github.com/shakumar5" target="_blank" rel="noopener noreferrer">GitHub</a>
             </nav>
             <div class="footer-right">
               <p>&copy; {new Date().getFullYear()} ToolsHub. All code is processed locally in your browser.</p>
@@ -183,6 +193,25 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       </div>
     </div>
     <style>
+      .skip-to-content {
+        position: absolute;
+        top: -100%;
+        left: 1rem;
+        z-index: 9999;
+        padding: 0.75rem 1.5rem;
+        background: var(--accent-primary);
+        color: #fff;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: top 0.2s ease;
+      }
+
+      .skip-to-content:focus {
+        top: 1rem;
+      }
+
       .layout-wrapper {
         display: grid;
         grid-template-columns: var(--sidebar-width) 1fr;
@@ -204,7 +233,6 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
 
       .content-container {
         grid-area: main-content;
-        margin-left: var(--sidebar-width);
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -277,7 +305,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       }
 
       .footer-desc {
-        font-size: 0.8rem;
+        font-size: 0.875rem;
       }
 
       .footer-tools {
@@ -301,7 +329,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem 1.25rem;
-        font-size: 0.8rem;
+        font-size: 0.875rem;
       }
 
       .footer-tools-list li a {
@@ -317,7 +345,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem 1.5rem;
-        font-size: 0.8rem;
+        font-size: 0.875rem;
       }
 
       .footer-links a {

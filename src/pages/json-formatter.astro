@@ -3,41 +3,85 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "JSON Formatter & Validator";
+const toolName = "JSON Formatter & Validator Online — Free, Instant, Private";
+const pageHeading = "JSON Formatter & Validator";
 const activeTool = "json-formatter";
 const accentColor = "#10b981"; // Emerald
 const accentGlow = "rgba(16, 185, 129, 0.15)";
 
-const seoDescription = "Free online JSON formatter, beautifier, minifier, and validator. Inspect your JSON with an interactive tree view, compare changes with a side-by-side diff checker, and convert JSON to CSV instantly.";
-const seoKeywords = "json formatter, json beautify, json validator, json minifier, json to csv, online json editor, json diff checker";
+const seoDescription = "Format, validate, minify, and convert JSON instantly in your browser. No data is ever uploaded to a server. 100% free, client-side JSON formatter with syntax highlighting and error detection.";
+const seoKeywords = "json formatter, json validator online, format json online, json pretty print, minify json, json formatter free, json beautifier, json to csv";
 
 const howToUse = [
-  "Paste your raw or compressed JSON data into the input text area.",
-  "Click 'Format JSON' to beautify the code, or 'Minify JSON' to compress it into a single line.",
-  "For URL encoded JSON strings, click 'URL Decode & Format' to extract and format in one step.",
+  "Paste or type your JSON into the input field on the left. The formatter validates your JSON instantly as you type, highlighting any errors in red with a description of what went wrong and which line to check.",
+  "Click 'Format JSON' to pretty-print it with 2-space indentation, or 'Minify JSON' to compress it into a single line.",
+  "For URL-encoded JSON strings, click 'URL Decode & Format' to extract and format in one step.",
   "Inspect your formatted structure dynamically in the 'Tree View' tab.",
   "Convert JSON data to comma-separated values in the 'JSON to CSV' tab.",
-  "Use the 'JSON Diff' tab to compare your original raw JSON with your modified version side-by-side."
+  "Use the 'JSON Diff' tab to compare your original raw JSON with your modified version side-by-side.",
+  "Use the 'Copy' button to copy the output directly to your clipboard. Your JSON data never leaves your browser — processing happens entirely client-side with no server requests."
 ];
 
 const faqs = [
   {
-    q: "Is my JSON data secure on ToolsHub?",
-    a: "Yes, 100%. All processing is executed client-side inside your browser. No JSON data is ever sent to our servers. It is fully secure and private."
+    q: "Is this JSON formatter safe to use with sensitive data?",
+    a: "Yes. This JSON formatter runs entirely in your browser using JavaScript. Your data is never sent to any server — it never leaves your device. This makes it safe to use with API keys, credentials, internal config files, and any other sensitive JSON data."
   },
   {
-    q: "How does the URL Decode & Format feature work?",
-    a: "Frequently, API responses or logs contain JSON embedded inside a URL query parameter (which gets percent-encoded). This button automatically decodes the percent-encoding first and then formats the JSON in a single click. For standalone URL encoding tasks, use our <a href=\"/url-encoder-decoder\">URL Encoder &amp; Decoder</a>."
+    q: "What is JSON formatting?",
+    a: "JSON formatting (also called pretty-printing) adds consistent indentation, line breaks, and whitespace to a JSON string so it's easy for humans to read. Unformatted JSON is often a single long line with no whitespace — formatting structures it into a readable hierarchy."
   },
   {
-    q: "What does the JSON Validator check?",
-    a: "It checks if your JSON complies with standard RFC 8259 specifications. If it detects syntax errors (like missing commas, trailing commas, unclosed quotes, or mismatched braces), it highlights the exact error line and provides a helpful warning."
+    q: "What is the difference between JSON formatting and JSON validation?",
+    a: "Formatting changes how JSON looks (adding spaces and indentation) but doesn't check if it's correct. Validation checks whether your JSON follows the JSON specification — catching missing commas, unmatched brackets, trailing commas, and incorrect quote types. This tool does both."
   },
   {
-    q: "Can the JSON to CSV converter handle nested arrays?",
-    a: "Yes! The converter flattens standard objects and nested keys (e.g., 'address.city') into a spreadsheet-ready tabular CSV structure automatically. To further reduce file size before deployment, try our <a href=\"/code-minifier-beautifier\">Code Minifier &amp; Beautifier</a>."
+    q: "What does JSON minification do?",
+    a: "JSON minification removes all whitespace, indentation, and line breaks from a JSON string to make it as small as possible. This is useful before sending JSON in API responses or embedding it in source code, as it reduces payload size."
+  },
+  {
+    q: "Can I format JSON in JavaScript without a tool?",
+    a: "Yes. In JavaScript, you can format JSON using <code>JSON.stringify(data, null, 2)</code> — the third argument sets the indentation level. To validate, wrap <code>JSON.parse()</code> in a try/catch block. This online tool automates both operations instantly without writing any code."
+  },
+  {
+    q: "Why is my JSON invalid?",
+    a: "Common JSON errors include: trailing commas after the last item in an array or object (not allowed in JSON, unlike JavaScript), single quotes instead of double quotes around strings, missing quotes around object keys, unescaped special characters in strings, and comments (JSON does not support comments). This validator highlights exactly where the error is."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JSON Formatter & Validator",
+  "url": "https://instanttoolshub.com/json-formatter",
+  "description": "Free online JSON formatter and validator. Format, minify, validate, and convert JSON data instantly in your browser with no data uploads.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "JSON formatting and pretty-print",
+    "JSON validation with error highlighting",
+    "JSON minification",
+    "JSON to CSV conversion",
+    "Interactive tree view",
+    "JSON diff comparison",
+    "Client-side processing — no data uploaded",
+    "Syntax highlighting",
+    "Copy to clipboard"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -48,9 +92,10 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
-    <p>Format, minify, validate, and convert JSON data locally in your browser.</p>
+    <h1>{pageHeading}</h1>
+    <p>Format, validate, minify, and convert JSON data instantly — 100% client-side, nothing leaves your browser.</p>
   </div>
 
   <div class="tool-grid">
@@ -135,11 +180,84 @@ const faqs = [
   <RelatedTools currentTool="json-formatter" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="JSON (JavaScript Object Notation) is a lightweight text format for exchanging data between systems. In its raw form, JSON is often a dense, single-line string with no whitespace — readable by machines, but difficult for humans to scan and debug. JSON formatting, also called pretty-printing, restructures that raw string by adding consistent indentation and line breaks. A deeply nested API response that would otherwise be unreadable becomes a clear hierarchy you can inspect at a glance."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>JSON Formatter Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Format & Pretty-Print</h3>
+          <p>Restructures any valid JSON with 2-space indentation and sorted line breaks. Works on JSON of any size, from single objects to deeply nested API payloads.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Validate with Error Detection</h3>
+          <p>Catches the most common JSON mistakes: trailing commas, single-quoted strings, unquoted keys, missing brackets, and unexpected characters. The error message tells you exactly which line to fix.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Minify</h3>
+          <p>Strips all whitespace and newlines to produce the most compact version of your JSON. Use this before including JSON in API responses, environment configs, or source code.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Convert to CSV</h3>
+          <p>Convert JSON to CSV format for use in spreadsheets. Nested keys are flattened (e.g., "address.city") for easy tabular representation.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Syntax Highlighting</h3>
+          <p>Keys, strings, numbers, booleans, and null values are colour-coded for fast visual scanning of your JSON structure.</p>
+        </div>
+        <div class="feature-item">
+          <h3>100% Private</h3>
+          <p>No data is sent to any server. Everything runs in your browser. Safe for API keys, auth tokens, internal configs, and any other sensitive data.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Common JSON Errors and How to Fix Them</h2>
+      <div class="errors-guide">
+        <div class="error-item">
+          <h3>Trailing Comma</h3>
+          <p>The most common JSON error. JSON, unlike JavaScript, does not allow a comma after the last item in an array or object.</p>
+          <pre><code set:html={`// ❌ Invalid\n{"name": "Priya", "role": "admin",}\n\n// ✅ Valid\n{"name": "Priya", "role": "admin"}`} /></pre>
+        </div>
+        <div class="error-item">
+          <h3>Single Quotes Instead of Double Quotes</h3>
+          <p>JSON requires double quotes for all strings and keys. Single quotes are valid in JavaScript but not in JSON.</p>
+          <pre><code set:html={`// ❌ Invalid\n{'name': 'Priya'}\n\n// ✅ Valid\n{"name": "Priya"}`} /></pre>
+        </div>
+        <div class="error-item">
+          <h3>Unquoted Keys</h3>
+          <p>All JSON object keys must be wrapped in double quotes, even if they look like valid identifiers.</p>
+          <pre><code set:html={`// ❌ Invalid\n{name: "Priya"}\n\n// ✅ Valid\n{"name": "Priya"}`} /></pre>
+        </div>
+        <div class="error-item">
+          <h3>Comments in JSON</h3>
+          <p>JSON does not support comments. If you need annotated JSON, consider JSON5 or YAML instead.</p>
+        </div>
+        <div class="error-item">
+          <h3>Unescaped Special Characters</h3>
+          <p>Backslashes, double quotes, and control characters inside string values must be escaped with a backslash.</p>
+          <pre><code set:html={`// ❌ Invalid\n{"path": "C:\\Users\\Priya\\Documents"}\n\n// ✅ Valid\n{"path": "C:\\\\Users\\\\Priya\\\\Documents"}`} /></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Working with JSON? These tools on InstantToolsHub pair well with the formatter:</p>
+      <ul class="related-links-list">
+        <li><a href="/jwt-decoder"><strong>JWT Decoder & Debugger</strong></a> — Decode the JSON payload inside a JWT token</li>
+        <li><a href="/base64"><strong>Base64 Encoder & Decoder</strong></a> — Decode Base64-encoded JSON strings before formatting</li>
+        <li><a href="/hash-generator"><strong>Hash & HMAC Generator</strong></a> — Generate checksums to verify JSON payload integrity</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Decode URL-encoded JSON from query strings</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -396,6 +514,96 @@ const faqs = [
   :global(.tree-null) {
     color: #f87171; /* red */
   }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Errors guide */
+  .errors-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .error-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .error-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+
+  .error-item pre {
+    background: #000;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-light);
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .error-item code {
+    font-family: var(--font-mono);
+    color: #e2e8f0;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .features-list {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <script>
@@ -429,7 +637,7 @@ const faqs = [
     ],
     "owner": {
       "name": "Admin",
-      "email": "contact@toolshub.dev"
+      "email": "contact@instanttoolshub.com"
     },
     "traffic_stats": null
   };

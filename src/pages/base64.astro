@@ -3,39 +3,75 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "Base64 Encoder & Decoder";
+const toolName = "Base64 Encoder & Decoder Online — Free, Instant, Private";
+const pageHeading = "Base64 Encoder & Decoder";
 const activeTool = "base64";
 const accentColor = "#06b6d4"; // Cyan
 const accentGlow = "rgba(6, 182, 212, 0.15)";
 
-const seoDescription = "Free online Base64 encoder and decoder. Convert text to Base64, convert images to Base64 Data URL, translate Base64 back to image preview, and encode binary files entirely in your browser.";
-const seoKeywords = "base64 encode, base64 decode, image to base64, base64 to image preview, file to base64, binary base64 online";
+const seoDescription = "Encode and decode Base64 strings, convert images to Base64 Data URLs, and encode binary files instantly in your browser. No data uploaded — 100% free, client-side Base64 tool.";
+const seoKeywords = "base64 encode, base64 decode, base64 encoder online, image to base64, base64 to image, file to base64, base64 converter free, data url generator";
 
 const howToUse = [
-  "Choose your operation mode from the tabs: 'Text Encoder/Decoder', 'Image to Base64', or 'File Encoder'.",
-  "For Text: Type or paste your raw text in the input panel and click 'Encode' or 'Decode' to translate.",
-  "For Images: Drop or select an image file to instantly copy its Base64 Data URL, or paste a Base64 data string to render and download the image.",
-  "For Files: Upload any binary file (like a PDF or Zip) to encode it into a transferable Base64 string."
+  "Choose your operation mode from the tabs at the top: 'Text Encoder/Decoder' for plain text, 'Image ↔ Base64' for images, or 'File to Base64' for any binary file.",
+  "For text encoding, type or paste your plain text into the left input panel and click 'Encode →' to convert it to a Base64 string. The result appears in the right panel instantly.",
+  "For text decoding, paste a Base64-encoded string into the left panel and click '← Decode' to reveal the original plain text content.",
+  "For image-to-Base64 conversion, drag and drop an image (PNG, JPG, WebP, SVG, GIF) onto the drop zone or click to browse. The tool generates the full Data URI string you can embed directly in HTML or CSS.",
+  "To convert a Base64 string back to an image, paste the encoded string into the 'Convert Base64 to Image Preview' area and click 'Render Image'. A live preview and download link appear below.",
+  "For binary files (PDFs, ZIPs, documents), use the 'File to Base64' tab. Drop or select any file up to 15 MB and toggle the 'Include Data URI Header' option based on your use case.",
+  "Click 'Copy Output' at any time to copy the active tab's result to your clipboard. All processing happens entirely in your browser — no data is sent to any server."
 ];
 
 const faqs = [
   {
+    q: "Is this Base64 tool safe for sensitive data?",
+    a: "Yes. This tool runs entirely in your browser using JavaScript. Your text, images, and files are never sent to any server — they never leave your device. This makes it completely safe for API keys, private documents, credentials, and any other confidential data."
+  },
+  {
     q: "What is Base64 encoding?",
-    a: "Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. It is commonly used when binary data needs to be transferred over media that are designed to handle text, such as XML, JSON, or email. If you need to encode special characters in URLs instead, try our <a href=\"/url-encoder-decoder\">URL Encoder &amp; Decoder</a>."
+    a: "Base64 is a binary-to-text encoding scheme that represents binary data as ASCII characters using 64 symbols (A–Z, a–z, 0–9, +, /). It allows binary content to be safely transmitted over text-only channels like email, JSON payloads, and HTML attributes."
   },
   {
-    q: "Can I convert Base64 strings back into images?",
-    a: "Yes! If you navigate to the 'Image to Base64' tab, you can paste any valid Base64 string (with or without the data URL prefix) and click 'Render Preview'. It will instantly display the image and provide a download link."
+    q: "When should I use Base64 encoding?",
+    a: "Common use cases include embedding images directly in HTML or CSS (Data URIs), encoding data for URLs and JSON payloads, email attachments (MIME encoding), and storing binary data in text-only formats like XML or configuration files."
   },
   {
-    q: "Is there a file size limit for the browser file encoder?",
-    a: "Since the encoding runs 100% locally on your computer, there is no strict network limit, but we recommend files under 15MB to prevent the browser tab from running out of memory during conversion. You can verify file integrity after transfer using our <a href=\"/hash-generator\">Hash Generator</a> to compute checksums."
+    q: "Does Base64 increase file size?",
+    a: "Yes, Base64 encoding increases data size by approximately 33% because every 3 bytes of binary data become 4 Base64 characters. Use Base64 for convenience and compatibility, not for compression."
   },
   {
-    q: "Are my files secure?",
-    a: "Absolutely. No file or image is uploaded to a remote server. The entire file conversion is completed inside your browser using the local JavaScript FileReader API."
+    q: "What is a Base64 Data URL?",
+    a: "A Base64 Data URL uses the format data:[mediatype];base64,[data]. It allows you to embed images and other resources directly in HTML or CSS without making separate HTTP requests, reducing page load overhead for small assets."
+  },
+  {
+    q: "Can I decode any Base64 string?",
+    a: "Only valid Base64 strings can be decoded. Valid Base64 uses characters A–Z, a–z, 0–9, +, and / with optional = padding at the end. If your string contains invalid characters, the decoder will report an error. Make sure to remove any extra whitespace or line breaks before decoding."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Base64 Encoder & Decoder",
+  "url": "https://instanttoolshub.com/base64",
+  "description": "Free online Base64 encoder and decoder. Convert text, images, and files to/from Base64 instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Text to Base64 encoding",
+    "Base64 to text decoding",
+    "Image to Base64 Data URL conversion",
+    "Base64 to image preview and download",
+    "File to Base64 encoding",
+    "Client-side processing — no data uploaded",
+    "Copy to clipboard"
+  ],
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
 ---
 
 <Layout 
@@ -46,8 +82,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Encode and decode text, images, or files to and from Base64 representation locally.</p>
   </div>
   <div class="panel glass">
@@ -139,11 +176,54 @@ const faqs = [
   <RelatedTools currentTool="base64" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="Base64 is a binary-to-text encoding scheme that converts binary data into a string of 64 printable ASCII characters (A–Z, a–z, 0–9, +, /). Originally designed for safely transmitting binary content over text-only protocols like email (MIME), Base64 is now used everywhere — embedding images in HTML and CSS via Data URLs, encoding payloads inside JSON Web Tokens, storing binary blobs in text-based databases, and transferring files through REST APIs. This tool lets you encode and decode text, convert images to Data URLs, and encode arbitrary files entirely in your browser with zero server interaction."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>Base64 Encoder Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Text Encoding & Decoding</h3>
+          <p>Convert any plain text to Base64 and back with full UTF-8 support. Handles multi-byte characters, emojis, and special symbols correctly using TextEncoder/TextDecoder APIs.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Image to Base64 Data URI</h3>
+          <p>Drag and drop any image (PNG, JPG, WebP, SVG, GIF) to generate a complete Data URI string you can embed directly in HTML img tags or CSS background properties.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Base64 to Image Preview</h3>
+          <p>Paste a Base64-encoded image string to instantly render a live preview with dimensions displayed. Download the decoded image file with one click.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Binary File Encoding</h3>
+          <p>Encode PDFs, ZIPs, documents, and any binary file up to 15 MB into a transferable Base64 string. Toggle the Data URI header on or off based on your use case.</p>
+        </div>
+        <div class="feature-item">
+          <h3>100% Client-Side & Private</h3>
+          <p>No data is ever sent to a server. All encoding and decoding runs locally in your browser using native JavaScript APIs. Safe for credentials, private keys, and internal assets.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Instant Copy to Clipboard</h3>
+          <p>One-click copy for any output — encoded strings, Data URIs, or decoded text. Works across all tabs so you can quickly paste results into your code or configuration files.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Working with encoded data? These tools pair well:</p>
+      <ul class="related-links-list">
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format decoded JSON payloads after extracting them from Base64 strings</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Encode special characters in URLs where Base64 strings are passed as query parameters</li>
+        <li><a href="/jwt-decoder"><strong>JWT Decoder & Debugger</strong></a> — Decode JWT tokens that use Base64URL encoding for their header and payload</li>
+        <li><a href="/hash-generator"><strong>Hash & HMAC Generator</strong></a> — Verify file integrity with checksums after Base64 encoding or decoding</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -493,6 +573,56 @@ const faqs = [
       border-bottom: 1px solid var(--border-light);
       height: auto;
     }
+    .features-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
   }
 </style>
 

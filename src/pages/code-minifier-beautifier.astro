@@ -3,40 +3,86 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "CSS / JS / HTML Code Minifier & Beautifier";
+const toolName = "Code Minifier & Beautifier Online — Free, Instant, Private";
+const pageHeading = "Code Minifier & Beautifier";
 const activeTool = "code-minifier-beautifier";
 const accentColor = "#ec4899"; // Pink
 const accentGlow = "rgba(236, 72, 153, 0.15)";
 
-const seoDescription = "Free online CSS, JavaScript, and HTML minifier and beautifier. Compress code to improve web performance, view real-time size reduction stats, and process files in batches.";
-const seoKeywords = "css minifier, css beautifier online, minify js, minify html, code compressor, clean css online, developer page speed tools";
+const seoDescription = "Minify and beautify CSS, JavaScript, and HTML instantly in your browser. Batch process multiple files, view compression statistics, and download optimized code — no data uploaded, 100% free.";
+const seoKeywords = "code minifier, css minifier, javascript minifier, html minifier, code beautifier, css beautify online, minify js online, code compressor free";
 
 const howToUse = [
-  "Select the code language from the tab bar (CSS, JavaScript, or HTML).",
-  "Paste your code into the input panel, or upload code files directly in the Batch Upload section.",
-  "Click 'Minify Code' to compress files (removes comments, spaces, and formatting to reduce file size).",
-  "Click 'Beautify Code' to format the nested structures, making it readable again.",
-  "Check the Compression Stats panel to view exact file savings in bytes and percentages."
+  "Select the code language from the tab bar: CSS Optimizer, JS Optimizer, or HTML Optimizer.",
+  "Paste your raw code into the input panel on the left side. The tool accepts code of any size.",
+  "Click 'Minify Code' to strip comments, whitespace, and formatting — producing the smallest possible output for production deployment.",
+  "Click 'Beautify Code' to reformat minified or poorly-indented code into a clean, readable structure with proper nesting.",
+  "Review the Compression Stats bar at the bottom to see original size, optimized size, and exact percentage savings.",
+  "For multiple files, switch to the 'Batch Files' tab and drag-and-drop up to 50 CSS, JS, or HTML files. Each file is processed individually with per-file compression stats.",
+  "Use the 'CDN-Ready Download' button to download your minified file with a content-hash filename for cache-busting deployment."
 ];
 
 const faqs = [
   {
-    q: "Why should I minify my CSS, JS, and HTML files?",
-    a: "Minification strips unnecessary characters (comments, newlines, tabs, and spaces) without altering the functionality of the code. This drastically reduces the file size, resulting in faster download speeds, lower bandwidth usage, and a higher PageSpeed score."
+    q: "Is this tool safe to use with sensitive or proprietary code?",
+    a: "Yes. This code minifier and beautifier runs entirely in your browser using client-side JavaScript. Your source code is never transmitted to any server — it never leaves your device. This makes it safe to use with proprietary business logic, API integrations, internal stylesheets, and any other sensitive code you need to minify or reformat."
+  },
+  {
+    q: "What is code minification?",
+    a: "Code minification is the process of removing all unnecessary characters from source code — including comments, whitespace, newlines, and formatting — without changing its functionality. The result is a smaller file that downloads faster, improving page load speed and Core Web Vitals scores. Learn more about how minification boosts performance in our <a href=\"/blog/css-minification-page-speed\">CSS Minification & Page Speed</a> guide."
+  },
+  {
+    q: "What are the differences between CSS, JavaScript, and HTML minification?",
+    a: "CSS minification removes comments, collapses whitespace, and strips redundant semicolons and spacing around selectors. JavaScript minification removes block and line comments, collapses whitespace around operators and delimiters, and handles ES6+ syntax safely. HTML minification strips HTML comments, collapses consecutive whitespace between tags, and removes unnecessary gaps — while preserving tag structure and attribute values. Each language has unique parsing rules, which is why this tool applies language-specific optimizations."
+  },
+  {
+    q: "What does the beautify function do?",
+    a: "Beautifying (also called pretty-printing) takes minified or poorly-formatted code and restructures it with consistent indentation, line breaks, and spacing so humans can read, understand, and debug it easily. It is the reverse of minification — it does not change how the code functions, only how it looks. This is useful when inspecting production bundles or working with auto-generated code."
   },
   {
     q: "How does the batch file processing work?",
-    a: "You can drag and drop multiple files at once. The tool processes each file individually, shows you the file savings, and allows you to download each minified file in one click."
+    a: "Switch to the 'Batch Files' tab and drag-and-drop multiple .css, .js, or .html files (up to 50 files, 5MB each). Each file is minified individually and the results panel displays per-file compression statistics. You can download each minified output file separately with one click — no need to process files one at a time."
   },
   {
-    q: "Is there a risk of breaking my JavaScript code with this minifier?",
-    a: "Our minifier is designed to safely clean white spaces and comments. However, it is a best practice to ensure you terminate all statements with semicolons (`;`) before minifying to prevent syntax issues during compression. You can validate your JSON data structure first using the <a href=\"/json-formatter\">JSON Formatter &amp; Validator</a>."
-  },
-  {
-    q: "Is my source code uploaded anywhere?",
-    a: "Never. The compression algorithms are built completely in JavaScript and run locally in your web browser. Your proprietary code remains completely secure and private. For documenting your project alongside minified code, check out the <a href=\"/markdown-editor\">Markdown Editor &amp; README Generator</a>."
+    q: "Does minification break my code?",
+    a: "When applied to well-formed code, minification does not break functionality. However, JavaScript that relies on implicit semicolons (ASI) or code with syntax errors may behave unexpectedly after whitespace removal. Best practice: always terminate JavaScript statements with semicolons before minifying. You can validate data structures first with our <a href=\"/json-formatter\">JSON Formatter & Validator</a>."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Code Minifier & Beautifier",
+  "url": "https://instanttoolshub.com/code-minifier-beautifier",
+  "description": "Free online code minifier and beautifier. Minify and beautify CSS, JavaScript, and HTML instantly in your browser with batch processing and compression statistics.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "CSS minification",
+    "JavaScript minification",
+    "HTML minification",
+    "CSS beautification with indentation",
+    "JavaScript beautification",
+    "HTML beautification",
+    "Batch file processing (up to 50 files)",
+    "Compression statistics",
+    "Client-side processing — no data uploaded",
+    "Download minified files"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -47,8 +93,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Minify files to boost load speed, format unreadable layouts, and calculate compression savings instantly.</p>
   </div>
 
@@ -152,11 +199,54 @@ const faqs = [
   <RelatedTools currentTool="code-minifier-beautifier" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="Code minification removes unnecessary characters from your source files — comments, whitespace, line breaks, and formatting — without altering the code's behavior. The result is a significantly smaller file that transfers faster over the network, improving page load times and Core Web Vitals scores. Code beautification does the reverse: it takes compressed or poorly-formatted code and restructures it with consistent indentation and spacing so humans can read, understand, and debug it easily."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>Code Minifier Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>CSS Minification</h3>
+          <p>Strips comments, collapses whitespace, removes redundant semicolons, and cleans spacing around selectors and properties. Produces production-ready CSS in milliseconds.</p>
+        </div>
+        <div class="feature-item">
+          <h3>JavaScript Minification</h3>
+          <p>Removes block and line comments, collapses whitespace, and eliminates unnecessary spacing around operators and delimiters. Handles ES6+ syntax safely.</p>
+        </div>
+        <div class="feature-item">
+          <h3>HTML Minification</h3>
+          <p>Strips HTML comments, collapses consecutive whitespace, and removes gaps between tags. Preserves tag structure and attribute values intact.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Code Beautification</h3>
+          <p>Reformats minified or messy code with proper indentation, line breaks, and consistent spacing. Supports CSS, JavaScript, and HTML with smart brace handling.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Batch File Processing</h3>
+          <p>Drag and drop up to 50 files at once. Each file is minified individually with per-file compression statistics and one-click download of optimized output.</p>
+        </div>
+        <div class="feature-item">
+          <h3>CDN-Ready Download</h3>
+          <p>Download minified files with a content-hash filename (e.g., bundle.a3f9c2e1.min.css) for cache-busting deployment on CDNs with immutable caching headers.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Building for the web? These tools on InstantToolsHub complement the code minifier:</p>
+      <ul class="related-links-list">
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format and validate JSON data before embedding in minified scripts</li>
+        <li><a href="/markdown-editor"><strong>Markdown Editor & README Generator</strong></a> — Document your project alongside production-ready minified code</li>
+        <li><a href="/hash-generator"><strong>Hash & HMAC Generator</strong></a> — Generate checksums to verify file integrity after minification</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Encode minified assets for safe transport in URL parameters</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -461,6 +551,82 @@ const faqs = [
       height: auto;
       gap: 0.75rem;
       padding: 1rem;
+    }
+  }
+
+  /* SEO Section */
+  .seo-section {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .seo-info-card {
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .seo-info-card h2 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .seo-info-card p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .features-list {
+      grid-template-columns: 1fr;
     }
   }
 </style>

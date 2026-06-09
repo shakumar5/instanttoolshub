@@ -42,7 +42,7 @@ function htmlPostProcess() {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://toolshub.dev',
+  site: 'https://instanttoolshub.com',
   compressHTML: true,
   integrations: [sitemap(), htmlPostProcess()],
   build: {

@@ -3,39 +3,83 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "JWT Decoder & Debugger";
+const toolName = "JWT Decoder & Verifier Online — Free, Instant, Private";
+const pageHeading = "JWT Decoder & Verifier";
 const activeTool = "jwt-decoder";
 const accentColor = "#8b5cf6"; // Violet
 const accentGlow = "rgba(139, 92, 246, 0.15)";
 
-const seoDescription = "Free online JWT decoder and debugger. Parse, verify, and inspect JSON Web Tokens (JWT) locally. Check token expiration timers, decode payload claims, and generate mock tokens.";
-const seoKeywords = "jwt decoder, jwt debugger online, decode jwt token, jwt validator, jwt vs session, check jwt expiration";
+const seoDescription = "Decode, verify, and generate JSON Web Tokens instantly in your browser. Inspect JWT headers, payloads, and validate HMAC-SHA256 signatures — no data uploaded, 100% client-side.";
+const seoKeywords = "jwt decoder, jwt debugger, json web token decoder, jwt verify online, jwt generator, decode jwt token, jwt validator free";
 
 const howToUse = [
-  "Choose your mode: 'Decode Token' or 'Generate Test Token'.",
-  "Decode: Paste your encoded JSON Web Token (JWT) into the left text area. It will automatically color-code the header, payload, and signature segments.",
-  "Inspect: View the parsed Header and Payload JSON on the right side. Check the Expiry Status alert for timezone details and active countdowns.",
-  "Verify: Enter a secret passphrase in the Signature pane to verify HS256 token integrity locally in your browser."
+  "Choose your mode from the tabs: 'Decode Token' to inspect an existing JWT, or 'Generate Test Token' to create a new signed JWT for testing.",
+  "Paste your encoded JWT (header.payload.signature) into the input area. The tool instantly color-codes the three segments — header (red), payload (purple), and signature (blue) — for visual clarity.",
+  "Inspect the decoded Header JSON to confirm the signing algorithm (e.g., HS256) and token type. Review the Payload JSON to see all claims including sub, iat, exp, and custom fields.",
+  "Check the Expiry Status indicator below the payload. It automatically calculates whether the token is still active or has expired, with a human-readable countdown timer.",
+  "To verify signature integrity, enter your HMAC-SHA256 secret key and click 'Verify Signature'. The tool computes the expected signature locally and compares it — no data leaves your browser.",
+  "Use the 'Share URL' button to generate a shareable link containing the token as a query parameter. Recipients can instantly decode the token by opening the link.",
+  "Switch to 'Generate Test Token' to create custom JWTs. Configure the header, payload claims, and secret key, then click 'Generate Token' to produce a valid HS256-signed JWT."
 ];
 
 const faqs = [
   {
-    q: "Is it safe to paste my production JWT tokens here?",
-    a: "Yes. All decoding, claim evaluation, and signature verification are executed locally in your browser. No token data is sent to our servers, keeping your API keys and claims completely secure."
+    q: "Is this JWT decoder safe for production tokens?",
+    a: "Yes, runs entirely in browser. Token never leaves your device. Safe for access tokens, refresh tokens, and any auth credentials."
   },
   {
-    q: "What is a JWT (JSON Web Token)?",
-    a: "A JWT is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. For generating cryptographic hashes and HMAC signatures, see our <a href=\"/hash-generator\">Hash Generator</a>."
+    q: "What is a JWT?",
+    a: "JSON Web Token — a compact, URL-safe token format (header.payload.signature) used for authentication and information exchange between parties."
   },
   {
-    q: "JWT vs Session: What is the difference?",
-    a: "Sessions are stateful: the server stores session data in memory or database and sends a Session ID cookie to the browser. JWT is stateless: all user claims are stored directly inside the token itself, meaning the server does not need to query a database to authenticate the user for every request."
+    q: "What does JWT verification do?",
+    a: "Recomputes the HMAC-SHA256 signature using your secret key and compares it against the token's signature segment. Confirms the token hasn't been tampered with."
   },
   {
-    q: "What does the 'exp' claim represent?",
-    a: "The 'exp' (Expiration Time) claim identifies the expiration time on or after which the JWT must not be accepted for processing. Our tool decodes this Unix epoch timestamp and calculates a real-time countdown timer. Need to convert or inspect epoch values further? Use our <a href=\"/timestamp\">Timestamp Converter</a>."
+    q: "Can I decode a JWT without the secret key?",
+    a: "Yes, the header and payload are only Base64URL-encoded, not encrypted. Anyone can decode them. The secret is only needed to verify the signature."
+  },
+  {
+    q: "What's the difference between encoding and encryption in JWT?",
+    a: "JWT payloads are encoded (Base64URL), not encrypted. Anyone can read the payload. Use JWE (JSON Web Encryption) if you need payload confidentiality."
+  },
+  {
+    q: "How do I generate a test JWT?",
+    a: "Enter a JSON header, JSON payload, and a secret key. Click Generate Token to produce a valid HS256-signed JWT for testing purposes."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JWT Decoder & Verifier",
+  "url": "https://instanttoolshub.com/jwt-decoder",
+  "description": "Free online JWT decoder, verifier, and generator. Decode token headers and payloads, verify HMAC-SHA256 signatures, and generate test tokens in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "JWT header and payload decoding",
+    "HMAC-SHA256 signature verification",
+    "JWT token generation",
+    "Share URL with embedded token",
+    "Base64URL decoding",
+    "Client-side processing — no data uploaded",
+    "Real-time validation"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -46,9 +90,10 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
-    <p>Decode, verify, and generate JSON Web Tokens locally in your browser.</p>
+    <h1>{pageHeading}</h1>
+    <p>Decode, verify, and generate JSON Web Tokens instantly in your browser — 100% client-side, nothing leaves your device.</p>
   </div>
 
   <div class="panel glass">
@@ -156,11 +201,54 @@ const faqs = [
   <RelatedTools currentTool="jwt-decoder" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="JSON Web Tokens (JWT) are the industry-standard mechanism for securely transmitting claims between services. A JWT consists of three Base64URL-encoded segments — a header declaring the signing algorithm, a payload containing claims like user identity and expiration, and a cryptographic signature that guarantees integrity. Because the payload is only encoded and not encrypted, anyone can read it — but only a party holding the secret key can produce a valid signature. This tool lets you decode headers and payloads instantly, verify HMAC-SHA256 signatures client-side, inspect expiration claims in real time, and generate test tokens for development — all without transmitting a single byte to any server."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>JWT Decoder Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Instant Token Decoding</h3>
+          <p>Paste any JWT and instantly see the decoded header and payload JSON. The tool automatically splits and color-codes the three token segments — header (red), payload (purple), signature (blue) — for visual clarity.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Header & Payload Inspection</h3>
+          <p>View the signing algorithm (alg), token type (typ), and all payload claims including sub, iat, exp, iss, aud, and any custom fields — formatted as readable, pretty-printed JSON.</p>
+        </div>
+        <div class="feature-item">
+          <h3>HMAC-SHA256 Signature Verification</h3>
+          <p>Enter your secret key to verify token integrity locally. The tool computes the expected HMAC-SHA256 signature using the Web Crypto API and compares it to the token's signature segment — entirely client-side.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Token Generation</h3>
+          <p>Create custom HS256-signed JWTs for testing and development. Configure header, payload claims (sub, name, exp, iat), and secret key to produce valid tokens without writing any code.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Expiration Countdown</h3>
+          <p>The tool reads the exp claim, converts the Unix timestamp to a human-readable date, and displays a real-time indicator showing whether the token is still active or has expired.</p>
+        </div>
+        <div class="feature-item">
+          <h3>100% Private & Client-Side</h3>
+          <p>No data is sent to any server. All decoding, verification, and generation happens in your browser using JavaScript and the Web Crypto API. Safe for production tokens and sensitive credentials.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Working with JWTs? These tools on InstantToolsHub pair well with the decoder:</p>
+      <ul class="related-links-list">
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format and validate the decoded JWT payload JSON</li>
+        <li><a href="/base64"><strong>Base64 Encoder & Decoder</strong></a> — Encode or decode Base64 and Base64URL strings used in JWT segments</li>
+        <li><a href="/hash-generator"><strong>Hash & HMAC Generator</strong></a> — Generate HMAC-SHA256 signatures and verify token integrity independently</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Decode URL-encoded JWT tokens from query strings and redirect URIs</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -478,6 +566,59 @@ const faqs = [
     .jwt-output-panel {
       height: auto;
       overflow: visible;
+    }
+  }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .features-list {
+      grid-template-columns: 1fr;
     }
   }
 </style>

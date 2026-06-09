@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://toolshub.dev/sitemap-index.xml
+Sitemap: https://instanttoolshub.com/sitemap-index.xml

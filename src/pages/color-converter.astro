@@ -4,40 +4,85 @@ import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 import ColorConverterTool from '../components/tools/ColorConverterTool.astro';
 
-const toolName = "Color Converter & Palette Picker";
+const toolName = "Color Converter & Palette Generator Online — Free, Instant, Private";
+const pageHeading = "Color Converter & Palette Generator";
 const activeTool = "color-converter";
 const accentColor = "#14b8a6"; // Teal
 const accentGlow = "rgba(20, 184, 166, 0.15)";
 
-const seoDescription = "Free online color converter and picker. Convert colors between HEX, RGB, HSL, and CMYK formats. Extract color palettes from images, build custom gradients, and test contrast ratios.";
-const seoKeywords = "color picker online, hex to rgb, rgb to hex, color converter, color palette generator, gradient builder, wcag contrast checker";
+const seoDescription = "Convert colors between HEX, RGB, HSL, and CMYK formats instantly. Generate palettes, check WCAG contrast ratios, build CSS gradients, and extract colors from images — all client-side, no data uploaded.";
+const seoKeywords = "color converter, hex to rgb, rgb to hex, hsl converter, color palette generator, wcag contrast checker, css gradient generator, color picker online free";
 
 const howToUse = [
-  "Use the visual color picker or enter raw values in HEX, RGB, HSL, or CMYK boxes to translate them instantly.",
-  "Check the Palette Generator tab to copy monochromatic, analogous, triadic, or complementary color coordinates.",
-  "Build linear gradients by choosing start and end colors, adjusting angles, and copying the CSS markup.",
-  "Upload an image in the Extractor tab and click pixels on the canvas to inspect and grab exact hex values.",
-  "Ensure WCAG accessibility compliance by evaluating color contrast scores in the Contrast Checker tab."
+  "Use the visual color picker or type a value directly into the HEX, RGB, HSL, or CMYK input fields. All other formats update instantly as you type.",
+  "Switch to the Palette Generator tab to create monochromatic, analogous, triadic, complementary, or split-complementary color schemes from any base color.",
+  "Open the Gradient Builder to design linear or radial CSS gradients. Pick start and end colors, adjust the angle or position, and copy the generated CSS code.",
+  "Upload an image in the Color Extractor tab. Click or hover over any pixel on the canvas to grab its exact HEX value and load it into the converter.",
+  "Use the WCAG Contrast Checker to evaluate foreground/background color pairs. The tool reports contrast ratios and pass/fail status for AA and AAA levels.",
+  "Copy converted values in any format using the one-click copy buttons next to each output field. Values are formatted ready to paste into CSS, design tools, or code.",
+  "Bookmark specific conversion pairs (e.g., HEX to RGB) from the Quick Conversions grid below for dedicated calculators with step-by-step formulas."
 ];
 
 const faqs = [
   {
-    q: "How does the Image Color Extractor work?",
-    a: "Drag and drop any image in the Extractor tab. The image is rendered on an HTML5 canvas element locally. When you hover or click on the image, the canvas extracts the RGB values of the specific pixel and automatically loads it into the main tool."
+    q: "Is this color converter safe and private?",
+    a: "Yes. The entire tool runs client-side in JavaScript. Your uploaded images, color values, and palette exports never leave your browser and are never stored on any server. There are no cookies, no tracking pixels, and no analytics tied to your color data."
   },
   {
-    q: "What are the WCAG accessibility standards for color contrast?",
-    a: "Web Content Accessibility Guidelines (WCAG) specify that text must have a minimum contrast ratio against its background. Level AA requires a ratio of 4.5:1 for normal text and 3.0:1 for large text. Level AAA requires a stricter 7.0:1 for normal text and 4.5:1 for large text."
+    q: "What is the difference between HEX, RGB, HSL, and CMYK?",
+    a: "HEX is a compact six-character notation representing red, green, and blue channels in hexadecimal (e.g., #14B8A6). RGB expresses the same channels as decimal values from 0 to 255. HSL describes color in human-friendly terms — hue (0–360°), saturation (0–100%), and lightness (0–100%). CMYK is a subtractive model used in print that defines cyan, magenta, yellow, and key (black) ink percentages."
   },
   {
-    q: "Can I convert color codes to CMYK for print media?",
-    a: "Yes! The CMYK model (Cyan, Magenta, Yellow, Key/Black) is used in color printing. The tool converts RGB screen values to CMYK percentages dynamically. You can also use our <a href=\"/timestamp\">Timestamp Converter</a> when coordinating print deadlines across timezones."
+    q: "What are WCAG contrast ratios and why do they matter?",
+    a: "WCAG 2.1 defines minimum contrast ratios between text and background colors to ensure readability for users with low vision. Level AA requires at least 4.5:1 for normal text and 3:1 for large text. Level AAA raises the bar to 7:1 and 4.5:1 respectively. The Contrast Checker in this tool evaluates your color pairs against these thresholds and reports pass or fail instantly."
   },
   {
-    q: "Is there any charge or tracking for extracting colors?",
-    a: "No. The entire workspace runs client-side in Javascript. Your uploaded images and palette codes are handled entirely locally and never stored on any server. For encoding extracted image data as text, try the <a href=\"/base64\">Base64 Encoder</a>."
+    q: "How does the palette generation algorithm work?",
+    a: "The Palette Generator converts your base color to HSL, then rotates the hue angle by fixed intervals to produce harmonious schemes. Complementary uses a 180° rotation, triadic uses 120° steps, analogous uses ±30° offsets, and monochromatic varies only the lightness channel. Each generated swatch includes HEX, RGB, and HSL values ready to paste into CSS variables."
+  },
+  {
+    q: "How does image color extraction work?",
+    a: "Drag and drop any image onto the Extractor canvas. The file is rendered locally on an HTML5 Canvas element — nothing is uploaded to a server. When you click or hover over a pixel, the tool reads its RGBA values via the Canvas getImageData() API and loads the color into the main converter. This is useful for pulling brand colors from logos, photos, or screenshots."
+  },
+  {
+    q: "What is a CSS gradient and how does the builder help?",
+    a: "A CSS gradient is a smooth transition between two or more colors, rendered by the browser without image files. Linear gradients transition along a straight axis (defined by an angle), while radial gradients radiate from a center point. The Gradient Builder lets you pick colors, adjust the angle or position, add multiple color stops, and preview the result in real time — then copy the generated CSS code directly into your stylesheets."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Color Converter & Palette Generator",
+  "url": "https://instanttoolshub.com/color-converter",
+  "description": "Free online color converter and palette generator. Convert between HEX, RGB, HSL, and CMYK, generate palettes, check WCAG contrast, build CSS gradients, and extract colors from images.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "HEX to RGB/HSL/CMYK conversion",
+    "RGB to HEX/HSL/CMYK conversion",
+    "HSL to HEX/RGB/CMYK conversion",
+    "CMYK to HEX/RGB/HSL conversion",
+    "Color palette generation (complementary, analogous, triadic, monochromatic)",
+    "WCAG contrast ratio checker",
+    "CSS gradient builder",
+    "Image color extraction via canvas",
+    "Client-side processing — no data uploaded"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -48,8 +93,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Convert HEX, RGB, HSL, and CMYK codes. Build palettes, design linear CSS gradients, extract colors from images, and verify contrast ratios.</p>
   </div>
 
@@ -77,11 +123,54 @@ const faqs = [
   <RelatedTools currentTool="color-converter" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="Color spaces define how colors are encoded for screens, print, and design systems. HEX and RGB represent additive light used by displays — HEX as a compact six-character code, RGB as three decimal channels. HSL maps color to human-intuitive hue, saturation, and lightness axes, making it easier to reason about color relationships. CMYK models subtractive ink mixing for professional print production. This converter translates between all four formats instantly, generates harmonious palettes using color-theory algorithms (complementary, analogous, triadic, monochromatic), evaluates WCAG 2.1 contrast ratios for accessibility compliance, builds ready-to-use CSS linear and radial gradients, and extracts precise color values from uploaded images via HTML5 Canvas — all processed entirely in your browser with zero data uploads."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>Color Converter Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Multi-Format Conversion</h3>
+          <p>Instantly convert any color between HEX, RGB, HSL, and CMYK. All values update in real time as you type or pick colors visually.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Palette Generation</h3>
+          <p>Generate monochromatic, analogous, complementary, triadic, and split-complementary palettes from any base color with one click.</p>
+        </div>
+        <div class="feature-item">
+          <h3>WCAG Contrast Checker</h3>
+          <p>Evaluate foreground/background color pairs against WCAG 2.1 AA and AAA contrast thresholds. Get instant pass/fail results for normal and large text.</p>
+        </div>
+        <div class="feature-item">
+          <h3>CSS Gradient Builder</h3>
+          <p>Design linear and radial gradients visually. Adjust colors, angle, and stops, then copy the generated CSS code directly into your stylesheets.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Image Color Extraction</h3>
+          <p>Upload any image and click pixels to extract exact color values. Uses HTML5 Canvas locally — your images are never uploaded to any server.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Client-Side Processing</h3>
+          <p>All conversions, palette generation, and image analysis run entirely in your browser using JavaScript. No data leaves your device, ever.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Working with colors in your project? These tools on InstantToolsHub complement the converter:</p>
+      <ul class="related-links-list">
+        <li><a href="/code-minifier-beautifier"><strong>CSS Minifier & Beautifier</strong></a> — Minify or format CSS containing your generated color values and gradients</li>
+        <li><a href="/markdown-editor"><strong>Markdown Editor</strong></a> — Write documentation with color references and preview rendered output in real time</li>
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format and validate design token JSON files containing color palettes</li>
+        <li><a href="/regex-tester"><strong>Regex Tester</strong></a> — Build and test regex patterns for matching HEX codes, RGB values, or CSS color functions</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -122,5 +211,58 @@ const faqs = [
 
   .links-list a:hover {
     color: #fff;
+  }
+
+  /* Features list */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-item p {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Related links list */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-links-list li {
+    font-size: 0.925rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .related-links-list a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-links-list a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .features-list {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

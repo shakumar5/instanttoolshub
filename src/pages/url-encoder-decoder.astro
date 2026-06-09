@@ -3,39 +3,82 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "URL Encoder & Decoder";
+const toolName = "URL Encoder & Decoder Online — Free, Instant, Private";
+const pageHeading = "URL Encoder & Decoder";
 const activeTool = "url-encoder-decoder";
 const accentColor = "#3b82f6"; // Blue
 const accentGlow = "rgba(59, 130, 246, 0.15)";
 
-const seoDescription = "Free online URL encoder and decoder. Encode special characters, batch process multiple URLs, parse query string parameters into an editable table, and build UTM campaign links.";
-const seoKeywords = "url encode, url decoder online, url encode special characters, percent encoding, query string parser, utm campaign builder";
+const seoDescription = "Encode and decode URLs, batch process multiple URLs, parse query parameters, and build UTM campaign links — all instantly in your browser. No data uploaded, 100% free.";
+const seoKeywords = "url encoder, url decoder, percent encoding, url encode online, utm builder, query string parser, url encoder free, encodeURIComponent";
 
 const howToUse = [
   "Choose your tool from the tabs: 'URL Encoder/Decoder', 'Batch Processing', 'Query Parser', or 'UTM Builder'.",
-  "URL Encoder/Decoder: Paste your text, select the encoding mode (Standard vs Special characters only), and click Encode or Decode.",
-  "Query Parser: Paste a full URL with query parameters. The tool will break them down into an interactive table where you can edit values, add new parameters, or delete parameters to rebuild a new URL.",
-  "UTM Builder: Fill in your website URL and marketing parameters (Source, Medium, Campaign, etc.) to instantly generate a tagged campaign URL."
+  "URL Encoder/Decoder: Paste your text or URL into the input area. Select encoding mode — 'Encode All (Component)' encodes every special character, while 'Keep Delimiters (URI)' preserves URL structure characters like :// and &.",
+  "Click the 'Encode →' button to percent-encode the input, or '← Decode' to convert percent-encoded sequences back to readable text. Results appear instantly in the output panel.",
+  "Batch Processing: Enter multiple URLs (one per line) and encode or decode them all at once. Lines with invalid sequences are flagged with an [Error] prefix without stopping the batch.",
+  "Query Parser: Paste a full URL with query parameters. The tool splits them into an editable table where you can modify values, add new parameters, delete rows, and click 'Rebuild URL' to generate the updated link.",
+  "UTM Builder: Fill in your website URL and campaign parameters (Source, Medium, Campaign, Term, Content) and click 'Generate UTM Link' to create a properly encoded tracking URL for Google Analytics.",
+  "All processing runs 100% client-side in your browser — no data is ever sent to a server. Click 'Copy Output' to copy results to your clipboard."
 ];
 
 const faqs = [
   {
-    q: "What is URL encoding (percent encoding)?",
-    a: "URL encoding converts characters into a format that can be transmitted securely over the internet. URLs can only contain a specific set of ASCII characters. Non-conforming characters are replaced with a '%' followed by two hexadecimal digits. For binary-to-text encoding of files and images, see our <a href=\"/base64\">Base64 Encoder &amp; Decoder</a>."
+    q: "Is this URL encoder safe for sensitive data?",
+    a: "Yes. This tool runs entirely client-side in your browser using JavaScript. No data is sent to any server — your URLs, query parameters, and campaign links never leave your device."
   },
   {
-    q: "What is the difference between Encode URL vs Encode Component?",
-    a: "Encoding a full URL keeps delimiters like 'http://', '?', and '&' intact so the URL remains navigable. Encoding a component encodes every special character (including slashes and question marks), which is necessary when nesting a URL inside a query parameter of another URL."
+    q: "What is URL encoding?",
+    a: "URL encoding (percent-encoding) replaces unsafe ASCII characters with a '%' followed by two hexadecimal digits representing their byte value. This ensures URLs are valid and interpreted correctly across all systems, browsers, and servers."
   },
   {
-    q: "How does the query string parser help me?",
-    a: "When debugging APIs or web links, reading long query strings can be tedious. The parser splits them into a clear table. You can modify the keys/values, click 'Rebuild URL', and copy the newly generated link immediately. For validating URL patterns with regular expressions, check out our <a href=\"/regex-tester\">RegEx Tester</a>."
+    q: "What characters need URL encoding?",
+    a: "Spaces, &amp;, =, ?, #, +, and non-ASCII characters all require encoding. Reserved characters that have special meaning in URL syntax (like delimiters and query separators) must be encoded when used as data values rather than structural elements."
   },
   {
-    q: "Can I generate UTM campaign links here?",
-    a: "Yes! The UTM Builder tab helps you construct Google Analytics campaign tracking URLs (UTM) instantly, ensuring correct syntax and character encoding."
+    q: "What is the difference between encodeURI and encodeURIComponent?",
+    a: "encodeURI preserves URL structure characters such as ://, ?, and #. encodeURIComponent encodes everything except unreserved characters (letters, digits, - _ . ~). Use encodeURIComponent for query parameter values to ensure special characters don't break the URL structure."
+  },
+  {
+    q: "What is a UTM parameter?",
+    a: "UTM parameters are campaign tracking tags (utm_source, utm_medium, utm_campaign, utm_term, utm_content) appended to URLs for Google Analytics attribution. They help you identify which marketing channels and campaigns drive traffic to your site."
+  },
+  {
+    q: "Can I decode multiple URLs at once?",
+    a: "Yes. The Batch Processing tab processes each line independently, preserving empty lines and reporting errors per-line with an [Error] prefix without halting the rest of the batch."
   }
 ];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "URL Encoder & Decoder",
+  "url": "https://instanttoolshub.com/url-encoder-decoder",
+  "description": "Free online URL encoder and decoder. Percent-encode, decode, parse query strings, and build UTM campaign URLs in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "URL encoding (percent-encoding)",
+    "URL decoding",
+    "Batch encode/decode multiple URLs",
+    "Query parameter parser and editor",
+    "URL rebuilder",
+    "UTM campaign link builder",
+    "Client-side processing — no data uploaded"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -47,7 +90,7 @@ const faqs = [
   accentGlow={accentGlow}
 >
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Encode or decode percent-encoded URLs, batch parse paths, analyze queries, and build UTM tracking campaigns.</p>
   </div>
 
@@ -198,11 +241,79 @@ const faqs = [
   <RelatedTools currentTool="url-encoder-decoder" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="URL encoding (percent-encoding) is the mechanism that makes the web's addressing system work reliably. Every time you share a link containing spaces, Unicode characters, or reserved symbols like & and =, those characters must be converted into a safe ASCII representation — a percent sign followed by two hex digits. Without encoding, browsers and servers misinterpret query boundaries, fragment identifiers break, and analytics tracking parameters collide. This tool handles single-URL encoding and decoding, batch processing of multiple URLs, interactive query-string parsing with an editable parameter table, and a UTM campaign link builder — all running entirely in your browser with zero data transmission."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>URL Encoder Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>⚡ Instant Encoding & Decoding</h3>
+          <p>Convert text to percent-encoded URLs or decode encoded sequences back to readable text with a single click. Supports both encodeURI and encodeURIComponent modes.</p>
+        </div>
+        <div class="feature-item">
+          <h3>📋 Batch URL Processing</h3>
+          <p>Process multiple URLs simultaneously — paste one URL per line and encode or decode the entire batch at once. Failed lines are flagged without stopping the rest.</p>
+        </div>
+        <div class="feature-item">
+          <h3>🔍 Query Parameter Parser</h3>
+          <p>Break down complex query strings into an interactive table. Edit keys and values directly, add or remove parameters, then rebuild the URL with proper encoding.</p>
+        </div>
+        <div class="feature-item">
+          <h3>📊 UTM Campaign Builder</h3>
+          <p>Generate properly encoded Google Analytics campaign tracking URLs. Fill in source, medium, campaign, term, and content fields to create tagged marketing links.</p>
+        </div>
+        <div class="feature-item">
+          <h3>🔒 100% Client-Side Privacy</h3>
+          <p>All encoding, decoding, and URL building happens locally in your browser. No data is ever transmitted to external servers, keeping your URLs and parameters private.</p>
+        </div>
+        <div class="feature-item">
+          <h3>🔗 URL Rebuilding</h3>
+          <p>After parsing and editing query parameters, instantly rebuild a clean URL with correct encoding. Copy the result directly to your clipboard for immediate use.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <div class="related-links-list">
+        <a href="/json-formatter" class="related-link-item">
+          <span class="related-link-icon">📄</span>
+          <div>
+            <strong>JSON Formatter & Validator</strong>
+            <p>Format, validate, and minify JSON data with syntax highlighting and error detection.</p>
+          </div>
+        </a>
+        <a href="/base64" class="related-link-item">
+          <span class="related-link-icon">🔤</span>
+          <div>
+            <strong>Base64 Encoder & Decoder</strong>
+            <p>Encode text, images, and files to Base64 format for safe data transmission.</p>
+          </div>
+        </a>
+        <a href="/jwt-decoder" class="related-link-item">
+          <span class="related-link-icon">🔑</span>
+          <div>
+            <strong>JWT Decoder & Debugger</strong>
+            <p>Decode and verify JSON Web Tokens, inspect claims, and check expiration status.</p>
+          </div>
+        </a>
+        <a href="/hash-generator" class="related-link-item">
+          <span class="related-link-icon">🔐</span>
+          <div>
+            <strong>Hash Generator</strong>
+            <p>Generate MD5, SHA-1, SHA-256, SHA-512 hashes and HMAC signatures for text or files.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
 </Layout>
 
 <style>
@@ -542,6 +653,100 @@ const faqs = [
     font-weight: 500;
   }
 
+  /* Features List */
+  .features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item {
+    background: rgba(4, 6, 10, 0.3);
+    padding: 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+  }
+
+  .feature-item h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-item p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Related Links List */
+  .related-links-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .related-link-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: rgba(4, 6, 10, 0.3);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .related-link-item:hover {
+    border-color: var(--accent-primary);
+    background: rgba(4, 6, 10, 0.5);
+  }
+
+  .related-link-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .related-link-item strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .related-link-item p {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* SEO Section (local styles for features & related) */
+  .seo-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .seo-info-card {
+    padding: 2rem;
+    border-radius: var(--radius-md);
+  }
+
+  .seo-info-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+  }
+
   @media (max-width: 850px) {
     .url-split-container {
       flex-direction: column;
@@ -566,6 +771,12 @@ const faqs = [
       height: auto;
     }
     .form-grid {
+      grid-template-columns: 1fr;
+    }
+    .features-list {
+      grid-template-columns: 1fr;
+    }
+    .related-links-list {
       grid-template-columns: 1fr;
     }
   }
@@ -898,7 +1109,7 @@ const faqs = [
       if (queryParamsBody.querySelectorAll('.param-row').length === 0) {
         queryParamsBody.innerHTML = `
           <tr>
-            <td colspan="3" class="table-placeholder">No query parameters defined. Click "+ Add Parameter" to create some.</td>
+            <td colspan="3" class="table-placeholder">No query parameters defined. Click "+ Add Parameter" to add some.</td>
           </tr>
         `;
       }
@@ -907,29 +1118,31 @@ const faqs = [
     queryParamsBody.appendChild(tr);
   }
 
+  function escapeHtml(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   if (btnAddParam) {
     btnAddParam.addEventListener('click', () => {
       addParamRow('', '');
     });
   }
 
-  if (btnRebuildUrl && queryParamsBody && rebuiltUrlOutput) {
+  if (btnRebuildUrl && rebuiltUrlOutput) {
     btnRebuildUrl.addEventListener('click', () => {
+      if (!queryParamsBody) return;
       const rows = queryParamsBody.querySelectorAll('.param-row');
       const params: { key: string; value: string }[] = [];
-
       rows.forEach(row => {
-        const key = (row.querySelector('.param-key') as HTMLInputElement)?.value.trim();
-        const val = (row.querySelector('.param-value') as HTMLInputElement)?.value;
-        params.push({ key, value: val });
+        const key = (row.querySelector('.param-key') as HTMLInputElement)?.value || '';
+        const value = (row.querySelector('.param-value') as HTMLInputElement)?.value || '';
+        params.push({ key, value });
       });
-
-      const baseUrl = parsedBaseUrl || 'https://example.com';
-      rebuiltUrlOutput.value = rebuildUrl(baseUrl, params);
+      rebuiltUrlOutput.value = rebuildUrl(parsedBaseUrl, params);
     });
   }
 
-  // --- UTM CAMPAIGN BUILDER ---
+  // --- UTM Builder ---
   const utmUrl = document.getElementById('utm-url') as HTMLInputElement | null;
   const utmSource = document.getElementById('utm-source') as HTMLInputElement | null;
   const utmMedium = document.getElementById('utm-medium') as HTMLInputElement | null;
@@ -941,9 +1154,9 @@ const faqs = [
   const btnClearUtm = document.getElementById('btn-clear-utm');
   const utmValidationError = document.getElementById('utm-validation-error');
 
-  function showUtmError(message: string) {
+  function showUtmError(msg: string) {
     if (utmValidationError) {
-      utmValidationError.textContent = message;
+      utmValidationError.textContent = msg;
       utmValidationError.style.display = 'block';
     }
   }
@@ -955,84 +1168,37 @@ const faqs = [
     }
   }
 
-  /**
-   * generateUtm() - Validates required fields and URL structure, then produces
-   * a fully percent-encoded UTM campaign URL. Uses inline error messages instead
-   * of alert().
-   */
-  function generateUtm(): void {
-    if (!utmUrl || !utmSource || !utmMedium || !utmName || !utmOutput) return;
-
-    const url = utmUrl.value.trim();
-    const source = utmSource.value.trim();
-    const medium = utmMedium.value.trim();
-    const campaign = utmName.value.trim();
-    const term = utmTerm?.value.trim() || '';
-    const content = utmContent?.value.trim() || '';
-
-    // Step 1: Validate all 4 required fields are non-empty
-    const missingFields: string[] = [];
-    if (!url) missingFields.push('Website URL');
-    if (!source) missingFields.push('Campaign Source');
-    if (!medium) missingFields.push('Campaign Medium');
-    if (!campaign) missingFields.push('Campaign Name');
-
-    if (missingFields.length > 0) {
-      showUtmError(`Missing required fields: ${missingFields.join(', ')}. Please fill in all required fields before generating.`);
-      return;
-    }
-
-    // Step 2: Validate that Website URL can be parsed as a valid URL
-    try {
-      if (url.startsWith('http://') || url.startsWith('https://')) {
-        new URL(url);
-      } else {
-        new URL('https://' + url);
-      }
-    } catch (e) {
-      showUtmError('Invalid URL structure: The Website URL could not be parsed as a valid URL. Please enter a valid website address (e.g., https://example.com).');
-      return;
-    }
-
-    // Step 3: Build the UTM URL
-    const result = buildUtmUrl({
-      websiteUrl: url,
-      source,
-      medium,
-      campaign,
-      term: term || undefined,
-      content: content || undefined
-    });
-
-    if (result) {
+  if (btnBuildUtm && utmUrl && utmSource && utmMedium && utmName && utmOutput) {
+    btnBuildUtm.addEventListener('click', () => {
       hideUtmError();
-      utmOutput.value = result;
-    }
+      const result = buildUtmUrl({
+        websiteUrl: utmUrl.value.trim(),
+        source: utmSource.value.trim(),
+        medium: utmMedium.value.trim(),
+        campaign: utmName.value.trim(),
+        term: utmTerm?.value.trim() || '',
+        content: utmContent?.value.trim() || ''
+      });
+
+      if (result === null) {
+        showUtmError("Please fill in all required fields: Website URL, Source, Medium, and Campaign Name.");
+        utmOutput.value = '';
+      } else {
+        utmOutput.value = result;
+      }
+    });
   }
 
-  if (btnBuildUtm) {
-    btnBuildUtm.addEventListener('click', generateUtm);
-  }
-
-  if (btnClearUtm && utmUrl && utmSource && utmMedium && utmName && utmTerm && utmContent && utmOutput) {
+  if (btnClearUtm && utmUrl && utmSource && utmMedium && utmName && utmOutput) {
     btnClearUtm.addEventListener('click', () => {
+      hideUtmError();
       utmUrl.value = '';
       utmSource.value = '';
       utmMedium.value = '';
       utmName.value = '';
-      utmTerm.value = '';
-      utmContent.value = '';
+      if (utmTerm) utmTerm.value = '';
+      if (utmContent) utmContent.value = '';
       utmOutput.value = '';
-      hideUtmError();
     });
-  }
-
-  function escapeHtml(text: string) {
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
   }
 </script>

@@ -14,7 +14,7 @@
   
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-muted: #718096;
   
   --border-light: rgba(255, 255, 255, 0.06);
   --border-hover: rgba(255, 255, 255, 0.15);
@@ -70,7 +70,7 @@ html, body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -103,9 +103,9 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.25;
 }
 
-h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.025em; }
-h2 { font-size: 1.6rem; font-weight: 700; }
-h3 { font-size: 1.25rem; }
+h1 { font-size: clamp(1.5rem, 4vw + 0.5rem, 2.2rem); font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-size: clamp(1.25rem, 3vw + 0.4rem, 1.6rem); font-weight: 700; }
+h3 { font-size: clamp(1.05rem, 2vw + 0.3rem, 1.25rem); }
 p { color: var(--text-secondary); }
 a {
   color: var(--accent-primary);
@@ -311,7 +311,7 @@ select:focus-visible,
   padding: 0.5rem 1rem;
   background: #111827;
   border-bottom: 1px solid var(--border-light);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -359,27 +359,12 @@ select:focus-visible,
 /* Copy to Clipboard Micro-interaction */
 .copy-btn {
   position: relative;
-}
-.copy-btn::after {
-  content: "Copied!";
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: var(--color-success);
-  color: #fff;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  opacity: 0;
-  visibility: hidden;
   transition: all 0.2s ease;
-  pointer-events: none;
 }
-.copy-btn.copied::after {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+.copy-btn.copied {
+  background: var(--color-success) !important;
+  border-color: var(--color-success) !important;
+  color: #fff !important;
 }
 
 /* Responsive sidebar adaptation */

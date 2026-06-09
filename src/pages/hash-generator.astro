@@ -3,39 +3,66 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "Cryptographic Hash & HMAC Generator";
+const toolName = "Hash Generator & File Checksum Online — Free, Instant, Private";
+const pageHeading = "Hash Generator & File Checksum";
 const activeTool = "hash-generator";
 const accentColor = "#e11d48"; // Crimson
 const accentGlow = "rgba(225, 29, 72, 0.15)";
 
-const seoDescription = "Free online cryptographic hash and HMAC generator. Calculate MD5, SHA-1, SHA-256, and SHA-512 checksums for text or files locally in your browser.";
-const seoKeywords = "sha256 generator, md5 generator, hash generator online, hmac generator, file checksum calculator, sha512 hash";
+const seoDescription = "Generate MD5, SHA-1, SHA-256, SHA-512 hashes and HMAC signatures instantly. Compute file checksums locally in your browser — no data uploaded, 100% free and private.";
+const seoKeywords = "hash generator, md5 hash online, sha256 generator, hmac generator, file checksum, sha512 hash, hash calculator free, md5 checksum";
 
 const howToUse = [
-  "Choose your operation tab: 'Text Hash/HMAC' or 'File Checksum'.",
-  "Text Hash: Type or paste your text in the input box. The tool will calculate and display MD5, SHA-1, SHA-256, and SHA-512 hashes simultaneously in real-time.",
-  "HMAC Mode: Turn on the 'HMAC Mode' switch, enter a secret key, and inspect the keyed hash outputs.",
-  "File Checksum: Drop or upload any file to calculate its SHA-256 and MD5 checksum values locally."
+  "Choose your operation mode by clicking either the 'Text Hash & HMAC' tab or the 'File Checksum' tab at the top of the tool panel.",
+  "For text hashing, type or paste your text into the input area. The tool instantly computes and displays MD5, SHA-1, SHA-256, and SHA-512 hashes simultaneously in real-time as you type.",
+  "To generate HMAC signatures, enable the 'HMAC Mode' toggle and enter your secret key. The outputs update to show keyed HMAC values for all four algorithms.",
+  "For file checksums, drag and drop a file onto the upload area or click to browse. The tool reads your file locally and computes MD5 and SHA-256 checksums without uploading anything.",
+  "Click the 'Copy' button next to any hash output to copy the hex string to your clipboard for pasting into verification tools or documentation.",
+  "Use the 'Clear' button to reset all inputs and outputs when you want to start a new hashing operation.",
+  "Compare file checksums by hashing the same file on different machines — if the SHA-256 values match, the file is identical and uncorrupted."
 ];
 
 const faqs = [
   {
-    q: "How does the file checksum calculator work?",
-    a: "When you upload a file, the browser's FileReader API reads the file contents as a binary ArrayBuffer. Then, we use the browser's native Web Crypto API to compute the hash bytes and format them as a hexadecimal string. Your file is never sent over the internet."
+    q: "Is this hash generator safe for passwords and secrets?",
+    a: "Yes, runs entirely in browser. No data leaves your device. Safe for hashing passwords, API keys, and sensitive files."
   },
   {
-    q: "What is an HMAC?",
-    a: "HMAC (Hash-based Message Authentication Code) is a specific type of message authentication code involving a cryptographic hash function and a secret cryptographic key. It is used to verify both the data integrity and the authenticity of a message. HMAC signatures are commonly used inside <a href=\"/jwt-decoder\">JSON Web Tokens (JWT)</a> for verifying token integrity."
+    q: "What is a hash function?",
+    a: "A one-way mathematical function that converts input of any size into a fixed-size output (digest). The same input always produces the same hash, but you cannot reverse a hash back to the original input."
   },
   {
-    q: "Why is MD5 still used if it is cryptographically weak?",
-    a: "While MD5 is vulnerable to collision attacks and is no longer recommended for secure data (like password hashing), it is still widely used as a fast, simple checksum tool to verify that a file has not been corrupted during transfer. For encoding file data as text for safe transmission, try our <a href=\"/base64\">Base64 Encoder</a>."
+    q: "What is the difference between MD5, SHA-256, and SHA-512?",
+    a: "They differ in output size and security. MD5 produces 128-bit (32 hex chars), SHA-256 produces 256-bit (64 hex chars), SHA-512 produces 512-bit (128 hex chars). MD5 is considered insecure for cryptographic use; SHA-256 and SHA-512 are currently secure."
   },
   {
-    q: "Is there a limit on file size for checksumming?",
-    a: "Because all hashing runs on your local CPU, you can hash files up to 25MB instantly. Larger files (up to 100MB) will work but might pause the browser tab for a second or two while the browser computes the hash bytes."
+    q: "What is HMAC?",
+    a: "Hash-based Message Authentication Code — uses a secret key combined with a hash function to verify both data integrity and authenticity. Unlike plain hashing, HMAC requires the key to verify."
+  },
+  {
+    q: "How do file checksums work?",
+    a: "The tool reads the file as raw bytes (ArrayBuffer), runs the hash algorithm over those bytes, and outputs the digest as a lowercase hex string. Identical files always produce identical checksums."
+  },
+  {
+    q: "Can I verify a downloaded file's integrity?",
+    a: "Yes, compute the SHA-256 checksum of your downloaded file and compare it against the publisher's listed checksum. If they match, the file is unaltered."
   }
 ];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Hash Generator & File Checksum",
+  "url": "https://instanttoolshub.com/hash-generator",
+  "description": "Free online hash generator supporting MD5, SHA-1, SHA-256, SHA-512, and HMAC. Compute file checksums locally in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["MD5, SHA-1, SHA-256, SHA-512 text hashing", "HMAC signature generation", "File checksum computation", "Copy hash to clipboard", "Client-side processing — no data uploaded", "Drag-and-drop file upload"],
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
 ---
 
 <Layout 
@@ -46,8 +73,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Generate cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512) and HMAC signatures, or verify file checksums locally.</p>
   </div>
 
@@ -157,11 +185,54 @@ const faqs = [
   <RelatedTools currentTool="hash-generator" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="A cryptographic hash function takes any input — a single character, a full document, or a multi-gigabyte file — and produces a fixed-length hexadecimal digest that acts as a unique fingerprint. Even a one-bit change in the input produces a completely different hash, making hashes ideal for verifying data integrity, securing passwords, signing API requests, and detecting file tampering. This tool computes MD5, SHA-1, SHA-256, and SHA-512 digests in real time, generates HMAC signatures with a secret key, and calculates file checksums entirely in your browser using the Web Crypto API — no data is ever uploaded to a server."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>Hash Generator Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Multi-Algorithm Hashing</h3>
+          <p>Compute MD5, SHA-1, SHA-256, and SHA-512 hashes simultaneously from a single input. Compare digest lengths and choose the right algorithm for your use case.</p>
+        </div>
+        <div class="feature-item">
+          <h3>HMAC Signature Generation</h3>
+          <p>Toggle HMAC mode and enter a secret key to produce keyed hash signatures. Supports HMAC-MD5, HMAC-SHA1, HMAC-SHA256, and HMAC-SHA512 for API authentication and token signing.</p>
+        </div>
+        <div class="feature-item">
+          <h3>File Checksum Computation</h3>
+          <p>Drag and drop any file to compute its MD5 and SHA-256 checksums locally. Verify download integrity or compare files across systems without uploading anything.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Real-Time Output</h3>
+          <p>Hash values update instantly as you type. No submit button needed — results appear character-by-character for immediate feedback during development and debugging.</p>
+        </div>
+        <div class="feature-item">
+          <h3>One-Click Copy</h3>
+          <p>Copy any hash output to your clipboard with a single click. Paste directly into verification scripts, documentation, or configuration files.</p>
+        </div>
+        <div class="feature-item">
+          <h3>100% Client-Side Processing</h3>
+          <p>All computations use the browser's native Web Crypto API and JavaScript. Your text, files, and secret keys never leave your device — works fully offline.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Working with hashes and cryptography? These tools on InstantToolsHub complement the hash generator:</p>
+      <ul class="related-links-list">
+        <li><a href="/jwt-decoder"><strong>JWT Decoder & Debugger</strong></a> — Decode and verify HMAC-signed JSON Web Tokens that use SHA-256 signatures</li>
+        <li><a href="/base64"><strong>Base64 Encoder & Decoder</strong></a> — Encode binary hash digests or file data into Base64 text for safe transmission</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Encode hash values for inclusion in URLs and query parameters</li>
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format API responses and webhook payloads before computing their HMAC signatures</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>

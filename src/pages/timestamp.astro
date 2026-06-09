@@ -3,39 +3,84 @@ import Layout from '../layouts/Layout.astro';
 import SEOContent from '../components/SEOContent.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 
-const toolName = "Timestamp & Unix Time Converter";
+const toolName = "Unix Timestamp Converter Online — Free, Instant, Private";
+const pageHeading = "Unix Timestamp Converter";
 const activeTool = "timestamp";
 const accentColor = "#f43f5e"; // Rose
 const accentGlow = "rgba(244, 63, 94, 0.15)";
 
-const seoDescription = "Free online Unix timestamp and epoch converter. Convert epoch seconds to date strings, dates to timestamps, calculate relative time, and parse cron expressions.";
-const seoKeywords = "unix timestamp converter, epoch time converter, timestamp to date, current unix timestamp, timezone converter, cron job parser";
+const seoDescription = "Convert Unix timestamps to human-readable dates, compare times across 6 timezones, and parse cron expressions with next-run scheduling — all instantly in your browser, no data uploaded.";
+const seoKeywords = "unix timestamp converter, epoch converter, timestamp to date, date to timestamp, cron parser, timezone converter, unix time online, cron expression tester";
 
 const howToUse = [
-  "Epoch Converter: Enter a Unix timestamp (seconds or milliseconds) in the input block to parse it instantly, or type a date string to generate the epoch timestamp.",
-  "Click 'Current Time' to load the active live clock timestamp.",
-  "Check the Date Details panel to review GMT dates, local zones, relative times, and day numbers.",
-  "Cron Parser: Enter a crontab schedule (e.g. '*/15 * * * *') to parse the schedule into plain English and view the next 5 execution times."
+  "Epoch Converter: Enter a Unix timestamp (seconds or milliseconds) into the input field. The tool auto-detects the format based on digit length (≤10 digits = seconds, >10 = milliseconds) and instantly converts it to a human-readable date.",
+  "Click 'Current Time' to load the live Unix epoch timestamp into the input field, then view the full date breakdown including GMT, local timezone, ISO 8601, relative time, and day-of-year.",
+  "Date to Timestamp: Type or paste any human-readable date string (e.g. 'Mon, 08 Jun 2026 10:00:00 GMT' or '2024-01-15') into the Date String field and click 'Convert Date' to generate the corresponding Unix timestamp in seconds.",
+  "Timezone Grid: Switch to the 'Timezone Grid' tab and enter a timestamp or date string. The tool displays the equivalent time across 6 major timezones (UTC, US Eastern, US Pacific, CET, IST, JST) simultaneously.",
+  "Cron Parser: Navigate to the 'Cron Parser' tab and enter a 5-field cron expression (e.g. '*/15 9-17 * * 1-5'). The tool translates it into plain English and simulates the next 5 execution times from the current moment.",
+  "Copy & Clear: Use the 'Copy Timestamp' button to copy the current epoch value to your clipboard, or 'Clear All' to reset all fields. The live clock badge continuously updates with the current Unix time.",
+  "All conversions run entirely in your browser using native JavaScript Date and Intl APIs — no data is sent to any server, making it safe for production timestamps and sensitive date values."
 ];
 
 const faqs = [
   {
-    q: "What is a Unix timestamp (Epoch time)?",
-    a: "The Unix timestamp is the number of seconds that have elapsed since January 1, 1970 (Midnight UTC), not including leap seconds. It is widely used in operating systems and file formats to track points in time."
+    q: "Is this tool safe to use with sensitive data?",
+    a: "Yes. All timestamp conversions, timezone calculations, and cron parsing run entirely in your browser using native JavaScript APIs. No data is transmitted to any server, no cookies are set, and no analytics track your input values. This makes it safe for production timestamps, internal scheduling patterns, and any confidential date values."
   },
   {
-    q: "What is the difference between seconds vs milliseconds?",
-    a: "Standard Unix timestamps track seconds (10 digits). JavaScript Date objects and modern APIs track milliseconds (13 digits). Our converter automatically detects which format you entered based on the string length."
+    q: "What is a Unix timestamp?",
+    a: "A Unix timestamp (also called Epoch time or POSIX time) is the number of seconds that have elapsed since January 1, 1970 at 00:00:00 UTC. It provides a universal, timezone-independent way to represent a point in time and is used extensively in operating systems, databases, APIs, and log files. Learn more in our blog post on <a href=\"/blog/what-is-unix-timestamp\">What is a Unix Timestamp</a>."
   },
   {
-    q: "How does the Cron parser simulate execution times?",
-    a: "The parser reads the cron pattern and runs a localized client-side simulation starting from the current date. It checks subsequent minutes to find the next 5 times that satisfy your cron filters. To test cron patterns with custom regular expressions, use our <a href=\"/regex-tester\">RegEx Tester</a>."
+    q: "How does it detect seconds vs milliseconds?",
+    a: "Standard Unix timestamps count seconds since the epoch and are 10 digits long (e.g. 1700000000). JavaScript Date.now() and many modern APIs return milliseconds — 13 digits (e.g. 1700000000000). This converter auto-detects the format based on digit count: 10 or fewer digits are treated as seconds, more than 10 as milliseconds."
   },
   {
-    q: "Are my timezone conversions secure?",
-    a: "Yes. All calculations are performed entirely in your browser using JavaScript's native Intl.DateTimeFormat and Date APIs. No date queries are transmitted to the network. If you work with JWT tokens that include epoch-based expiration claims, check out our <a href=\"/jwt-decoder\">JWT Decoder</a> as well."
+    q: "What is a cron expression?",
+    a: "A cron expression is a 5-field string used by Unix-like schedulers (cron, crontab) to define recurring execution times. The fields represent minute (0-59), hour (0-23), day-of-month (1-31), month (1-12), and day-of-week (0-6). Wildcards (*), ranges (1-5), steps (*/15), and lists (1,3,5) are supported. Our parser translates them to plain English and simulates the next 5 runs."
+  },
+  {
+    q: "How accurate is the timezone conversion?",
+    a: "The Timezone Grid uses JavaScript's built-in Intl.DateTimeFormat API with IANA timezone identifiers (e.g. America/New_York, Asia/Tokyo). This respects DST transitions automatically and is accurate to the second. All calculations happen locally in your browser with zero network requests."
+  },
+  {
+    q: "What happens at Y2038 — the Unix timestamp overflow?",
+    a: "On 32-bit systems, signed integers overflow on January 19, 2038 at 03:14:07 UTC, wrapping to a negative value. Modern 64-bit systems and JavaScript use 64-bit representations, so this tool handles dates well beyond 2038. If you enter a timestamp past the 32-bit limit, the converter displays the correct date using JavaScript's 64-bit Date object."
   }
 ];
+
+// WebApplication structured data for this specific tool
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Unix Timestamp Converter",
+  "url": "https://instanttoolshub.com/timestamp",
+  "description": "Free online Unix timestamp converter with cron parser. Convert timestamps to dates, compare timezones, and parse cron expressions — all client-side, no data uploaded.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Unix timestamp to date conversion",
+    "Date to Unix timestamp conversion",
+    "6-timezone comparison grid",
+    "Millisecond vs second auto-detection",
+    "Cron expression parser",
+    "Next 5 cron execution times",
+    "Human-readable cron descriptions",
+    "Client-side processing — no data uploaded"
+  ],
+  "isAccessibleForFree": true,
+  "provider": {
+    "@type": "Organization",
+    "name": "InstantToolsHub",
+    "url": "https://instanttoolshub.com"
+  }
+};
 ---
 
 <Layout 
@@ -46,8 +91,9 @@ const faqs = [
   accentColor={accentColor}
   accentGlow={accentGlow}
 >
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
   <div class="tool-header">
-    <h1>{toolName}</h1>
+    <h1>{pageHeading}</h1>
     <p>Convert Unix timestamps to human dates, parse date strings to epoch ticks, compare timezones, and inspect cron schedules.</p>
   </div>
 
@@ -207,11 +253,54 @@ const faqs = [
   <RelatedTools currentTool="timestamp" />
 
   <SEOContent 
-    toolName={toolName}
-    description={seoDescription}
+    toolName={pageHeading}
+    description="Unix timestamps are the universal time-tracking format used by operating systems, databases, APIs, and log systems worldwide. A Unix timestamp represents the number of seconds elapsed since January 1, 1970 (the Unix epoch), providing a timezone-independent way to record when events occurred. This tool lets you instantly convert between epoch timestamps and human-readable dates, compare a single moment across 6 major timezones, and parse cron scheduling expressions to predict upcoming execution times — all powered by client-side JavaScript with zero data uploads."
     howToUse={howToUse}
     faqs={faqs}
   />
+
+  <section class="seo-section">
+    <div class="seo-info-card glass">
+      <h2>Timestamp Converter Features</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Instant Epoch Conversion</h3>
+          <p>Paste any Unix timestamp (seconds or milliseconds) and instantly see the equivalent human-readable date in GMT, local timezone, ISO 8601, and relative time formats.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Date to Timestamp</h3>
+          <p>Enter any parseable date string — RFC 2822, ISO 8601, or natural language — and convert it to a Unix epoch timestamp in both seconds and milliseconds.</p>
+        </div>
+        <div class="feature-item">
+          <h3>6-Zone Timezone Comparison</h3>
+          <p>View the same instant across UTC, US Eastern, US Pacific, Central European, India Standard, and Japan Standard timezones simultaneously using native Intl APIs.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Cron Expression Parsing</h3>
+          <p>Enter any 5-field cron expression and get a plain-English description of the schedule, with support for wildcards, ranges, steps, and comma-separated lists.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Next-Run Prediction</h3>
+          <p>The cron parser simulates upcoming execution times from the current moment, displaying the next 5 scheduled runs so you can verify your crontab configuration.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Live Clock & Privacy</h3>
+          <p>A continuously updating live clock shows the current Unix epoch. All processing runs client-side in your browser — no data leaves your device, ever.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-info-card glass">
+      <h2>Related Developer Tools</h2>
+      <p>Working with timestamps and scheduling? These tools on InstantToolsHub complement the converter:</p>
+      <ul class="related-links-list">
+        <li><a href="/json-formatter"><strong>JSON Formatter & Validator</strong></a> — Format API responses containing timestamp fields for easier reading</li>
+        <li><a href="/jwt-decoder"><strong>JWT Decoder & Debugger</strong></a> — Inspect JWT expiration claims (exp, iat) that use Unix timestamps</li>
+        <li><a href="/hash-generator"><strong>Hash & HMAC Generator</strong></a> — Generate hashes for time-based tokens and TOTP seed values</li>
+        <li><a href="/url-encoder-decoder"><strong>URL Encoder & Decoder</strong></a> — Decode URL-encoded timestamp parameters from query strings</li>
+      </ul>
+    </div>
+  </section>
 </Layout>
 
 <style>
