@@ -36,7 +36,7 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://instanttoolshub.com");
-const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Developer Tools";
+const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Free Online Developer Tools";
 ---
 
 <!DOCTYPE html>
@@ -57,7 +57,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta name="title" content={fullTitle} />
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
-    <meta name="author" content="ToolsHub" />
+    <meta name="author" content="InstantToolsHub" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href={canonicalUrl.href} />
 
@@ -66,7 +66,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content="https://instanttoolshub.com/og-image.jpg" />
-    <meta property="og:site_name" content="ToolsHub" />
+    <meta property="og:site_name" content="InstantToolsHub" />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -88,7 +88,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "ToolsHub",
+        "name": "InstantToolsHub",
         "url": "https://instanttoolshub.com",
         "description": "Free, secure, client-side developer tools for formatting, encoding, decoding, and debugging.",
         "potentialAction": {
@@ -103,7 +103,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "ToolsHub Developer Suite",
+        "name": "InstantToolsHub Developer Suite",
         "operatingSystem": "All",
         "applicationCategory": "DeveloperApplication",
         "offers": {
@@ -118,7 +118,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
       {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "ToolsHub",
+        "name": "InstantToolsHub",
         "url": "https://instanttoolshub.com",
         "logo": "https://instanttoolshub.com/favicon.svg"
       }
@@ -162,7 +162,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
         <footer class="app-footer">
           <div class="footer-content">
             <div class="footer-left">
-              <span class="footer-logo">Tools<span>Hub</span></span>
+              <span class="footer-logo">Instant<span>ToolsHub</span></span>
               <p class="footer-desc">Free, secure, client-side tools for developers.</p>
             </div>
             <nav class="footer-tools" aria-label="Tools navigation">
@@ -186,7 +186,7 @@ const fullTitle = title ? `${title} | ToolsHub` : "ToolsHub — Free Online Deve
               <a href="https://github.com/shakumar5" target="_blank" rel="noopener noreferrer">GitHub</a>
             </nav>
             <div class="footer-right">
-              <p>&copy; {new Date().getFullYear()} ToolsHub. All code is processed locally in your browser.</p>
+              <p>&copy; {new Date().getFullYear()} InstantToolsHub. All code is processed locally in your browser.</p>
             </div>
           </div>
         </footer>

@@ -32,12 +32,12 @@ const {
   keywords = "developer blog, web development, programming tutorials",
   publishDate = "",
   dateModified = "",
-  author = "ToolsHub Team",
+  author = "InstantToolsHub Team",
   category = "Development"
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://instanttoolshub.com");
-const fullTitle = `${title} | ToolsHub Blog`;
+const fullTitle = `${title} | InstantToolsHub Blog`;
 ---
 
 <!DOCTYPE html>
@@ -67,7 +67,7 @@ const fullTitle = `${title} | ToolsHub Blog`;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content="https://instanttoolshub.com/og-image.jpg" />
-    <meta property="og:site_name" content="ToolsHub" />
+    <meta property="og:site_name" content="InstantToolsHub" />
     <meta property="article:published_time" content={publishDate} />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -85,7 +85,7 @@ const fullTitle = `${title} | ToolsHub Blog`;
       "headline": title,
       "description": description,
       "author": { "@type": "Person", "name": author },
-      "publisher": { "@type": "Organization", "name": "ToolsHub", "logo": { "@type": "ImageObject", "url": "https://instanttoolshub.com/favicon.svg" } },
+      "publisher": { "@type": "Organization", "name": "InstantToolsHub", "logo": { "@type": "ImageObject", "url": "https://instanttoolshub.com/favicon.svg" } },
       "datePublished": publishDate,
       "dateModified": dateModified || publishDate,
       "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl.href }
@@ -131,7 +131,7 @@ const fullTitle = `${title} | ToolsHub Blog`;
               <a href="/jwt-decoder">JWT Decoder</a>
             </nav>
             <div class="footer-right">
-              <p>&copy; {new Date().getFullYear()} ToolsHub. All code is processed locally in your browser.</p>
+              <p>&copy; {new Date().getFullYear()} InstantToolsHub. All code is processed locally in your browser.</p>
             </div>
           </div>
         </footer>
