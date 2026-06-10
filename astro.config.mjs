@@ -46,7 +46,7 @@ export default defineConfig({
   compressHTML: true,
   integrations: [sitemap(), htmlPostProcess()],
   build: {
-    inlineStylesheets: 'auto',
+    inlineStylesheets: 'always',
   },
   vite: {
     build: {

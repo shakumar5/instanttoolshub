@@ -3,18 +3,14 @@ import Sidebar from '../components/Sidebar.astro';
 import Header from '../components/Header.astro';
 import '../styles/global.css';
 
-import '@fontsource/inter/300.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
-import '@fontsource/outfit/400.css';
-import '@fontsource/outfit/500.css';
 import '@fontsource/outfit/600.css';
 import '@fontsource/outfit/700.css';
 import '@fontsource/outfit/800.css';
 import '@fontsource/fira-code/400.css';
-import '@fontsource/fira-code/500.css';
 
 interface Props {
   title: string;
@@ -46,12 +42,18 @@ const fullTitle = `${title} | InstantToolsHub Blog`;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0G0S0R595C" is:inline></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-0G0S0R595C');
+      // Defer gtag.js loading until after initial paint
+      window.addEventListener('load', function() {
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-0G0S0R595C';
+        s.async = true;
+        document.head.appendChild(s);
+      });
     </script>
 
     <title>{fullTitle}</title>
@@ -95,7 +97,7 @@ const fullTitle = `${title} | InstantToolsHub Blog`;
     <div 
       class="layout-wrapper" 
       id="app-layout"
-      style="--accent-primary: #6366f1; --accent-glow: rgba(99, 102, 241, 0.15); --accent-hover: #6366f1dd;"
+      style="--accent-primary: #818cf8; --accent-glow: rgba(129, 140, 248, 0.15); --accent-hover: #818cf8dd;"
     >
       <div id="mobile-sidebar-backdrop" class="sidebar-backdrop"></div>
       

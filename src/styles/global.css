@@ -14,15 +14,15 @@
   
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --text-muted: #718096;
+  --text-muted: #8b9bb5;
   
   --border-light: rgba(255, 255, 255, 0.06);
   --border-hover: rgba(255, 255, 255, 0.15);
   
   /* Vibrant Tool Accents (custom variables mapped per page/tool) */
-  --accent-primary: #6366f1; /* Indigo default */
-  --accent-glow: rgba(99, 102, 241, 0.15);
-  --accent-hover: #4f46e5;
+  --accent-primary: #818cf8; /* Indigo — WCAG AA compliant on dark bg */
+  --accent-glow: rgba(129, 140, 248, 0.15);
+  --accent-hover: #6366f1;
   
   /* Fixed Accents */
   --color-success: #10b981;
@@ -271,9 +271,9 @@ main {
 /* ─── Visible Focus Indicators (WCAG 2.4.7 / 2.4.11) ─── */
 /* 2px solid outline with ≥3:1 contrast against --bg-primary (#080c14) */
 :focus-visible {
-  outline: 2px solid var(--accent-primary, #6366f1);
+  outline: 2px solid var(--accent-primary, #818cf8);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px var(--accent-glow, rgba(99, 102, 241, 0.15));
+  box-shadow: 0 0 0 4px var(--accent-glow, rgba(129, 140, 248, 0.15));
 }
 
 /* Ensure outline is never removed on focusable elements */
@@ -284,7 +284,7 @@ textarea:focus-visible,
 select:focus-visible,
 [tabindex]:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid var(--accent-primary, #6366f1) !important;
+  outline: 2px solid var(--accent-primary, #818cf8) !important;
   outline-offset: 2px;
 }
 

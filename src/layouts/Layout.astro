@@ -4,18 +4,15 @@ import Header from '../components/Header.astro';
 import '../styles/global.css';
 
 // Self-host typography locally to prevent render blocking and layout shift
-import '@fontsource/inter/300.css';
+// Only load the most critical weights; others load on demand via CSS
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
-import '@fontsource/outfit/400.css';
-import '@fontsource/outfit/500.css';
 import '@fontsource/outfit/600.css';
 import '@fontsource/outfit/700.css';
 import '@fontsource/outfit/800.css';
 import '@fontsource/fira-code/400.css';
-import '@fontsource/fira-code/500.css';
 
 interface Props {
   title: string;
@@ -31,8 +28,8 @@ const {
   description, 
   keywords = "developer tools, json formatter, base64 encoder, regex tester, url encoder, jwt decoder, online tools", 
   activeTool = "",
-  accentColor = "#6366f1",
-  accentGlow = "rgba(99, 102, 241, 0.15)"
+  accentColor = "#818cf8",
+  accentGlow = "rgba(129, 140, 248, 0.15)"
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://instanttoolshub.com");
@@ -45,12 +42,18 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0G0S0R595C" is:inline></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-0G0S0R595C');
+      // Defer gtag.js loading until after initial paint
+      window.addEventListener('load', function() {
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-0G0S0R595C';
+        s.async = true;
+        document.head.appendChild(s);
+      });
     </script>
 
     <title>{fullTitle}</title>
@@ -84,6 +87,11 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Preload critical fonts to eliminate render-blocking chain -->
+    <link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/outfit-latin-800-normal.CQna6-G7.woff2" as="font" type="font/woff2" crossorigin />
 
     <script type="application/ld+json" is:inline>
       {
