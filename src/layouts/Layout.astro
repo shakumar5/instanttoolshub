@@ -47,13 +47,18 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-0G0S0R595C');
-      // Defer gtag.js loading until after initial paint
-      window.addEventListener('load', function() {
+      // Defer gtag.js loading until browser is idle (after LCP/FCP)
+      function loadGtag() {
         var s = document.createElement('script');
         s.src = 'https://www.googletagmanager.com/gtag/js?id=G-0G0S0R595C';
         s.async = true;
         document.head.appendChild(s);
-      });
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGtag, { timeout: 3000 });
+      } else {
+        window.addEventListener('load', loadGtag);
+      }
     </script>
 
     <title>{fullTitle}</title>
@@ -88,10 +93,12 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
     
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Preload critical fonts to eliminate render-blocking chain -->
+    <!-- Preload critical fonts to eliminate render-blocking request chain -->
     <link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/_astro/inter-latin-600-normal.LgqL8muc.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/_astro/outfit-latin-800-normal.CQna6-G7.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/inter-latin-500-normal.Cerq10X2.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/outfit-latin-600-normal.B7SfZ07L.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/outfit-latin-700-normal.Cu9v6i1X.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/fira-code-latin-400-normal.DGosTW8U.woff2" as="font" type="font/woff2" crossorigin />
 
     <script type="application/ld+json" is:inline>
       {
