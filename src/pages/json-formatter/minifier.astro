@@ -1,0 +1,174 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "JSON Minifier Online — Free, Instant, Private";
+const pageHeading = "JSON Minifier";
+const activeTool = "json-formatter";
+const accentColor = "#10b981";
+const accentGlow = "rgba(16, 185, 129, 0.15)";
+
+const seoDescription = "Minify JSON by removing all whitespace, indentation, and line breaks. Reduce JSON payload size instantly in your browser — 100% free, no data uploaded, client-side only.";
+const seoKeywords = "json minifier, minify json online, compress json, json compressor, reduce json size, json minifier free, compact json, json minification";
+
+const howToUse = [
+  "Paste your formatted or pretty-printed JSON into the input editor.",
+  "Click 'Minify' to instantly remove all whitespace, indentation, and line breaks.",
+  "The output shows the most compact single-line representation of your JSON data.",
+  "Review the size comparison showing original vs minified byte counts and percentage saved.",
+  "Click 'Copy' to copy the minified JSON to your clipboard for use in API responses, config files, or code."
+];
+
+const faqs = [
+  {
+    q: "What does JSON minification do?",
+    a: "JSON minification removes all unnecessary whitespace, line breaks, and indentation from a JSON string without changing its data or structure. The result is the most compact text representation — typically 30-60% smaller than pretty-printed JSON."
+  },
+  {
+    q: "When should I minify JSON?",
+    a: "Minify JSON before embedding it in API responses, storing it in databases, transmitting over networks, or including it in source code. Smaller payloads mean faster transmission, lower bandwidth costs, and improved page load times."
+  },
+  {
+    q: "Does minifying JSON change the data?",
+    a: "No. Minification only removes cosmetic whitespace. The data structure, values, keys, and nesting remain identical. JSON.parse() produces the same result whether you parse the minified or formatted version."
+  },
+  {
+    q: "Is this tool safe for sensitive JSON data?",
+    a: "Yes. All minification happens in your browser using JSON.parse() and JSON.stringify(). No data is sent to any server — your JSON never leaves your device."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JSON Minifier",
+  "url": "https://instanttoolshub.com/json-formatter/minifier",
+  "description": "Free online JSON minifier. Compress JSON by removing whitespace and line breaks instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Remove all whitespace and line breaks from JSON to produce the smallest possible payload.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>Input JSON</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs" id="btn-minify">Minify</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="btn-copy">Copy</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="split-container">
+        <div class="split-pane">
+          <div class="split-label">Formatted Input</div>
+          <textarea id="json-input" placeholder="Paste formatted JSON here..." class="form-textarea code-textarea"></textarea>
+        </div>
+        <div class="split-pane">
+          <div class="split-label">Minified Output</div>
+          <textarea id="json-output" readonly placeholder="Minified JSON will appear here..." class="form-textarea code-textarea output"></textarea>
+        </div>
+      </div>
+      <div id="stats-bar" class="stats-bar hidden"></div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More JSON Tools</h3>
+    <div class="links-list">
+      <a href="/json-formatter">JSON Formatter & Beautifier</a>
+      <a href="/json-formatter/validator">JSON Validator</a>
+      <a href="/json-formatter/json-to-csv">JSON to CSV Converter</a>
+      <a href="/json-formatter/tree-viewer">JSON Tree Viewer</a>
+      <a href="/json-formatter/json-diff">JSON Diff Checker</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="json-formatter" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="JSON minification strips all cosmetic characters — spaces, tabs, newlines, and indentation — from a JSON document without altering its data. The result is a single compact line that occupies 30-60% less space than the pretty-printed equivalent. This matters for API responses where every kilobyte affects latency, for embedded configuration where file size impacts parse time, and for network payloads where bandwidth costs money at scale."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 450px; height: 550px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .split-container { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .split-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border-light); }
+  .split-pane:last-child { border-right: none; }
+  .split-label { padding: 0.5rem 1.25rem; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .code-textarea { width: 100%; height: 100%; flex-grow: 1; border: none; padding: 1.25rem; font-family: var(--font-mono); font-size: 0.85rem; background: #030712; color: #e2e8f0; resize: none; outline: none; }
+  .code-textarea.output { color: #34d399; }
+  .stats-bar { padding: 0.6rem 1.25rem; background: rgba(16, 185, 129, 0.1); border-top: 1px solid rgba(16, 185, 129, 0.2); font-size: 0.8rem; color: #34d399; font-family: var(--font-mono); }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+  @media (max-width: 768px) { .split-container { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const input = document.getElementById('json-input') as HTMLTextAreaElement;
+  const output = document.getElementById('json-output') as HTMLTextAreaElement;
+  const statsBar = document.getElementById('stats-bar');
+  const btnMinify = document.getElementById('btn-minify');
+  const btnClear = document.getElementById('btn-clear');
+  const btnCopy = document.getElementById('btn-copy');
+
+  function minify() {
+    if (!input || !output || !statsBar) return;
+    const val = input.value.trim();
+    if (!val) { output.value = ''; statsBar.className = 'stats-bar hidden'; return; }
+    try {
+      const parsed = JSON.parse(val);
+      const minified = JSON.stringify(parsed);
+      output.value = minified;
+      const originalSize = new Blob([val]).size;
+      const minifiedSize = new Blob([minified]).size;
+      const saved = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
+      statsBar.textContent = `Original: ${originalSize} bytes → Minified: ${minifiedSize} bytes (${saved}% reduction)`;
+      statsBar.className = 'stats-bar';
+    } catch (e: any) {
+      output.value = 'Error: ' + e.message;
+      statsBar.className = 'stats-bar hidden';
+    }
+  }
+
+  if (btnMinify) btnMinify.addEventListener('click', minify);
+  if (btnClear && input && output && statsBar) btnClear.addEventListener('click', () => { input.value = ''; output.value = ''; statsBar.className = 'stats-bar hidden'; });
+  if (btnCopy && output) btnCopy.addEventListener('click', () => {
+    if (output.value) {
+      navigator.clipboard.writeText(output.value).then(() => {
+        if (btnCopy) { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy'; }, 2000); }
+      });
+    }
+  });
+</script>

@@ -1,0 +1,182 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "HMAC Generator Online — Free, Instant, Private";
+const pageHeading = "HMAC Generator";
+const activeTool = "hash-generator";
+const accentColor = "#e11d48";
+const accentGlow = "rgba(225, 29, 72, 0.15)";
+
+const seoDescription = "Generate HMAC signatures (SHA-256, SHA-512) from text and a secret key instantly in your browser. Verify API webhooks and message authenticity — 100% free, no data uploaded.";
+const seoKeywords = "hmac generator, hmac sha256, hmac online, hmac calculator, generate hmac, hmac sha512, hmac signature generator, webhook signature verify";
+
+const howToUse = [
+  "Enter your message text in the input field.",
+  "Enter your secret key in the key field.",
+  "Select the hash algorithm (SHA-256 or SHA-512).",
+  "The HMAC signature is computed instantly as you type.",
+  "Click 'Copy' to copy the HMAC hex string to your clipboard.",
+  "Compare the generated HMAC against expected values to verify webhook signatures or API authenticity."
+];
+
+const faqs = [
+  {
+    q: "What is HMAC?",
+    a: "HMAC (Hash-based Message Authentication Code) combines a secret key with a hash function to produce a signature that verifies both data integrity and authenticity. Unlike plain hashing, only someone with the key can generate or verify the correct HMAC."
+  },
+  {
+    q: "Where is HMAC used?",
+    a: "HMAC is used in API webhook verification (Stripe, GitHub, Slack), JWT signature validation, secure session tokens, message authentication in protocols like TLS, and any scenario requiring proof that a message came from a trusted sender."
+  },
+  {
+    q: "HMAC vs plain hash — what's the difference?",
+    a: "A plain hash (SHA-256 of data) can be computed by anyone with the data. An HMAC requires both the data AND a secret key, so only authorized parties can generate valid signatures. This prevents attackers from forging messages."
+  },
+  {
+    q: "Is this tool safe for my secret keys?",
+    a: "Yes. All HMAC computation runs locally in your browser using the Web Crypto API. Neither your message nor your key is transmitted to any server."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "HMAC Generator",
+  "url": "https://instanttoolshub.com/hash-generator/hmac",
+  "description": "Free online HMAC generator. Compute HMAC-SHA256 and HMAC-SHA512 signatures instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Compute HMAC signatures using SHA-256 or SHA-512 with your secret key — verify webhooks and API authenticity.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>HMAC Signature</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="btn-copy">Copy HMAC</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea id="hmac-message" placeholder="Enter message to sign..." class="form-textarea code-textarea"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-grow">
+          <label class="form-label">Secret Key</label>
+          <input type="text" id="hmac-key" placeholder="Enter your secret key..." class="form-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Algorithm</label>
+          <select id="hmac-algo" class="form-select">
+            <option value="SHA-256">HMAC-SHA256</option>
+            <option value="SHA-512">HMAC-SHA512</option>
+          </select>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="form-label">HMAC Output</label>
+        <textarea id="hmac-output" readonly placeholder="HMAC signature will appear here..." class="form-textarea hash-output-area"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Hash Tools</h3>
+    <div class="links-list">
+      <a href="/hash-generator">All Hash Algorithms</a>
+      <a href="/hash-generator/md5">MD5 Generator</a>
+      <a href="/hash-generator/sha256">SHA-256 Generator</a>
+      <a href="/hash-generator/sha512">SHA-512 Generator</a>
+      <a href="/hash-generator/file-checksum">File Checksum</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="hash-generator" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="HMAC (Hash-based Message Authentication Code) uses a secret key combined with a cryptographic hash function to produce a fixed-length authentication tag. The algorithm works by XOR-ing the key with inner and outer padding constants, then performing two rounds of hashing: first hashing the key + message, then hashing the key + that intermediate result. This construction prevents length-extension attacks and ensures only parties with the secret key can produce valid signatures. HMAC is foundational to webhook verification, JWT signing, and secure API communication."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .form-group { display: flex; flex-direction: column; }
+  .form-row { display: flex; gap: 1rem; align-items: flex-end; }
+  .flex-grow { flex-grow: 1; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .code-textarea { width: 100%; min-height: 120px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; font-family: var(--font-mono); font-size: 0.9rem; background: #030712; color: #e2e8f0; resize: vertical; outline: none; }
+  .code-textarea:focus { border-color: var(--accent-primary); }
+  .form-input { width: 100%; padding: 0.6rem 1rem; font-family: var(--font-mono); font-size: 0.9rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #e2e8f0; outline: none; }
+  .form-input:focus { border-color: var(--accent-primary); }
+  .form-select { padding: 0.6rem 1rem; font-size: 0.85rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #e2e8f0; outline: none; }
+  .hash-output-area { width: 100%; min-height: 60px; padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.85rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #fb7185; outline: none; resize: none; word-break: break-all; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+  @media (max-width: 768px) { .form-row { flex-direction: column; } }
+</style>
+
+<script>
+  const message = document.getElementById('hmac-message') as HTMLTextAreaElement;
+  const key = document.getElementById('hmac-key') as HTMLInputElement;
+  const algo = document.getElementById('hmac-algo') as HTMLSelectElement;
+  const output = document.getElementById('hmac-output') as HTMLTextAreaElement;
+  const btnCopy = document.getElementById('btn-copy');
+  const btnClear = document.getElementById('btn-clear');
+
+  async function computeHMAC() {
+    if (!message || !key || !algo || !output) return;
+    const msg = message.value;
+    const secret = key.value;
+    if (!msg || !secret) { output.value = ''; return; }
+
+    try {
+      const encoder = new TextEncoder();
+      const keyData = encoder.encode(secret);
+      const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: algo.value }, false, ['sign']);
+      const signature = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(msg));
+      output.value = Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e: any) {
+      output.value = 'Error: ' + e.message;
+    }
+  }
+
+  if (message) message.addEventListener('input', computeHMAC);
+  if (key) key.addEventListener('input', computeHMAC);
+  if (algo) algo.addEventListener('change', computeHMAC);
+  if (btnClear && message && key && output) btnClear.addEventListener('click', () => { message.value = ''; key.value = ''; output.value = ''; });
+  if (btnCopy && output) btnCopy.addEventListener('click', () => {
+    if (output.value) navigator.clipboard.writeText(output.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy HMAC'; }, 2000); });
+  });
+</script>

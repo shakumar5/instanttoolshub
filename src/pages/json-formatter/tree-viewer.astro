@@ -1,0 +1,224 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "JSON Tree Viewer Online — Free, Instant, Private";
+const pageHeading = "JSON Tree Viewer";
+const activeTool = "json-formatter";
+const accentColor = "#10b981";
+const accentGlow = "rgba(16, 185, 129, 0.15)";
+
+const seoDescription = "Visualize JSON data as an interactive, collapsible tree structure. Explore nested objects, arrays, and values with color-coded types — 100% free, no data uploaded.";
+const seoKeywords = "json tree viewer, json tree view online, visualize json, json explorer, json hierarchy viewer, json structure viewer, interactive json viewer";
+
+const howToUse = [
+  "Paste your JSON into the input area on the left.",
+  "The tree view renders automatically — showing objects as collapsible nodes, arrays as indexed lists, and values color-coded by type.",
+  "Click the ▼ arrow next to any object or array to collapse/expand that branch.",
+  "String values appear in green, numbers in orange, booleans in blue, and null in red for quick scanning.",
+  "Use this to visually inspect deeply nested API responses, configuration files, or database exports."
+];
+
+const faqs = [
+  {
+    q: "What is a JSON tree viewer?",
+    a: "A JSON tree viewer renders JSON data as a hierarchical tree where each key-value pair is a node. Objects and arrays are expandable/collapsible branches. This visual representation makes it easy to navigate deeply nested structures that would be hard to read as raw text."
+  },
+  {
+    q: "Can it handle large JSON files?",
+    a: "Yes. The tree viewer renders nodes on demand and collapses deeply nested branches by default for performance. JSON files up to several megabytes can be visualized without lag."
+  },
+  {
+    q: "What do the colors mean?",
+    a: "Colors indicate value types: green = string, orange = number, blue = boolean, red = null, and indigo = keys. This color coding lets you quickly identify data types without reading each value."
+  },
+  {
+    q: "Is my data safe?",
+    a: "Yes. The tree is rendered entirely in your browser using JavaScript DOM manipulation. No data is sent to any server."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JSON Tree Viewer",
+  "url": "https://instanttoolshub.com/json-formatter/tree-viewer",
+  "description": "Free online JSON tree viewer. Visualize JSON as an interactive collapsible tree structure in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Visualize JSON as an interactive, collapsible tree with color-coded value types for easy exploration.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>JSON Tree Explorer</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-outline btn-xs" id="btn-sample">Sample</button>
+        <button class="btn btn-primary btn-xs" id="btn-expand-all">Expand All</button>
+        <button class="btn btn-primary btn-xs" id="btn-collapse-all">Collapse All</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="split-container">
+        <div class="split-pane input-pane">
+          <div class="split-label">JSON Input</div>
+          <textarea id="json-input" placeholder="Paste JSON here to visualize as a tree..." class="form-textarea code-textarea"></textarea>
+        </div>
+        <div class="split-pane tree-pane">
+          <div class="split-label">Tree View</div>
+          <div id="tree-output" class="tree-container">
+            <div class="placeholder-text">Tree will render after entering valid JSON.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More JSON Tools</h3>
+    <div class="links-list">
+      <a href="/json-formatter">JSON Formatter & Beautifier</a>
+      <a href="/json-formatter/validator">JSON Validator</a>
+      <a href="/json-formatter/minifier">JSON Minifier</a>
+      <a href="/json-formatter/json-to-csv">JSON to CSV Converter</a>
+      <a href="/json-formatter/json-diff">JSON Diff Checker</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="json-formatter" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="Raw JSON — especially deeply nested API responses with 5+ levels of hierarchy — is difficult to navigate as text. A tree viewer renders the same data as an expandable/collapsible hierarchy where each branch represents an object or array and each leaf represents a primitive value. Color coding by type (string, number, boolean, null) adds another visual dimension for rapid scanning. This tool builds the tree entirely in your browser using DOM manipulation — no data is ever sent to a server."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 500px; height: 600px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .split-container { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .split-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border-light); }
+  .split-pane:last-child { border-right: none; }
+  .split-label { padding: 0.5rem 1.25rem; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .code-textarea { width: 100%; height: 100%; flex-grow: 1; border: none; padding: 1.25rem; font-family: var(--font-mono); font-size: 0.85rem; background: #030712; color: #e2e8f0; resize: none; outline: none; }
+  .tree-container { padding: 1.5rem; flex-grow: 1; overflow-y: auto; font-family: var(--font-mono); font-size: 0.85rem; background: #04060a; line-height: 1.6; }
+  .placeholder-text { color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 3rem; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+  @media (max-width: 768px) { .split-container { grid-template-columns: 1fr; } .input-pane { max-height: 250px; } }
+</style>
+
+<script>
+  const input = document.getElementById('json-input') as HTMLTextAreaElement;
+  const treeOutput = document.getElementById('tree-output');
+  const btnClear = document.getElementById('btn-clear');
+  const btnSample = document.getElementById('btn-sample');
+  const btnExpandAll = document.getElementById('btn-expand-all');
+  const btnCollapseAll = document.getElementById('btn-collapse-all');
+
+  const sampleData = { "site": "InstantToolsHub", "version": 1.0, "active": true, "features": ["JSON Formatter", "Base64 Tool", "JWT Decoder"], "owner": { "name": "Admin", "email": "contact@instanttoolshub.com", "social": { "github": "instanttoolshub", "twitter": "@toolshub" } }, "stats": null };
+
+  function renderTree() {
+    if (!input || !treeOutput) return;
+    const val = input.value.trim();
+    if (!val) { treeOutput.innerHTML = '<div class="placeholder-text">Tree will render after entering valid JSON.</div>'; return; }
+    try {
+      const parsed = JSON.parse(val);
+      treeOutput.innerHTML = '';
+      treeOutput.appendChild(buildNode(parsed, ''));
+    } catch (e: any) {
+      treeOutput.innerHTML = `<div style="color:#f87171;">Invalid JSON: ${e.message}</div>`;
+    }
+  }
+
+  function buildNode(data: any, key: string): HTMLElement {
+    const div = document.createElement('div');
+    div.style.marginLeft = key ? '1.25rem' : '0';
+
+    if (data === null || typeof data !== 'object') {
+      const keySpan = key ? `<span style="color:#818cf8;font-weight:500;">"${key}": </span>` : '';
+      let valSpan = '';
+      if (typeof data === 'string') valSpan = `<span style="color:#34d399;">"${data}"</span>`;
+      else if (typeof data === 'number') valSpan = `<span style="color:#fb923c;">${data}</span>`;
+      else if (typeof data === 'boolean') valSpan = `<span style="color:#38bdf8;">${data}</span>`;
+      else valSpan = `<span style="color:#f87171;">null</span>`;
+      div.innerHTML = keySpan + valSpan;
+      return div;
+    }
+
+    const isArray = Array.isArray(data);
+    const entries = isArray ? data : Object.entries(data);
+    const count = isArray ? data.length : Object.keys(data).length;
+    const brace = isArray ? ['[', ']'] : ['{', '}'];
+
+    const header = document.createElement('div');
+    header.style.cursor = 'pointer';
+    header.style.userSelect = 'none';
+    const keyLabel = key ? `<span style="color:#818cf8;font-weight:500;">"${key}": </span>` : '';
+    header.innerHTML = `<span class="tree-toggle">▼</span> ${keyLabel}${brace[0]} <span style="color:var(--text-muted);font-size:0.75rem;">${count} items</span>`;
+
+    const body = document.createElement('div');
+    body.className = 'tree-body';
+    if (isArray) {
+      data.forEach((item: any, idx: number) => body.appendChild(buildNode(item, String(idx))));
+    } else {
+      for (const [k, v] of Object.entries(data)) body.appendChild(buildNode(v, k));
+    }
+
+    const closer = document.createElement('div');
+    closer.textContent = brace[1];
+    closer.style.marginLeft = '0';
+
+    header.addEventListener('click', () => {
+      const toggle = header.querySelector('.tree-toggle');
+      if (body.style.display === 'none') {
+        body.style.display = 'block';
+        closer.style.display = 'block';
+        if (toggle) toggle.textContent = '▼';
+      } else {
+        body.style.display = 'none';
+        closer.style.display = 'none';
+        if (toggle) toggle.textContent = '▶';
+      }
+    });
+
+    div.appendChild(header);
+    div.appendChild(body);
+    div.appendChild(closer);
+    return div;
+  }
+
+  if (input) input.addEventListener('input', renderTree);
+  if (btnClear && input && treeOutput) btnClear.addEventListener('click', () => { input.value = ''; treeOutput.innerHTML = '<div class="placeholder-text">Tree will render after entering valid JSON.</div>'; });
+  if (btnSample && input) btnSample.addEventListener('click', () => { input.value = JSON.stringify(sampleData, null, 2); renderTree(); });
+  if (btnExpandAll && treeOutput) btnExpandAll.addEventListener('click', () => { treeOutput.querySelectorAll('.tree-body').forEach(el => { (el as HTMLElement).style.display = 'block'; }); treeOutput.querySelectorAll('.tree-toggle').forEach(el => { el.textContent = '▼'; }); });
+  if (btnCollapseAll && treeOutput) btnCollapseAll.addEventListener('click', () => { treeOutput.querySelectorAll('.tree-body').forEach(el => { (el as HTMLElement).style.display = 'none'; }); treeOutput.querySelectorAll('.tree-toggle').forEach(el => { el.textContent = '▶'; }); });
+</script>

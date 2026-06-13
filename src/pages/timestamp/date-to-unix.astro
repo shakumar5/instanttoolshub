@@ -1,0 +1,182 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "Date to Unix Timestamp Converter Online — Free, Instant";
+const pageHeading = "Date to Unix Timestamp Converter";
+const activeTool = "timestamp";
+const accentColor = "#f43f5e";
+const accentGlow = "rgba(244, 63, 94, 0.15)";
+
+const seoDescription = "Convert any date and time to a Unix timestamp (epoch seconds). Parse human-readable dates to Unix time for APIs, databases, and scheduling — 100% free, client-side.";
+const seoKeywords = "date to unix timestamp, date to epoch, convert date to timestamp, human date to unix, date to unix time, datetime to timestamp, date to epoch converter";
+
+const howToUse = [
+  "Enter a date using the date/time picker or type a date string (e.g. '2025-06-13 10:30:00').",
+  "The Unix timestamp (seconds since epoch) is calculated instantly.",
+  "Both seconds and milliseconds formats are displayed for easy copying.",
+  "Click 'Now' to use the current date/time as the starting point.",
+  "Supports ISO 8601, RFC 2822, and common date string formats."
+];
+
+const faqs = [
+  {
+    q: "What date formats are accepted?",
+    a: "This converter accepts ISO 8601 (2025-06-13T10:30:00Z), RFC 2822 (Fri, 13 Jun 2025 10:30:00 +0000), and common formats like '2025-06-13 10:30:00' or 'June 13, 2025'. The JavaScript Date parser handles most standard formats."
+  },
+  {
+    q: "Which timezone is used?",
+    a: "Dates without explicit timezone info are interpreted in your local timezone. Add 'Z' or '+00:00' suffix for UTC. The output always shows the Unix timestamp in UTC (since timestamps are timezone-independent)."
+  },
+  {
+    q: "What's the difference between seconds and milliseconds timestamps?",
+    a: "Unix traditionally uses seconds (10 digits). JavaScript Date.now() uses milliseconds (13 digits). APIs vary — check documentation for which format is expected."
+  },
+  {
+    q: "Is this converter safe?",
+    a: "Yes. Date parsing uses the browser's native Date constructor. No data is transmitted anywhere."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Date to Unix Timestamp Converter",
+  "url": "https://instanttoolshub.com/timestamp/date-to-unix",
+  "description": "Free online date to Unix timestamp converter. Convert human-readable dates to epoch seconds instantly.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Convert any human-readable date to a Unix epoch timestamp for APIs and databases.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>Date → Unix Timestamp</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-now">Now</button>
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="input-row">
+        <label class="form-label">Date & Time</label>
+        <input type="datetime-local" id="date-input" class="form-input date-input" />
+      </div>
+      <div class="input-row">
+        <label class="form-label">Or paste a date string</label>
+        <input type="text" id="date-string" placeholder="e.g. 2025-06-13 10:30:00 or June 13, 2025" class="form-input" />
+      </div>
+      <div id="results" class="results hidden">
+        <div class="result-row">
+          <span class="result-label">Seconds:</span>
+          <span id="r-seconds" class="result-value"></span>
+          <button class="btn btn-outline btn-xs copy-btn" data-target="r-seconds">Copy</button>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Milliseconds:</span>
+          <span id="r-millis" class="result-value"></span>
+          <button class="btn btn-outline btn-xs copy-btn" data-target="r-millis">Copy</button>
+        </div>
+        <div class="result-row">
+          <span class="result-label">ISO 8601:</span>
+          <span id="r-iso" class="result-value"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Time Tools</h3>
+    <div class="links-list">
+      <a href="/timestamp">Unix Timestamp Converter</a>
+      <a href="/timestamp/unix-to-date">Unix to Date Converter</a>
+      <a href="/timestamp/cron-parser">Cron Expression Parser</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="timestamp" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="Converting human-readable dates to Unix timestamps is essential for storing dates in databases, sending time values in APIs, and scheduling events in code. The Unix epoch (January 1, 1970 00:00:00 UTC) serves as the universal reference point. This converter parses multiple date formats using JavaScript's Date constructor, calculates the elapsed seconds since epoch, and presents both seconds and milliseconds formats commonly used across different systems and programming languages."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .form-input, .date-input { width: 100%; padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.95rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #e2e8f0; outline: none; }
+  .form-input:focus, .date-input:focus { border-color: var(--accent-primary); }
+  .results { display: flex; flex-direction: column; gap: 0.5rem; }
+  .result-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); }
+  .result-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); min-width: 110px; }
+  .result-value { font-family: var(--font-mono); font-size: 0.95rem; color: #f43f5e; flex-grow: 1; }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const dateInput = document.getElementById('date-input') as HTMLInputElement;
+  const dateString = document.getElementById('date-string') as HTMLInputElement;
+  const results = document.getElementById('results');
+  const rSeconds = document.getElementById('r-seconds');
+  const rMillis = document.getElementById('r-millis');
+  const rIso = document.getElementById('r-iso');
+  const btnNow = document.getElementById('btn-now');
+  const btnClear = document.getElementById('btn-clear');
+
+  function convert(date: Date) {
+    if (!results || !rSeconds || !rMillis || !rIso) return;
+    if (isNaN(date.getTime())) { results.classList.add('hidden'); return; }
+    rSeconds.textContent = Math.floor(date.getTime() / 1000).toString();
+    rMillis.textContent = date.getTime().toString();
+    rIso.textContent = date.toISOString();
+    results.classList.remove('hidden');
+  }
+
+  if (dateInput) dateInput.addEventListener('input', () => convert(new Date(dateInput.value)));
+  if (dateString) dateString.addEventListener('input', () => { const d = new Date(dateString.value); convert(d); });
+  if (btnNow) btnNow.addEventListener('click', () => {
+    const now = new Date();
+    if (dateInput) dateInput.value = now.toISOString().slice(0, 16);
+    convert(now);
+  });
+  if (btnClear && dateInput && dateString && results) btnClear.addEventListener('click', () => { dateInput.value = ''; dateString.value = ''; results.classList.add('hidden'); });
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const el = targetId ? document.getElementById(targetId) : null;
+      if (el?.textContent) navigator.clipboard.writeText(el.textContent).then(() => { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); });
+    });
+  });
+</script>

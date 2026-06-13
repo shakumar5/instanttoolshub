@@ -1,0 +1,152 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "SHA-512 Hash Generator Online — Free, Instant, Private";
+const pageHeading = "SHA-512 Hash Generator";
+const activeTool = "hash-generator";
+const accentColor = "#e11d48";
+const accentGlow = "rgba(225, 29, 72, 0.15)";
+
+const seoDescription = "Generate SHA-512 hashes from text instantly in your browser. Compute 512-bit secure hashes using the Web Crypto API — 100% free, no data uploaded, client-side only.";
+const seoKeywords = "sha512 generator, sha512 hash online, sha-512 hash, sha512 calculator, generate sha512, sha512 hash generator free, sha512 checksum";
+
+const howToUse = [
+  "Type or paste your text into the input field.",
+  "The SHA-512 hash (128 hexadecimal characters) is computed instantly using the Web Crypto API.",
+  "Click 'Copy' to copy the hash to your clipboard.",
+  "Use SHA-512 for maximum-strength data integrity verification and digital signatures."
+];
+
+const faqs = [
+  {
+    q: "What is SHA-512?",
+    a: "SHA-512 is the strongest member of the SHA-2 family, producing a 512-bit (64-byte) hash represented as 128 hexadecimal characters. It provides higher security margins than SHA-256 and is faster on 64-bit processors."
+  },
+  {
+    q: "SHA-256 vs SHA-512 — when to use which?",
+    a: "SHA-256 is sufficient for most applications. SHA-512 offers higher theoretical security (2^256 collision resistance vs 2^128) and can be faster on 64-bit systems. Use SHA-512 when maximum security margin is needed or when processing on 64-bit hardware."
+  },
+  {
+    q: "Is SHA-512 slower than SHA-256?",
+    a: "On 64-bit processors, SHA-512 is actually faster than SHA-256 because it operates on 64-bit words. On 32-bit systems, SHA-256 is faster. Modern browsers and servers are almost exclusively 64-bit."
+  },
+  {
+    q: "Is this tool safe for sensitive data?",
+    a: "Yes. Hashing uses the browser's native Web Crypto API. No data leaves your device."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "SHA-512 Hash Generator",
+  "url": "https://instanttoolshub.com/hash-generator/sha512",
+  "description": "Free online SHA-512 hash generator. Compute secure 512-bit hashes from text instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Compute cryptographically secure SHA-512 hashes (512-bit, 128 hex chars) from any text input.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>SHA-512 Hash</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="btn-copy">Copy Hash</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="input-section">
+        <label class="form-label">Input Text</label>
+        <textarea id="hash-input" placeholder="Type or paste text to hash..." class="form-textarea code-textarea"></textarea>
+      </div>
+      <div class="output-section">
+        <label class="form-label">SHA-512 Hash Output</label>
+        <textarea id="hash-output" readonly placeholder="SHA-512 hash will appear here..." class="form-textarea hash-output-area"></textarea>
+        <div class="hash-info">512-bit digest | 128 hexadecimal characters</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Hash Tools</h3>
+    <div class="links-list">
+      <a href="/hash-generator">All Hash Algorithms</a>
+      <a href="/hash-generator/md5">MD5 Generator</a>
+      <a href="/hash-generator/sha256">SHA-256 Generator</a>
+      <a href="/hash-generator/hmac">HMAC Generator</a>
+      <a href="/hash-generator/file-checksum">File Checksum</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="hash-generator" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="SHA-512 uses 80 rounds of compression operating on 64-bit words to produce a 512-bit digest. As the strongest SHA-2 variant, it provides 2^256 collision resistance — effectively unbreakable with any foreseeable technology. On modern 64-bit processors, SHA-512 often outperforms SHA-256 because its operations are natively aligned with the CPU's word size. It's used in high-security digital signatures, certificate chains, and applications requiring maximum hash strength."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .code-textarea { width: 100%; min-height: 150px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; font-family: var(--font-mono); font-size: 0.9rem; background: #030712; color: #e2e8f0; resize: vertical; outline: none; }
+  .code-textarea:focus { border-color: var(--accent-primary); }
+  .hash-output-area { width: 100%; min-height: 80px; padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.85rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #fb7185; outline: none; resize: none; word-break: break-all; }
+  .hash-info { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const input = document.getElementById('hash-input') as HTMLTextAreaElement;
+  const output = document.getElementById('hash-output') as HTMLTextAreaElement;
+  const btnCopy = document.getElementById('btn-copy');
+  const btnClear = document.getElementById('btn-clear');
+
+  async function computeHash() {
+    if (!input || !output) return;
+    const val = input.value;
+    if (!val) { output.value = ''; return; }
+    const encoder = new TextEncoder();
+    const data = encoder.encode(val);
+    const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    output.value = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  if (input) input.addEventListener('input', computeHash);
+  if (btnClear && input && output) btnClear.addEventListener('click', () => { input.value = ''; output.value = ''; });
+  if (btnCopy && output) btnCopy.addEventListener('click', () => {
+    if (output.value) navigator.clipboard.writeText(output.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy Hash'; }, 2000); });
+  });
+</script>

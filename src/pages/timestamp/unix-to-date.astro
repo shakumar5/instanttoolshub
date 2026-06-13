@@ -1,0 +1,182 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "Unix Timestamp to Date Converter Online — Free, Instant";
+const pageHeading = "Unix Timestamp to Date Converter";
+const activeTool = "timestamp";
+const accentColor = "#f43f5e";
+const accentGlow = "rgba(244, 63, 94, 0.15)";
+
+const seoDescription = "Convert Unix timestamps (epoch seconds or milliseconds) to human-readable dates instantly. View UTC, local time, ISO 8601, and relative time — 100% free, client-side.";
+const seoKeywords = "unix timestamp to date, epoch to date, convert timestamp to date, unix time to human, epoch converter, timestamp to datetime, unix to date online";
+
+const howToUse = [
+  "Enter a Unix timestamp (seconds or milliseconds) into the input field.",
+  "The converter auto-detects format: ≤10 digits = seconds, >10 digits = milliseconds.",
+  "Instantly view the date in UTC, your local timezone, ISO 8601 format, and relative time.",
+  "Click 'Now' to load the current Unix timestamp for reference.",
+  "All conversion uses browser-native JavaScript Date — no server calls."
+];
+
+const faqs = [
+  {
+    q: "What is a Unix timestamp?",
+    a: "A Unix timestamp (epoch time) is the number of seconds elapsed since January 1, 1970 00:00:00 UTC. It provides a timezone-independent way to represent a specific moment in time."
+  },
+  {
+    q: "How do I tell if a timestamp is seconds or milliseconds?",
+    a: "Seconds timestamps are typically 10 digits (e.g. 1700000000). Milliseconds timestamps are 13 digits (e.g. 1700000000000). JavaScript's Date.now() returns milliseconds."
+  },
+  {
+    q: "What is the maximum Unix timestamp?",
+    a: "On 32-bit systems, the maximum is 2,147,483,647 (January 19, 2038). JavaScript uses 64-bit numbers, supporting dates far beyond this limit."
+  },
+  {
+    q: "Is this converter safe?",
+    a: "Yes. All conversion runs in your browser using native JavaScript Date APIs. No data is sent anywhere."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Unix Timestamp to Date Converter",
+  "url": "https://instanttoolshub.com/timestamp/unix-to-date",
+  "description": "Free online Unix timestamp to date converter. Convert epoch seconds or milliseconds to human-readable dates.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Convert Unix epoch timestamps to human-readable date formats — auto-detects seconds vs milliseconds.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>Timestamp → Date</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-now">Now</button>
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="input-row">
+        <label class="form-label">Unix Timestamp</label>
+        <input type="text" id="ts-input" placeholder="e.g. 1700000000 or 1700000000000" class="form-input ts-input" />
+      </div>
+      <div id="results" class="results hidden">
+        <div class="result-row"><span class="result-label">UTC:</span><span id="r-utc" class="result-value"></span></div>
+        <div class="result-row"><span class="result-label">Local:</span><span id="r-local" class="result-value"></span></div>
+        <div class="result-row"><span class="result-label">ISO 8601:</span><span id="r-iso" class="result-value"></span></div>
+        <div class="result-row"><span class="result-label">Relative:</span><span id="r-relative" class="result-value"></span></div>
+        <div class="result-row"><span class="result-label">Day of Year:</span><span id="r-doy" class="result-value"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Time Tools</h3>
+    <div class="links-list">
+      <a href="/timestamp">Unix Timestamp Converter</a>
+      <a href="/timestamp/date-to-unix">Date to Unix Converter</a>
+      <a href="/timestamp/cron-parser">Cron Expression Parser</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="timestamp" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="Unix timestamps count seconds since the Unix epoch (January 1, 1970 00:00:00 UTC). Converting them to human-readable dates requires accounting for leap seconds, timezone offsets, and daylight saving transitions. This converter uses JavaScript's native Date object and Intl.DateTimeFormat API for locale-aware formatting, automatically detecting whether the input is in seconds (10 digits) or milliseconds (13 digits) and displaying the result across multiple formats simultaneously."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .ts-input { width: 100%; padding: 0.85rem 1rem; font-family: var(--font-mono); font-size: 1.2rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #f43f5e; outline: none; text-align: center; }
+  .ts-input:focus { border-color: var(--accent-primary); }
+  .results { display: flex; flex-direction: column; gap: 0.5rem; }
+  .result-row { display: flex; align-items: center; padding: 0.6rem 1rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); }
+  .result-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); min-width: 100px; }
+  .result-value { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-primary); }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const tsInput = document.getElementById('ts-input') as HTMLInputElement;
+  const results = document.getElementById('results');
+  const rUtc = document.getElementById('r-utc');
+  const rLocal = document.getElementById('r-local');
+  const rIso = document.getElementById('r-iso');
+  const rRelative = document.getElementById('r-relative');
+  const rDoy = document.getElementById('r-doy');
+  const btnNow = document.getElementById('btn-now');
+  const btnClear = document.getElementById('btn-clear');
+
+  function convert() {
+    if (!tsInput || !results) return;
+    const val = tsInput.value.trim();
+    if (!val || isNaN(Number(val))) { results.classList.add('hidden'); return; }
+    
+    let ms = parseInt(val);
+    if (val.length <= 10) ms *= 1000; // seconds to ms
+    const date = new Date(ms);
+    if (isNaN(date.getTime())) { results.classList.add('hidden'); return; }
+
+    if (rUtc) rUtc.textContent = date.toUTCString();
+    if (rLocal) rLocal.textContent = date.toLocaleString();
+    if (rIso) rIso.textContent = date.toISOString();
+    if (rRelative) rRelative.textContent = getRelative(date);
+    if (rDoy) {
+      const start = new Date(date.getFullYear(), 0, 0);
+      const diff = date.getTime() - start.getTime();
+      const day = Math.floor(diff / 86400000);
+      rDoy.textContent = `Day ${day} of ${date.getFullYear()}`;
+    }
+    results.classList.remove('hidden');
+  }
+
+  function getRelative(date: Date): string {
+    const now = Date.now();
+    const diff = now - date.getTime();
+    const abs = Math.abs(diff);
+    const suffix = diff > 0 ? 'ago' : 'from now';
+    if (abs < 60000) return `${Math.round(abs/1000)} seconds ${suffix}`;
+    if (abs < 3600000) return `${Math.round(abs/60000)} minutes ${suffix}`;
+    if (abs < 86400000) return `${Math.round(abs/3600000)} hours ${suffix}`;
+    return `${Math.round(abs/86400000)} days ${suffix}`;
+  }
+
+  if (tsInput) tsInput.addEventListener('input', convert);
+  if (btnNow && tsInput) btnNow.addEventListener('click', () => { tsInput.value = Math.floor(Date.now() / 1000).toString(); convert(); });
+  if (btnClear && tsInput && results) btnClear.addEventListener('click', () => { tsInput.value = ''; results.classList.add('hidden'); });
+</script>

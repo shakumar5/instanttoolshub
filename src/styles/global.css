@@ -126,6 +126,38 @@ a:hover {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* Sub-tools navigation grid (used on parent tool pages) */
+.sub-tools-grid {
+  padding: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sub-tools-grid h3 {
+  color: #fff;
+  font-size: 1.15rem;
+}
+
+.sub-tools-grid .links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.sub-tools-grid .links-list a {
+  color: var(--accent-primary);
+  font-weight: 500;
+  text-decoration: underline;
+  font-size: 0.95rem;
+}
+
+.sub-tools-grid .links-list a:hover {
+  color: #fff;
+}
+
 /* Main Layout Grid */
 .layout-wrapper {
   display: grid;

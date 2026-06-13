@@ -1,0 +1,152 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "SHA-256 Hash Generator Online — Free, Instant, Private";
+const pageHeading = "SHA-256 Hash Generator";
+const activeTool = "hash-generator";
+const accentColor = "#e11d48";
+const accentGlow = "rgba(225, 29, 72, 0.15)";
+
+const seoDescription = "Generate SHA-256 hashes from text instantly in your browser. Compute 256-bit secure hashes using the Web Crypto API — 100% free, no data uploaded, client-side only.";
+const seoKeywords = "sha256 generator, sha256 hash online, sha-256 hash, sha256 calculator, generate sha256, sha256 checksum, sha256 hash generator free";
+
+const howToUse = [
+  "Type or paste your text into the input field.",
+  "The SHA-256 hash (64 hexadecimal characters) is computed instantly using the Web Crypto API.",
+  "Click 'Copy' to copy the hash to your clipboard.",
+  "Use SHA-256 for data integrity verification, digital signatures, and secure fingerprinting."
+];
+
+const faqs = [
+  {
+    q: "What is SHA-256?",
+    a: "SHA-256 (Secure Hash Algorithm 256-bit) is part of the SHA-2 family designed by the NSA. It produces a 256-bit (32-byte) hash represented as 64 hexadecimal characters. It's widely used in TLS/SSL certificates, Bitcoin mining, Git commits, and data integrity verification."
+  },
+  {
+    q: "Is SHA-256 secure?",
+    a: "Yes. SHA-256 has no known practical attacks as of 2025. No collision has ever been found, and brute-forcing a 256-bit hash is computationally infeasible with current technology."
+  },
+  {
+    q: "SHA-256 vs MD5 — which should I use?",
+    a: "Always prefer SHA-256 for security-sensitive operations. MD5 has known collision vulnerabilities. SHA-256 provides 2^128 collision resistance vs MD5's effectively broken collision resistance."
+  },
+  {
+    q: "Is this tool safe for sensitive data?",
+    a: "Yes. Hashing uses the browser's native Web Crypto API. No data leaves your device."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "SHA-256 Hash Generator",
+  "url": "https://instanttoolshub.com/hash-generator/sha256",
+  "description": "Free online SHA-256 hash generator. Compute secure 256-bit hashes from text instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Compute cryptographically secure SHA-256 hashes (256-bit, 64 hex chars) from any text input.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>SHA-256 Hash</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="btn-copy">Copy Hash</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="input-section">
+        <label class="form-label">Input Text</label>
+        <textarea id="hash-input" placeholder="Type or paste text to hash..." class="form-textarea code-textarea"></textarea>
+      </div>
+      <div class="output-section">
+        <label class="form-label">SHA-256 Hash Output</label>
+        <input type="text" id="hash-output" readonly placeholder="SHA-256 hash will appear here..." class="form-input hash-output" />
+        <div class="hash-info">256-bit digest | 64 hexadecimal characters</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Hash Tools</h3>
+    <div class="links-list">
+      <a href="/hash-generator">All Hash Algorithms</a>
+      <a href="/hash-generator/md5">MD5 Generator</a>
+      <a href="/hash-generator/sha512">SHA-512 Generator</a>
+      <a href="/hash-generator/hmac">HMAC Generator</a>
+      <a href="/hash-generator/file-checksum">File Checksum</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="hash-generator" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="SHA-256 is a member of the SHA-2 cryptographic hash family standardized by NIST. It processes input through 64 rounds of compression, producing a 256-bit digest. Unlike MD5 and SHA-1, SHA-256 has no known practical attacks — no collision has ever been found. It underpins critical internet infrastructure including TLS certificates, code signing, Git commit hashes, and Bitcoin's proof-of-work. This tool uses the browser's native Web Crypto API for hardware-accelerated computation."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .code-textarea { width: 100%; min-height: 150px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; font-family: var(--font-mono); font-size: 0.9rem; background: #030712; color: #e2e8f0; resize: vertical; outline: none; }
+  .code-textarea:focus { border-color: var(--accent-primary); }
+  .hash-output { width: 100%; padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.95rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #fb7185; outline: none; letter-spacing: 0.02em; }
+  .hash-info { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const input = document.getElementById('hash-input') as HTMLTextAreaElement;
+  const output = document.getElementById('hash-output') as HTMLInputElement;
+  const btnCopy = document.getElementById('btn-copy');
+  const btnClear = document.getElementById('btn-clear');
+
+  async function computeHash() {
+    if (!input || !output) return;
+    const val = input.value;
+    if (!val) { output.value = ''; return; }
+    const encoder = new TextEncoder();
+    const data = encoder.encode(val);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    output.value = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  if (input) input.addEventListener('input', computeHash);
+  if (btnClear && input && output) btnClear.addEventListener('click', () => { input.value = ''; output.value = ''; });
+  if (btnCopy && output) btnCopy.addEventListener('click', () => {
+    if (output.value) navigator.clipboard.writeText(output.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy Hash'; }, 2000); });
+  });
+</script>

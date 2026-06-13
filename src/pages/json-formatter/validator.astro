@@ -1,0 +1,153 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "JSON Validator Online — Free, Instant, Private";
+const pageHeading = "JSON Validator";
+const activeTool = "json-formatter";
+const accentColor = "#10b981";
+const accentGlow = "rgba(16, 185, 129, 0.15)";
+
+const seoDescription = "Validate JSON syntax instantly in your browser. Detect trailing commas, unquoted keys, single quotes, missing brackets, and other errors with precise line numbers — 100% free, no data uploaded.";
+const seoKeywords = "json validator, validate json online, json syntax checker, json lint, check json online, json validator free, is my json valid";
+
+const howToUse = [
+  "Paste or type your JSON into the input editor below.",
+  "The validator checks syntax in real time as you type — errors are highlighted with a red indicator showing the exact issue and line number.",
+  "A green 'Valid JSON' badge appears when your JSON passes all syntax rules.",
+  "Common issues detected: trailing commas, single quotes, unquoted keys, missing brackets, unescaped characters, and comments.",
+  "Click 'Copy' to copy valid JSON or use 'Format' to pretty-print it after validation."
+];
+
+const faqs = [
+  {
+    q: "What does a JSON validator check?",
+    a: "A JSON validator verifies that your text conforms to the JSON specification (RFC 8259). It checks for proper double-quoting of keys and strings, correct bracket and brace nesting, no trailing commas, no comments, properly escaped special characters, and valid data types (string, number, boolean, null, array, object)."
+  },
+  {
+    q: "What is the difference between JSON validation and JSON formatting?",
+    a: "Validation checks whether the JSON is syntactically correct according to the spec. Formatting (pretty-printing) adds indentation and line breaks to make valid JSON readable. This validator does both — it tells you if your JSON is valid and can also format it once it passes."
+  },
+  {
+    q: "Why does my JavaScript object fail JSON validation?",
+    a: "JavaScript objects allow single quotes, unquoted keys, trailing commas, and comments. JSON does not allow any of these. Convert single quotes to double quotes, wrap all keys in double quotes, remove trailing commas after the last element, and strip all comments to produce valid JSON."
+  },
+  {
+    q: "Is this validator safe for sensitive data?",
+    a: "Yes. All validation runs entirely in your browser using JavaScript's native JSON.parse(). Your data never leaves your device — nothing is sent to any server."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JSON Validator",
+  "url": "https://instanttoolshub.com/json-formatter/validator",
+  "description": "Free online JSON validator. Check JSON syntax instantly in your browser with error detection and line numbers.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["Real-time JSON syntax validation", "Error detection with line numbers", "Trailing comma detection", "Single quote detection", "Unquoted key detection", "Client-side processing — no data uploaded"],
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Check if your JSON is valid instantly — get precise error messages with line numbers for fast debugging.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>Paste JSON to Validate</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-outline btn-xs" id="btn-sample">Sample</button>
+        <button class="btn btn-primary btn-xs" id="btn-validate">Validate</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <textarea id="json-input" placeholder="Paste your JSON here to validate..." class="form-textarea json-textarea"></textarea>
+      <div id="validation-result" class="validation-result"></div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More JSON Tools</h3>
+    <div class="links-list">
+      <a href="/json-formatter">JSON Formatter & Beautifier</a>
+      <a href="/json-formatter/minifier">JSON Minifier</a>
+      <a href="/json-formatter/json-to-csv">JSON to CSV Converter</a>
+      <a href="/json-formatter/tree-viewer">JSON Tree Viewer</a>
+      <a href="/json-formatter/json-diff">JSON Diff Checker</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="json-formatter" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="JSON validation checks whether a string conforms to the JSON specification (RFC 8259). Unlike JavaScript object literals, JSON has strict rules: all keys must be double-quoted, no trailing commas are allowed, no comments are permitted, and only specific data types (string, number, boolean, null, array, object) are valid. This validator parses your input using the same engine browsers use internally, providing precise error messages that pinpoint the exact character position where parsing fails."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 400px; height: 500px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .json-textarea { width: 100%; height: 100%; flex-grow: 1; border: none; border-radius: 0; padding: 1.25rem; font-family: var(--font-mono); font-size: 0.9rem; background: #030712; color: #e2e8f0; resize: none; outline: none; }
+  .validation-result { position: absolute; bottom: 0; left: 0; right: 0; padding: 0.85rem 1.25rem; font-size: 0.85rem; border-top: 1px solid var(--border-light); z-index: 10; font-family: var(--font-mono); }
+  .validation-result.success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+  .validation-result.error { background: rgba(239, 68, 68, 0.15); color: #f87171; white-space: pre-wrap; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const input = document.getElementById('json-input') as HTMLTextAreaElement;
+  const result = document.getElementById('validation-result');
+  const btnValidate = document.getElementById('btn-validate');
+  const btnClear = document.getElementById('btn-clear');
+  const btnSample = document.getElementById('btn-sample');
+
+  const sampleJSON = '{\n  "name": "InstantToolsHub",\n  "version": 1.0,\n  "tools": ["JSON Formatter", "Base64", "Hash Generator"],\n  "active": true\n}';
+
+  function validate() {
+    if (!input || !result) return;
+    const val = input.value.trim();
+    if (!val) { result.className = 'validation-result'; result.textContent = ''; return; }
+    try {
+      JSON.parse(val);
+      result.className = 'validation-result success';
+      result.textContent = '✓ Valid JSON — no syntax errors detected';
+    } catch (e: any) {
+      result.className = 'validation-result error';
+      result.textContent = '✗ Invalid JSON: ' + e.message;
+    }
+  }
+
+  if (btnValidate) btnValidate.addEventListener('click', validate);
+  if (input) input.addEventListener('input', validate);
+  if (btnClear && input && result) btnClear.addEventListener('click', () => { input.value = ''; result.className = 'validation-result'; result.textContent = ''; });
+  if (btnSample && input) btnSample.addEventListener('click', () => { input.value = sampleJSON; validate(); });
+</script>

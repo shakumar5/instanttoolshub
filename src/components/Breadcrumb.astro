@@ -1,0 +1,153 @@
+---
+interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  items?: BreadcrumbItem[];
+}
+
+const { items = [] } = Astro.props;
+
+// Build breadcrumb from URL path if items not explicitly provided
+const pathname = Astro.url.pathname;
+const segments = pathname.split('/').filter(Boolean);
+
+let breadcrumbs: BreadcrumbItem[] = [{ name: 'Home', href: '/' }];
+
+if (items.length > 0) {
+  breadcrumbs = [...breadcrumbs, ...items];
+} else if (segments.length > 0) {
+  // Auto-generate from URL path
+  const toolNames: Record<string, string> = {
+    'json-formatter': 'JSON Formatter',
+    'base64': 'Base64 Tool',
+    'url-encoder-decoder': 'URL Encoder/Decoder',
+    'regex-tester': 'RegEx Tester',
+    'jwt-decoder': 'JWT Decoder',
+    'code-minifier-beautifier': 'Code Minifier',
+    'markdown-editor': 'Markdown Editor',
+    'color-converter': 'Color Converter',
+    'timestamp': 'Timestamp',
+    'hash-generator': 'Hash Generator',
+    'blog': 'Blog',
+    'about': 'About',
+    'privacy': 'Privacy',
+    'regex-patterns': 'Regex Patterns',
+  };
+
+  const subToolNames: Record<string, string> = {
+    'minifier': 'Minifier',
+    'validator': 'Validator',
+    'json-to-csv': 'JSON to CSV',
+    'json-diff': 'JSON Diff',
+    'tree-viewer': 'Tree Viewer',
+    'encoder': 'Encoder',
+    'decoder': 'Decoder',
+    'image-to-base64': 'Image to Base64',
+    'base64-to-image': 'Base64 to Image',
+    'file-to-base64': 'File to Base64',
+    'md5': 'MD5',
+    'sha256': 'SHA-256',
+    'sha512': 'SHA-512',
+    'hmac': 'HMAC',
+    'file-checksum': 'File Checksum',
+    'cron-parser': 'Cron Parser',
+    'date-to-unix': 'Date to Unix',
+    'unix-to-date': 'Unix to Date',
+    'css-minifier': 'CSS Minifier',
+    'css-beautifier': 'CSS Beautifier',
+    'javascript-minifier': 'JS Minifier',
+    'html-minifier': 'HTML Minifier',
+    'hex-to-rgb': 'HEX to RGB',
+    'rgb-to-hex': 'RGB to HEX',
+    'hex-to-hsl': 'HEX to HSL',
+    'hex-to-cmyk': 'HEX to CMYK',
+    'rgb-to-cmyk': 'RGB to CMYK',
+    'rgb-to-hsl': 'RGB to HSL',
+    'hsl-to-rgb': 'HSL to RGB',
+    'hsl-to-hex': 'HSL to HEX',
+    'hsl-to-cmyk': 'HSL to CMYK',
+    'cmyk-to-rgb': 'CMYK to RGB',
+    'cmyk-to-hex': 'CMYK to HEX',
+    'cmyk-to-hsl': 'CMYK to HSL',
+    'query-parser': 'Query Parser',
+    'utm-builder': 'UTM Builder',
+    'batch-encoder': 'Batch Encoder',
+  };
+
+  let pathSoFar = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    pathSoFar += '/' + seg;
+    const isLast = i === segments.length - 1;
+    const name = toolNames[seg] || subToolNames[seg] || seg.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    breadcrumbs.push({ name, href: isLast ? '' : pathSoFar });
+  }
+}
+---
+
+{breadcrumbs.length > 1 && (
+  <nav class="breadcrumb" aria-label="Breadcrumb navigation">
+    <ol class="breadcrumb-list">
+      {breadcrumbs.map((item, index) => (
+        <li class="breadcrumb-item">
+          {index < breadcrumbs.length - 1 ? (
+            <a href={item.href}>{item.name}</a>
+          ) : (
+            <span aria-current="page">{item.name}</span>
+          )}
+          {index < breadcrumbs.length - 1 && (
+            <svg class="breadcrumb-sep" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .breadcrumb {
+    margin-bottom: 0.5rem;
+  }
+
+  .breadcrumb-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+  }
+
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-item a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .breadcrumb-item a:hover {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  .breadcrumb-item span[aria-current] {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .breadcrumb-sep {
+    color: var(--text-muted);
+    opacity: 0.5;
+    margin: 0 0.2rem;
+  }
+</style>

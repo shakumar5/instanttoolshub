@@ -1,0 +1,212 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "Query String Parser Online — Free, Instant, Private";
+const pageHeading = "URL Query String Parser";
+const activeTool = "url-encoder-decoder";
+const accentColor = "#3b82f6";
+const accentGlow = "rgba(59, 130, 246, 0.15)";
+
+const seoDescription = "Parse URL query strings into structured key-value tables. Extract, edit, add, and rebuild query parameters from any URL — 100% free, client-side, no data uploaded.";
+const seoKeywords = "query string parser, url parameter parser, parse query parameters, url query string extractor, query string to json, url parameter extractor online";
+
+const howToUse = [
+  "Paste a full URL with query parameters (e.g. https://example.com?page=1&sort=name&filter=active).",
+  "The parser automatically extracts all key-value pairs into an editable table.",
+  "Edit values directly in the table, add new parameters, or delete rows.",
+  "Click 'Rebuild URL' to generate the updated URL with your changes.",
+  "Click 'Copy' to copy the parsed parameters or rebuilt URL."
+];
+
+const faqs = [
+  {
+    q: "What is a URL query string?",
+    a: "A query string is the part of a URL after the ? character. It contains key-value pairs separated by & characters (e.g. ?page=1&sort=name). Query strings pass data to web servers without changing the URL path."
+  },
+  {
+    q: "How are special characters handled in query strings?",
+    a: "Special characters in query parameter values are percent-encoded (e.g. spaces become %20 or +, & becomes %26). This parser automatically decodes them for display and re-encodes when rebuilding."
+  },
+  {
+    q: "Can I parse URLs with hash fragments?",
+    a: "Yes. The parser correctly separates the query string from any hash fragment (#section). Only query parameters before the hash are parsed."
+  },
+  {
+    q: "Is this tool safe for URLs with sensitive parameters?",
+    a: "Yes. All parsing runs in your browser. URLs containing API keys, tokens, or authentication parameters are never transmitted to any server."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "URL Query String Parser",
+  "url": "https://instanttoolshub.com/url-encoder-decoder/query-parser",
+  "description": "Free online URL query string parser. Extract and edit URL parameters instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Extract URL query parameters into an editable table, modify values, and rebuild the URL.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>Query String Parser</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs" id="btn-parse">Parse</button>
+        <button class="btn btn-primary btn-xs" id="btn-rebuild">Rebuild URL</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="input-section">
+        <label class="form-label">Paste URL with Query Parameters</label>
+        <input type="text" id="url-input" placeholder="https://example.com/page?key1=value1&key2=value2" class="form-input" />
+      </div>
+      <div id="params-table" class="params-table hidden">
+        <table>
+          <thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
+          <tbody id="params-tbody"></tbody>
+        </table>
+        <button class="btn btn-outline btn-xs" id="btn-add-row">+ Add Parameter</button>
+      </div>
+      <div class="output-section hidden" id="output-section">
+        <label class="form-label">Rebuilt URL</label>
+        <input type="text" id="rebuilt-url" readonly class="form-input output-input" />
+        <button class="btn btn-primary btn-xs" id="btn-copy">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More URL Tools</h3>
+    <div class="links-list">
+      <a href="/url-encoder-decoder">URL Encoder & Decoder</a>
+      <a href="/url-encoder-decoder/utm-builder">UTM Campaign Builder</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="url-encoder-decoder" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="URL query strings encode parameters as key-value pairs following the ? delimiter. Complex URLs from analytics platforms, APIs, and web applications often contain dozens of parameters that are difficult to read in raw form. This parser splits the query string on & delimiters, decodes percent-encoded values, and presents them in an editable table. Modifications are instantly reflected in a rebuilt URL, making it easy to test API endpoints, debug tracking parameters, or construct complex URLs without manual encoding."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .form-input { width: 100%; padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.9rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #e2e8f0; outline: none; }
+  .form-input:focus { border-color: var(--accent-primary); }
+  .output-input { color: #60a5fa; }
+  .params-table { margin-top: 0.5rem; }
+  .params-table table { width: 100%; border-collapse: collapse; }
+  .params-table th { text-align: left; padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border-light); }
+  .params-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .params-table td input { width: 100%; padding: 0.4rem 0.6rem; font-family: var(--font-mono); font-size: 0.85rem; background: #0a0f1a; border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: #e2e8f0; outline: none; }
+  .params-table td input:focus { border-color: var(--accent-primary); }
+  .params-table .btn-delete { background: transparent; border: none; color: #f87171; cursor: pointer; font-size: 1rem; padding: 0.25rem 0.5rem; }
+  .output-section { display: flex; align-items: center; gap: 0.75rem; }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const urlInput = document.getElementById('url-input') as HTMLInputElement;
+  const paramsTable = document.getElementById('params-table');
+  const paramsTbody = document.getElementById('params-tbody');
+  const outputSection = document.getElementById('output-section');
+  const rebuiltUrl = document.getElementById('rebuilt-url') as HTMLInputElement;
+  const btnParse = document.getElementById('btn-parse');
+  const btnRebuild = document.getElementById('btn-rebuild');
+  const btnClear = document.getElementById('btn-clear');
+  const btnCopy = document.getElementById('btn-copy');
+  const btnAddRow = document.getElementById('btn-add-row');
+
+  let baseUrl = '';
+
+  function parse() {
+    if (!urlInput || !paramsTbody || !paramsTable) return;
+    const val = urlInput.value.trim();
+    if (!val) return;
+
+    try {
+      const url = new URL(val.startsWith('http') ? val : 'https://' + val);
+      baseUrl = url.origin + url.pathname;
+      paramsTbody.innerHTML = '';
+
+      url.searchParams.forEach((value, key) => {
+        addRow(key, value);
+      });
+
+      paramsTable.classList.remove('hidden');
+    } catch {
+      paramsTbody.innerHTML = '<tr><td colspan="3" style="color:#f87171;">Invalid URL format</td></tr>';
+      paramsTable.classList.remove('hidden');
+    }
+  }
+
+  function addRow(key = '', value = '') {
+    if (!paramsTbody) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${key}" class="param-key" /></td>
+      <td><input type="text" value="${value}" class="param-value" /></td>
+      <td><button class="btn-delete" title="Remove">&times;</button></td>
+    `;
+    tr.querySelector('.btn-delete')?.addEventListener('click', () => tr.remove());
+    paramsTbody.appendChild(tr);
+  }
+
+  function rebuild() {
+    if (!paramsTbody || !outputSection || !rebuiltUrl) return;
+    const rows = paramsTbody.querySelectorAll('tr');
+    const params = new URLSearchParams();
+    rows.forEach(row => {
+      const key = (row.querySelector('.param-key') as HTMLInputElement)?.value;
+      const value = (row.querySelector('.param-value') as HTMLInputElement)?.value;
+      if (key) params.append(key, value);
+    });
+    const queryStr = params.toString();
+    rebuiltUrl.value = baseUrl + (queryStr ? '?' + queryStr : '');
+    outputSection.classList.remove('hidden');
+  }
+
+  if (btnParse) btnParse.addEventListener('click', parse);
+  if (btnRebuild) btnRebuild.addEventListener('click', rebuild);
+  if (btnAddRow) btnAddRow.addEventListener('click', () => addRow());
+  if (btnClear && urlInput && paramsTable && outputSection && paramsTbody) btnClear.addEventListener('click', () => { urlInput.value = ''; paramsTbody.innerHTML = ''; paramsTable.classList.add('hidden'); outputSection.classList.add('hidden'); });
+  if (btnCopy && rebuiltUrl) btnCopy.addEventListener('click', () => {
+    if (rebuiltUrl.value) navigator.clipboard.writeText(rebuiltUrl.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy'; }, 2000); });
+  });
+</script>

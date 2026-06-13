@@ -1,6 +1,7 @@
 ---
 import Sidebar from '../components/Sidebar.astro';
 import Header from '../components/Header.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
 import '../styles/global.css';
 
 // Self-host typography locally to prevent render blocking and layout shift
@@ -61,13 +62,6 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
       }
     </script>
 
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://plausible.io/js/pa-0g50qQTc6fEUp2ErKO6SZ.js"></script>
-    <script is:inline>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
-    </script>
-
     <title>{fullTitle}</title>
     <meta name="title" content={fullTitle} />
     <meta name="description" content={description} />
@@ -102,8 +96,6 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
 
     <!-- Preload critical fonts to eliminate render-blocking request chain -->
     <link rel="preload" href="/_astro/inter-latin-400-normal.C38fXH4l.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/_astro/inter-latin-500-normal.Cerq10X2.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/_astro/outfit-latin-600-normal.B7SfZ07L.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/_astro/outfit-latin-700-normal.Cu9v6i1X.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/_astro/fira-code-latin-400-normal.DGosTW8U.woff2" as="font" type="font/woff2" crossorigin />
 
@@ -147,24 +139,36 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
       }
     </script>
 
-    <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://instanttoolshub.com/"
-        },
-        ...(activeTool ? [{
+    <script type="application/ld+json" is:inline set:html={JSON.stringify((() => {
+      const segments = Astro.url.pathname.split('/').filter(Boolean);
+      const items = [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://instanttoolshub.com/" }];
+      
+      if (segments.length >= 1) {
+        items.push({
           "@type": "ListItem",
           "position": 2,
+          "name": segments[0].replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+          "item": `https://instanttoolshub.com/${segments[0]}/`
+        });
+      }
+      if (segments.length >= 2) {
+        items.push({
+          "@type": "ListItem",
+          "position": 3,
           "name": title,
           "item": canonicalUrl.href
-        }] : [])
-      ]
-    })} />
+        });
+      } else if (segments.length === 1 && activeTool) {
+        items[1].name = title;
+        items[1].item = canonicalUrl.href;
+      }
+
+      return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": items
+      };
+    })())} />
   </head>
   <body>
     <a href="#main-content" class="skip-to-content">Skip to content</a>
@@ -179,7 +183,10 @@ const fullTitle = title ? `${title} | InstantToolsHub` : "InstantToolsHub — Fr
       </div>
       <div class="content-container">
         <Header />
-        <main id="main-content"><slot /></main>
+        <main id="main-content">
+          {activeTool && <Breadcrumb />}
+          <slot />
+        </main>
         <div class="ad-container" id="ad-footer-unit" aria-hidden="true"></div>
 
         <footer class="app-footer">

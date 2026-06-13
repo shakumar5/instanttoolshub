@@ -1,0 +1,175 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "JavaScript Minifier Online — Free, Instant, Private";
+const pageHeading = "JavaScript Minifier";
+const activeTool = "code-minifier-beautifier";
+const accentColor = "#ec4899";
+const accentGlow = "rgba(236, 72, 153, 0.15)";
+
+const seoDescription = "Minify JavaScript by removing comments, whitespace, and unnecessary formatting. Reduce JS file size for faster page loads — 100% free, client-side, no data uploaded.";
+const seoKeywords = "javascript minifier, minify js online, js compressor, compress javascript, javascript minification, reduce js size, minify javascript free, js minifier";
+
+const howToUse = [
+  "Paste your JavaScript code into the input editor.",
+  "Click 'Minify' to remove all comments, whitespace, and line breaks.",
+  "View compression stats showing size reduction percentage.",
+  "Click 'Copy' to copy the minified JavaScript for production deployment.",
+  "Note: This basic minifier removes whitespace and comments. For advanced optimizations (variable renaming, dead code elimination), use build tools like Terser or esbuild."
+];
+
+const faqs = [
+  {
+    q: "What does JavaScript minification do?",
+    a: "JS minification removes comments (// and /* */), unnecessary whitespace, line breaks, and trailing semicolons. The minified code executes identically but occupies less space, resulting in faster downloads and parsing."
+  },
+  {
+    q: "Can minification break my JavaScript?",
+    a: "Simple minification (whitespace/comment removal) is safe for well-formed code. Code relying on ASI (Automatic Semicolon Insertion) or containing syntax errors may behave differently. Best practice: always use explicit semicolons."
+  },
+  {
+    q: "What's the difference between minification and uglification?",
+    a: "Minification removes whitespace and comments. Uglification (via tools like Terser) additionally renames variables to short names and removes dead code. This online tool performs basic minification."
+  },
+  {
+    q: "Is this safe for production code?",
+    a: "Yes. All processing runs locally in your browser. Your code never leaves your device."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JavaScript Minifier",
+  "url": "https://instanttoolshub.com/code-minifier-beautifier/javascript-minifier",
+  "description": "Free online JavaScript minifier. Compress JS files instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Compress JavaScript by removing comments and whitespace for production-ready scripts.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>JavaScript Minifier</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs" id="btn-minify">Minify</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="btn-copy">Copy</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="split-container">
+        <div class="split-pane">
+          <div class="split-label">JavaScript Input</div>
+          <textarea id="js-input" placeholder="Paste your JavaScript here..." class="form-textarea code-textarea"></textarea>
+        </div>
+        <div class="split-pane">
+          <div class="split-label">Minified Output</div>
+          <textarea id="js-output" readonly placeholder="Minified JS will appear here..." class="form-textarea code-textarea output"></textarea>
+        </div>
+      </div>
+      <div id="stats-bar" class="stats-bar hidden"></div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Code Tools</h3>
+    <div class="links-list">
+      <a href="/code-minifier-beautifier">All Languages</a>
+      <a href="/code-minifier-beautifier/css-minifier">CSS Minifier</a>
+      <a href="/code-minifier-beautifier/css-beautifier">CSS Beautifier</a>
+      <a href="/code-minifier-beautifier/html-minifier">HTML Minifier</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="code-minifier-beautifier" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="JavaScript is typically the most expensive resource on a web page — it must be downloaded, parsed, compiled, and executed, blocking interactivity until complete. Minification reduces file size by removing comments, whitespace, and unnecessary formatting without changing program behavior. This directly improves Total Blocking Time (TBT) and Time to Interactive (TTI) Core Web Vitals metrics. For production deployments, minification is often combined with compression (gzip/brotli) and code splitting for optimal delivery."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 450px; height: 550px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .split-container { display: grid; grid-template-columns: 1fr 1fr; flex-grow: 1; }
+  .split-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border-light); }
+  .split-pane:last-child { border-right: none; }
+  .split-label { padding: 0.5rem 1.25rem; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .code-textarea { width: 100%; height: 100%; flex-grow: 1; border: none; padding: 1.25rem; font-family: var(--font-mono); font-size: 0.85rem; background: #030712; color: #e2e8f0; resize: none; outline: none; }
+  .code-textarea.output { color: #f472b6; }
+  .stats-bar { padding: 0.6rem 1.25rem; background: rgba(236, 72, 153, 0.1); border-top: 1px solid rgba(236, 72, 153, 0.2); font-size: 0.8rem; color: #f472b6; font-family: var(--font-mono); }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+  @media (max-width: 768px) { .split-container { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const input = document.getElementById('js-input') as HTMLTextAreaElement;
+  const output = document.getElementById('js-output') as HTMLTextAreaElement;
+  const statsBar = document.getElementById('stats-bar');
+  const btnMinify = document.getElementById('btn-minify');
+  const btnClear = document.getElementById('btn-clear');
+  const btnCopy = document.getElementById('btn-copy');
+
+  function minifyJS(js: string): string {
+    let result = js;
+    result = result.replace(/\/\*[\s\S]*?\*\//g, ''); // Block comments
+    result = result.replace(/\/\/.*$/gm, ''); // Line comments
+    result = result.replace(/\n\s*\n/g, '\n'); // Empty lines
+    result = result.replace(/^\s+/gm, ''); // Leading whitespace
+    result = result.replace(/\s+$/gm, ''); // Trailing whitespace
+    result = result.replace(/\n/g, ''); // Line breaks
+    result = result.replace(/\s{2,}/g, ' '); // Multiple spaces
+    return result.trim();
+  }
+
+  function minify() {
+    if (!input || !output || !statsBar) return;
+    const val = input.value;
+    if (!val.trim()) { output.value = ''; statsBar.className = 'stats-bar hidden'; return; }
+    const minified = minifyJS(val);
+    output.value = minified;
+    const orig = new Blob([val]).size;
+    const min = new Blob([minified]).size;
+    const saved = ((1 - min / orig) * 100).toFixed(1);
+    statsBar.textContent = `Original: ${orig} bytes → Minified: ${min} bytes (${saved}% reduction)`;
+    statsBar.className = 'stats-bar';
+  }
+
+  if (btnMinify) btnMinify.addEventListener('click', minify);
+  if (btnClear && input && output && statsBar) btnClear.addEventListener('click', () => { input.value = ''; output.value = ''; statsBar.className = 'stats-bar hidden'; });
+  if (btnCopy && output) btnCopy.addEventListener('click', () => {
+    if (output.value) navigator.clipboard.writeText(output.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy'; }, 2000); });
+  });
+</script>

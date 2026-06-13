@@ -1,0 +1,198 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "JSON Diff Checker Online — Free, Instant, Private";
+const pageHeading = "JSON Diff Checker";
+const activeTool = "json-formatter";
+const accentColor = "#10b981";
+const accentGlow = "rgba(16, 185, 129, 0.15)";
+
+const seoDescription = "Compare two JSON objects side by side and find differences instantly. Detect added, removed, and changed keys and values — 100% free, no data uploaded, client-side only.";
+const seoKeywords = "json diff, json compare, compare json online, json diff checker, json difference, json compare tool free, diff two json objects";
+
+const howToUse = [
+  "Paste your original JSON into the left panel and the modified JSON into the right panel.",
+  "Click 'Compare' to highlight differences between the two JSON structures.",
+  "Added lines appear in green, removed lines in red, and unchanged lines in the default color.",
+  "The tool normalizes formatting before comparing, so whitespace differences are ignored — only actual data changes are highlighted.",
+  "Click 'Copy Diff' to export the comparison results."
+];
+
+const faqs = [
+  {
+    q: "How does JSON diff comparison work?",
+    a: "The tool parses both JSON inputs, pretty-prints them with identical formatting, then compares line by line. Lines present only in the original are marked as removed (red), lines present only in the modified version are marked as added (green), and matching lines are unmarked."
+  },
+  {
+    q: "Does it handle nested object differences?",
+    a: "Yes. Both JSON inputs are fully formatted before comparison, so nested differences at any depth are clearly visible as individual line additions or removals."
+  },
+  {
+    q: "Is whitespace ignored?",
+    a: "Yes. Both inputs are parsed and re-formatted with consistent indentation before comparison. This means differences in spacing, indentation style, or line breaks don't show up as changes — only actual data differences are highlighted."
+  },
+  {
+    q: "Is this tool safe for sensitive data?",
+    a: "Yes. All comparison logic runs entirely in your browser. No JSON data is sent to any server."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JSON Diff Checker",
+  "url": "https://instanttoolshub.com/json-formatter/json-diff",
+  "description": "Free online JSON diff tool. Compare two JSON objects and find differences instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Compare two JSON objects side by side and identify added, removed, or changed values instantly.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>JSON Comparison</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs" id="btn-compare">Compare</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="split-container">
+        <div class="split-pane">
+          <div class="split-label">Original JSON</div>
+          <textarea id="json-left" placeholder="Paste original JSON here..." class="form-textarea code-textarea"></textarea>
+        </div>
+        <div class="split-pane">
+          <div class="split-label">Modified JSON</div>
+          <textarea id="json-right" placeholder="Paste modified JSON here..." class="form-textarea code-textarea"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="diff-result" class="diff-result glass hidden">
+    <div class="diff-header">
+      <span>Diff Result</span>
+      <span id="diff-stats" class="diff-stats"></span>
+    </div>
+    <div id="diff-output" class="diff-output"></div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More JSON Tools</h3>
+    <div class="links-list">
+      <a href="/json-formatter">JSON Formatter & Beautifier</a>
+      <a href="/json-formatter/validator">JSON Validator</a>
+      <a href="/json-formatter/minifier">JSON Minifier</a>
+      <a href="/json-formatter/json-to-csv">JSON to CSV Converter</a>
+      <a href="/json-formatter/tree-viewer">JSON Tree Viewer</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="json-formatter" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="Comparing JSON objects is a common task when debugging API responses, reviewing configuration changes, or verifying data migrations. Raw text diff tools struggle with JSON because whitespace differences create noise. This JSON diff tool first normalizes both inputs (parsing and re-formatting with identical indentation), then performs a line-by-line comparison that highlights only meaningful data changes — additions, removals, and modifications — while ignoring cosmetic formatting differences."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 400px; height: 500px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .split-container { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .split-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border-light); }
+  .split-pane:last-child { border-right: none; }
+  .split-label { padding: 0.5rem 1.25rem; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .code-textarea { width: 100%; height: 100%; flex-grow: 1; border: none; padding: 1.25rem; font-family: var(--font-mono); font-size: 0.85rem; background: #030712; color: #e2e8f0; resize: none; outline: none; }
+  .diff-result { margin-top: 1.5rem; overflow: hidden; }
+  .diff-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .diff-stats { font-size: 0.8rem; font-weight: 400; color: var(--text-secondary); }
+  .diff-output { padding: 1rem 1.25rem; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; max-height: 400px; overflow-y: auto; background: #04060a; }
+  .diff-line-add { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
+  .diff-line-remove { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+  .diff-line-same { color: var(--text-muted); }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+  @media (max-width: 768px) { .split-container { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const leftInput = document.getElementById('json-left') as HTMLTextAreaElement;
+  const rightInput = document.getElementById('json-right') as HTMLTextAreaElement;
+  const diffResult = document.getElementById('diff-result');
+  const diffOutput = document.getElementById('diff-output');
+  const diffStats = document.getElementById('diff-stats');
+  const btnCompare = document.getElementById('btn-compare');
+  const btnClear = document.getElementById('btn-clear');
+
+  function compare() {
+    if (!leftInput || !rightInput || !diffResult || !diffOutput || !diffStats) return;
+    const leftVal = leftInput.value.trim();
+    const rightVal = rightInput.value.trim();
+    if (!leftVal || !rightVal) return;
+
+    try {
+      const leftFormatted = JSON.stringify(JSON.parse(leftVal), null, 2).split('\n');
+      const rightFormatted = JSON.stringify(JSON.parse(rightVal), null, 2).split('\n');
+      
+      const maxLen = Math.max(leftFormatted.length, rightFormatted.length);
+      let additions = 0, removals = 0;
+      let html = '';
+
+      for (let i = 0; i < maxLen; i++) {
+        const left = leftFormatted[i] || '';
+        const right = rightFormatted[i] || '';
+        if (left === right) {
+          html += `<div class="diff-line-same">  ${escapeHtml(left)}</div>`;
+        } else {
+          if (left) { html += `<div class="diff-line-remove">- ${escapeHtml(left)}</div>`; removals++; }
+          if (right) { html += `<div class="diff-line-add">+ ${escapeHtml(right)}</div>`; additions++; }
+        }
+      }
+
+      diffOutput.innerHTML = html;
+      diffStats.textContent = `+${additions} additions, -${removals} removals`;
+      diffResult.classList.remove('hidden');
+    } catch (e: any) {
+      diffOutput.innerHTML = `<div style="color:#f87171;">Error: ${e.message}</div>`;
+      diffResult.classList.remove('hidden');
+    }
+  }
+
+  function escapeHtml(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  if (btnCompare) btnCompare.addEventListener('click', compare);
+  if (btnClear && leftInput && rightInput && diffResult) btnClear.addEventListener('click', () => { leftInput.value = ''; rightInput.value = ''; diffResult.classList.add('hidden'); });
+</script>

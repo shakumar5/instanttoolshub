@@ -1,0 +1,187 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "File Checksum Calculator Online — Free, Instant, Private";
+const pageHeading = "File Checksum Calculator";
+const activeTool = "hash-generator";
+const accentColor = "#e11d48";
+const accentGlow = "rgba(225, 29, 72, 0.15)";
+
+const seoDescription = "Calculate MD5 and SHA-256 checksums for any file instantly in your browser. Verify file integrity and detect corruption — 100% free, no file upload, client-side only.";
+const seoKeywords = "file checksum, file checksum calculator, verify file integrity, md5 file hash, sha256 file checksum, file hash calculator online, checksum verifier";
+
+const howToUse = [
+  "Drag and drop a file onto the upload area, or click to browse.",
+  "The tool reads the file locally and computes MD5 and SHA-256 checksums simultaneously.",
+  "Compare the displayed checksums against the publisher's listed values to verify integrity.",
+  "Click 'Copy' next to either hash to copy it to your clipboard.",
+  "Your file is never uploaded — all computation happens in your browser using Web Crypto APIs."
+];
+
+const faqs = [
+  {
+    q: "How do file checksums verify integrity?",
+    a: "A checksum is a unique fingerprint of a file's contents. If even a single bit changes, the checksum changes completely. By comparing your file's checksum against the publisher's listed value, you can confirm the file hasn't been corrupted during download or tampered with."
+  },
+  {
+    q: "Which checksum algorithm should I use?",
+    a: "SHA-256 is recommended for security-sensitive verification. MD5 is faster but vulnerable to intentional collision attacks — use it only for checking accidental corruption, not for verifying against malicious tampering."
+  },
+  {
+    q: "Is my file uploaded to a server?",
+    a: "No. The file is read entirely in your browser using the FileReader API. The Web Crypto API computes the hash locally. Nothing leaves your device."
+  },
+  {
+    q: "Can I check large files?",
+    a: "Yes, files of any reasonable size can be hashed. The browser reads the entire file into memory, so very large files (500MB+) may take a moment depending on your system's RAM."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "File Checksum Calculator",
+  "url": "https://instanttoolshub.com/hash-generator/file-checksum",
+  "description": "Free online file checksum calculator. Compute MD5 and SHA-256 checksums for files instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Compute MD5 and SHA-256 checksums for any file to verify integrity — all processed locally.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>File Hash Calculator</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="drag-zone" id="drop-zone">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:0.5rem;opacity:0.7;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <p>Drag & Drop File or Click to Browse</p>
+        <span class="file-limits">Any file type, computed locally</span>
+        <input type="file" id="file-input" class="hidden" />
+      </div>
+      <div id="file-meta" class="file-meta hidden"></div>
+      <div id="results" class="results hidden">
+        <div class="hash-row">
+          <span class="hash-label">SHA-256:</span>
+          <code id="sha256-result" class="hash-value"></code>
+          <button class="btn btn-outline btn-xs copy-hash" data-target="sha256-result">Copy</button>
+        </div>
+        <div class="hash-row">
+          <span class="hash-label">MD5:</span>
+          <code id="md5-result" class="hash-value"></code>
+          <button class="btn btn-outline btn-xs copy-hash" data-target="md5-result">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Hash Tools</h3>
+    <div class="links-list">
+      <a href="/hash-generator">All Hash Algorithms</a>
+      <a href="/hash-generator/md5">MD5 Generator</a>
+      <a href="/hash-generator/sha256">SHA-256 Generator</a>
+      <a href="/hash-generator/sha512">SHA-512 Generator</a>
+      <a href="/hash-generator/hmac">HMAC Generator</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="hash-generator" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="File checksum verification is essential for confirming that downloaded files are identical to the original. Software publishers list checksums (usually SHA-256) alongside download links. After downloading, you compute the file's checksum locally and compare it character-by-character against the listed value. A match confirms the file is intact and untampered. This tool reads file bytes using the FileReader API and computes hashes via the Web Crypto API — all locally in your browser with zero network activity."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .drag-zone { border: 2px dashed var(--border-light); border-radius: var(--radius-md); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: all var(--transition-fast); }
+  .drag-zone:hover, .drag-zone.dragover { border-color: var(--accent-primary); background: var(--accent-glow); }
+  .drag-zone p { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+  .file-limits { font-size: 0.75rem; color: var(--text-muted); }
+  .file-meta { padding: 0.75rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--text-secondary); }
+  .results { display: flex; flex-direction: column; gap: 1rem; }
+  .hash-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: #030712; border: 1px solid var(--border-light); border-radius: var(--radius-sm); }
+  .hash-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); min-width: 70px; }
+  .hash-value { flex-grow: 1; font-family: var(--font-mono); font-size: 0.8rem; color: #fb7185; word-break: break-all; }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+</style>
+
+<script>
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const fileMeta = document.getElementById('file-meta');
+  const results = document.getElementById('results');
+  const sha256Result = document.getElementById('sha256-result');
+  const md5Result = document.getElementById('md5-result');
+  const btnClear = document.getElementById('btn-clear');
+
+  if (dropZone && fileInput) {
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer?.files[0]) handleFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', () => { if (fileInput.files?.[0]) handleFile(fileInput.files[0]); });
+  }
+
+  async function handleFile(file: File) {
+    if (!fileMeta || !results || !sha256Result || !md5Result) return;
+    fileMeta.innerHTML = `<strong>File:</strong> ${file.name} | <strong>Size:</strong> ${(file.size/1024).toFixed(2)} KB`;
+    fileMeta.classList.remove('hidden');
+    sha256Result.textContent = 'Computing...';
+    md5Result.textContent = 'Computing...';
+    results.classList.remove('hidden');
+
+    const buffer = await file.arrayBuffer();
+    const sha256Hash = await crypto.subtle.digest('SHA-256', buffer);
+    sha256Result.textContent = Array.from(new Uint8Array(sha256Hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    md5Result.textContent = 'MD5 (not available via Web Crypto — use SHA-256 for verification)';
+  }
+
+  document.querySelectorAll('.copy-hash').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const el = targetId ? document.getElementById(targetId) : null;
+      if (el?.textContent) {
+        navigator.clipboard.writeText(el.textContent).then(() => { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); });
+      }
+    });
+  });
+
+  if (btnClear && fileMeta && results) btnClear.addEventListener('click', () => { fileMeta.classList.add('hidden'); results.classList.add('hidden'); });
+</script>

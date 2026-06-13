@@ -1,0 +1,191 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "File to Base64 Converter Online — Free, Instant, Private";
+const pageHeading = "File to Base64 Converter";
+const activeTool = "base64";
+const accentColor = "#06b6d4";
+const accentGlow = "rgba(6, 182, 212, 0.15)";
+
+const seoDescription = "Convert any file (PDF, ZIP, documents) to Base64 encoded string instantly in your browser. Toggle Data URI headers, supports files up to 15MB — 100% free, no upload.";
+const seoKeywords = "file to base64, convert file to base64, pdf to base64, zip to base64, document to base64, binary to base64, file to base64 online";
+
+const howToUse = [
+  "Drag and drop any file onto the upload area, or click to browse your files.",
+  "The tool reads the file locally and converts it to a Base64-encoded string instantly.",
+  "Toggle 'Include Data URI Header' to add the data:mimetype;base64,... prefix for embedding in HTML.",
+  "File metadata (name, size, type) is displayed for reference.",
+  "Click 'Copy' to copy the Base64 string to your clipboard."
+];
+
+const faqs = [
+  {
+    q: "What file types are supported?",
+    a: "Any file type is supported — PDFs, ZIPs, Word documents, spreadsheets, executables, audio files, and more. The tool reads raw bytes and encodes them regardless of format."
+  },
+  {
+    q: "What is the maximum file size?",
+    a: "Files up to 15MB can be encoded. For larger files, consider using a command-line tool or splitting the file into chunks."
+  },
+  {
+    q: "What is the Data URI header?",
+    a: "The Data URI header (data:application/pdf;base64,...) tells the browser what type of content follows. Include it when embedding files directly in HTML or when the recipient needs to know the MIME type."
+  },
+  {
+    q: "Is my file uploaded anywhere?",
+    a: "No. The file is read locally using the JavaScript FileReader API. All encoding happens in your browser — nothing is sent to any server."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "File to Base64 Converter",
+  "url": "https://instanttoolshub.com/base64/file-to-base64",
+  "description": "Free online file to Base64 converter. Encode any file to Base64 string instantly in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout 
+  title={toolName} 
+  description={seoDescription} 
+  keywords={seoKeywords} 
+  activeTool={activeTool}
+  accentColor={accentColor}
+  accentGlow={accentGlow}
+>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Encode any file (PDF, ZIP, documents) to a Base64 string for embedding or transmission.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header">
+      <span>File → Base64</span>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
+        <button class="btn btn-primary btn-xs copy-btn" id="btn-copy">Copy</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="upload-area">
+        <div class="drag-zone" id="drop-zone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:0.5rem;opacity:0.7;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          <p>Drag & Drop File or Click to Browse</p>
+          <span class="file-limits">Supports all file types (Max 15MB)</span>
+          <input type="file" id="file-input" class="hidden" />
+        </div>
+        <div id="file-meta" class="file-meta hidden"></div>
+        <label class="checkbox-label">
+          <input type="checkbox" id="include-header" checked /> Include Data URI Header
+        </label>
+      </div>
+      <div class="output-area">
+        <div class="split-label">Base64 Output</div>
+        <textarea id="base64-output" readonly placeholder="Base64 encoded file will appear here..." class="form-textarea code-textarea output"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More Base64 Tools</h3>
+    <div class="links-list">
+      <a href="/base64">Base64 Encoder & Decoder</a>
+      <a href="/base64/encoder">Base64 Encoder</a>
+      <a href="/base64/decoder">Base64 Decoder</a>
+      <a href="/base64/image-to-base64">Image to Base64</a>
+      <a href="/base64/base64-to-image">Base64 to Image</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="base64" />
+
+  <SEOContent 
+    toolName={pageHeading}
+    description="Converting files to Base64 enables their transmission through text-only channels. The FileReader API reads the file as raw binary data (ArrayBuffer), then encodes each byte into Base64 characters. Adding a Data URI header (data:mimetype;base64,...) creates a self-describing string that browsers and applications can interpret directly. This is commonly used for embedding PDFs in HTML, attaching files in JSON API payloads, and storing binary data in text-based configuration systems."
+    howToUse={howToUse}
+    faqs={faqs}
+  />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 500px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); font-weight: 600; font-size: 0.95rem; }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; display: flex; gap: 1.5rem; padding: 1.5rem; }
+  .upload-area { display: flex; flex-direction: column; gap: 1rem; width: 40%; }
+  .output-area { display: flex; flex-direction: column; flex-grow: 1; }
+  .drag-zone { border: 2px dashed var(--border-light); border-radius: var(--radius-md); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: all var(--transition-fast); }
+  .drag-zone:hover, .drag-zone.dragover { border-color: var(--accent-primary); background: var(--accent-glow); }
+  .drag-zone p { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+  .file-limits { font-size: 0.75rem; color: var(--text-muted); }
+  .file-meta { padding: 0.75rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-secondary); }
+  .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; }
+  .split-label { padding: 0.5rem 0; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .code-textarea { width: 100%; flex-grow: 1; min-height: 200px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; font-family: var(--font-mono); font-size: 0.8rem; background: #030712; color: #22d3ee; resize: none; outline: none; }
+  .hidden { display: none !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  .links-list a:hover { color: #fff; }
+  @media (max-width: 768px) { .panel-body { flex-direction: column; } .upload-area { width: 100%; } }
+</style>
+
+<script>
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const output = document.getElementById('base64-output') as HTMLTextAreaElement;
+  const fileMeta = document.getElementById('file-meta');
+  const includeHeader = document.getElementById('include-header') as HTMLInputElement;
+  const btnCopy = document.getElementById('btn-copy');
+  const btnClear = document.getElementById('btn-clear');
+
+  let lastDataUrl = '';
+
+  if (dropZone && fileInput) {
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer?.files[0]) handleFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', () => { if (fileInput.files?.[0]) handleFile(fileInput.files[0]); });
+  }
+
+  function handleFile(file: File) {
+    if (!output || !fileMeta) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      lastDataUrl = e.target?.result as string;
+      updateOutput();
+      fileMeta.innerHTML = `<strong>File:</strong> ${file.name} | <strong>Size:</strong> ${(file.size/1024).toFixed(2)} KB | <strong>Type:</strong> ${file.type || 'unknown'}`;
+      fileMeta.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateOutput() {
+    if (!output || !lastDataUrl) return;
+    if (includeHeader?.checked) {
+      output.value = lastDataUrl;
+    } else {
+      const commaIdx = lastDataUrl.indexOf(',');
+      output.value = commaIdx >= 0 ? lastDataUrl.substring(commaIdx + 1) : lastDataUrl;
+    }
+  }
+
+  if (includeHeader) includeHeader.addEventListener('change', updateOutput);
+  if (btnCopy && output) btnCopy.addEventListener('click', () => {
+    if (output.value) navigator.clipboard.writeText(output.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy'; }, 2000); });
+  });
+  if (btnClear && output && fileMeta) btnClear.addEventListener('click', () => { output.value = ''; fileMeta.classList.add('hidden'); lastDataUrl = ''; });
+</script>
