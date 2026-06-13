@@ -102,10 +102,10 @@ const webAppSchema = {
   <div class="panel glass">
     <div class="panel-header tabbed-header">
       <div class="tabs">
-        <button class="tab-btn active" data-tab="tab-css">CSS Optimizer</button>
-        <button class="tab-btn" data-tab="tab-js">JS Optimizer</button>
-        <button class="tab-btn" data-tab="tab-html">HTML Optimizer</button>
-        <button class="tab-btn" data-tab="tab-batch">Batch Files</button>
+        <button class="tab-btn active" data-tab="tab-css" data-url="/code-minifier-beautifier">CSS Optimizer</button>
+        <button class="tab-btn" data-tab="tab-js" data-url="/code-minifier-beautifier/javascript-minifier">JS Optimizer</button>
+        <button class="tab-btn" data-tab="tab-html" data-url="/code-minifier-beautifier/html-minifier">HTML Optimizer</button>
+        <button class="tab-btn" data-tab="tab-batch" data-url="/code-minifier-beautifier/batch">Batch Files</button>
       </div>
       <div class="panel-header-actions">
         <button class="btn btn-outline btn-xs" id="btn-clear">Clear</button>
@@ -651,33 +651,56 @@ const webAppSchema = {
   // Active language tracking
   let activeLang = 'css';
 
+  function activateTab(tab: Element) {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    const targetId = tab.getAttribute('data-tab');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      if (content.id === targetId) {
+        content.classList.add('active');
+      }
+    });
+
+    // Update active language
+    if (targetId === 'tab-css') activeLang = 'css';
+    else if (targetId === 'tab-js') activeLang = 'js';
+    else if (targetId === 'tab-html') activeLang = 'html';
+    else if (targetId === 'tab-batch') activeLang = 'batch';
+
+    // Hide or show bottom actions depending on tab
+    const statsRow = document.querySelector('.tool-actions-row') as HTMLElement | null;
+    if (statsRow) {
+      statsRow.style.display = activeLang === 'batch' ? 'none' : 'flex';
+    }
+
+    // Reset statistics values
+    updateStats(0, 0);
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+      activateTab(tab);
+      const url = tab.getAttribute('data-url');
+      if (url) history.pushState(null, '', url);
+    });
+  });
 
-      const targetId = tab.getAttribute('data-tab');
-      tabContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === targetId) {
-          content.classList.add('active');
-        }
-      });
+  // Activate tab based on URL on page load
+  (function() {
+    const path = window.location.pathname.replace(/\/$/, '');
+    tabs.forEach(tab => {
+      const url = (tab.getAttribute('data-url') || '').replace(/\/$/, '');
+      if (url && url === path) activateTab(tab);
+    });
+  })();
 
-      // Update active language
-      if (targetId === 'tab-css') activeLang = 'css';
-      else if (targetId === 'tab-js') activeLang = 'js';
-      else if (targetId === 'tab-html') activeLang = 'html';
-      else if (targetId === 'tab-batch') activeLang = 'batch';
-
-      // Hide or show bottom actions depending on tab
-      const statsRow = document.querySelector('.tool-actions-row') as HTMLElement | null;
-      if (statsRow) {
-        statsRow.style.display = activeLang === 'batch' ? 'none' : 'flex';
-      }
-
-      // Reset statistics values
-      updateStats(0, 0);
+  window.addEventListener('popstate', () => {
+    const path = window.location.pathname.replace(/\/$/, '');
+    tabs.forEach(tab => {
+      const url = (tab.getAttribute('data-url') || '').replace(/\/$/, '');
+      if (url && url === path) activateTab(tab);
     });
   });
 

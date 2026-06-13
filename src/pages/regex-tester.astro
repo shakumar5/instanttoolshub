@@ -98,10 +98,10 @@ const webAppSchema = {
   <div class="panel glass">
     <div class="panel-header tabbed-header">
       <div class="tabs">
-        <button class="tab-btn active" data-tab="tab-tester">RegEx Tester</button>
-        <button class="tab-btn" data-tab="tab-ai">AI Generator</button>
-        <button class="tab-btn" data-tab="tab-library">Common Patterns</button>
-        <button class="tab-btn" data-tab="tab-cheatsheet">Cheatsheet</button>
+        <button class="tab-btn active" data-tab="tab-tester" data-url="/regex-tester">RegEx Tester</button>
+        <button class="tab-btn" data-tab="tab-ai" data-url="/regex-tester/ai-generator">AI Generator</button>
+        <button class="tab-btn" data-tab="tab-library" data-url="/regex-tester/common-patterns">Common Patterns</button>
+        <button class="tab-btn" data-tab="tab-cheatsheet" data-url="/regex-tester/cheatsheet">Cheatsheet</button>
       </div>
       <div class="panel-header-actions">
         <button class="btn btn-secondary btn-xs" id="btn-copy-regex">Copy Pattern</button>
@@ -965,20 +965,37 @@ const webAppSchema = {
   const tabs = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
 
+  function activateTab(tab: Element) {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    const targetId = tab.getAttribute('data-tab');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      if (content.id === targetId) {
+        content.classList.add('active');
+      }
+    });
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      const targetId = tab.getAttribute('data-tab');
-      tabContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === targetId) {
-          content.classList.add('active');
-        }
-      });
+      activateTab(tab);
+      const url = tab.getAttribute('data-url');
+      if (url) history.pushState(null, '', url);
     });
   });
+
+  // Activate correct tab on page load based on URL path
+  (function() {
+    const path = window.location.pathname;
+    tabs.forEach(tab => {
+      const url = tab.getAttribute('data-url');
+      if (url && path.startsWith(url) && url !== '/regex-tester') {
+        activateTab(tab);
+      }
+    });
+  })();
 
   // --- REGEX TESTER LOGIC ---
   const regexPatternInput = document.getElementById('regex-pattern') as HTMLInputElement | null;

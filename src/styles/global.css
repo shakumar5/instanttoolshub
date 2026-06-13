@@ -557,3 +557,17 @@ select:focus-visible,
 .tool-card:hover .tool-card-link svg {
   transform: translateX(4px);
 }
+
+/* Tab navigation links (anchor-based tabs for sub-tool navigation) */
+a.tab-btn.tab-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+a.tab-btn.tab-link:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--accent-primary);
+}

@@ -59,10 +59,10 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
 
   <div class="color-secondary-tabs glass">
     <div class="tabs-header-bar">
-      <button class="color-tab-btn active" data-color-tab="tab-palettes">Palette Generator</button>
-      <button class="color-tab-btn" data-color-tab="tab-gradients">Gradient Builder</button>
-      <button class="color-tab-btn" data-color-tab="tab-extractor">Color from Image</button>
-      <button class="color-tab-btn" data-color-tab="tab-contrast">Contrast Checker</button>
+      <button class="color-tab-btn active" data-color-tab="tab-palettes" data-url="/color-converter">Palette Generator</button>
+      <button class="color-tab-btn" data-color-tab="tab-gradients" data-url="/color-converter/gradient-builder">Gradient Builder</button>
+      <button class="color-tab-btn" data-color-tab="tab-extractor" data-url="/color-converter/color-from-image">Color from Image</button>
+      <button class="color-tab-btn" data-color-tab="tab-contrast" data-url="/color-converter/contrast-checker">Contrast Checker</button>
     </div>
 
     <div class="color-tab-content-container">
@@ -723,18 +723,43 @@ const { initialColor = "#14b8a6", pageMode = "" } = Astro.props;
   const tabs = document.querySelectorAll('.color-tab-btn');
   const tabContents = document.querySelectorAll('.color-tab-content');
 
+  function activateColorTab(tab) {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    const targetId = tab.getAttribute('data-color-tab');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      if (content.id === targetId) {
+        content.classList.add('active');
+      }
+    });
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+      activateColorTab(tab);
+      const url = tab.getAttribute('data-url');
+      if (url) history.pushState(null, '', url);
+    });
+  });
 
-      const targetId = tab.getAttribute('data-color-tab');
-      tabContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === targetId) {
-          content.classList.add('active');
-        }
-      });
+  // Activate correct tab on page load based on URL path
+  (function() {
+    const path = window.location.pathname.replace(/\/$/, '');
+    tabs.forEach(tab => {
+      const url = (tab.getAttribute('data-url') || '').replace(/\/$/, '');
+      if (url && url === path) {
+        activateColorTab(tab);
+      }
+    });
+  })();
+
+  window.addEventListener('popstate', () => {
+    const path = window.location.pathname.replace(/\/$/, '');
+    tabs.forEach(tab => {
+      const url = (tab.getAttribute('data-url') || '').replace(/\/$/, '');
+      if (url && url === path) activateColorTab(tab);
     });
   });
 

@@ -97,15 +97,15 @@ const webAppSchema = {
     <div class="panel-header toolbar-header">
       <div class="editor-toolbar">
         <select id="readme-templates" class="form-select toolbar-select">
-          <option value="">-- Choose README Template --</option>
-          <option value="minimal">Minimal Project README</option>
-          <option value="professional">Professional Project README</option>
-          <option value="profile">Developer Profile README</option>
-          <option value="api">API Documentation README</option>
-          <option value="opensource">Open Source Project README</option>
-          <option value="startup">SaaS/Startup README</option>
-          <option value="cli">CLI Tool README</option>
-          <option value="library">Library/Package README</option>
+          <option value="" data-url="/markdown-editor">-- Choose README Template --</option>
+          <option value="minimal" data-url="/markdown-editor/minimal-readme">Minimal Project README</option>
+          <option value="professional" data-url="/markdown-editor/professional-readme">Professional Project README</option>
+          <option value="profile" data-url="/markdown-editor/profile-readme">Developer Profile README</option>
+          <option value="api" data-url="/markdown-editor/api-readme">API Documentation README</option>
+          <option value="opensource" data-url="/markdown-editor/opensource-readme">Open Source Project README</option>
+          <option value="startup" data-url="/markdown-editor/startup-readme">SaaS/Startup README</option>
+          <option value="cli" data-url="/markdown-editor/cli-readme">CLI Tool README</option>
+          <option value="library" data-url="/markdown-editor/library-readme">Library/Package README</option>
         </select>
         
         <div class="divider"></div>
@@ -1005,7 +1005,29 @@ MIT — see [LICENSE](LICENSE) for details.`
         mdInput.value = templates[selected as keyof typeof templates];
         triggerPreview();
       }
+      // Update URL based on selected template
+      const selectedOption = templatesSelect.options[templatesSelect.selectedIndex];
+      const url = selectedOption.getAttribute('data-url');
+      if (url) history.pushState(null, '', url);
     });
+
+    // On page load, activate template based on URL path
+    const path = window.location.pathname;
+    const templateMap: Record<string, string> = {
+      '/markdown-editor/minimal-readme': 'minimal',
+      '/markdown-editor/professional-readme': 'professional',
+      '/markdown-editor/profile-readme': 'profile',
+      '/markdown-editor/api-readme': 'api',
+      '/markdown-editor/opensource-readme': 'opensource',
+      '/markdown-editor/startup-readme': 'startup',
+      '/markdown-editor/cli-readme': 'cli',
+      '/markdown-editor/library-readme': 'library'
+    };
+    if (templateMap[path]) {
+      templatesSelect.value = templateMap[path];
+      mdInput.value = templates[templateMap[path] as keyof typeof templates];
+      triggerPreview();
+    }
   }
 
   // Live Preview Hook

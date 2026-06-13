@@ -97,10 +97,10 @@ const webAppSchema = {
   <div class="panel glass">
     <div class="panel-header tabbed-header">
       <div class="tabs">
-        <button class="tab-btn active" data-tab="tab-single">URL Encoder/Decoder</button>
-        <button class="tab-btn" data-tab="tab-batch">Batch Processing</button>
-        <button class="tab-btn" data-tab="tab-query">Query String Parser</button>
-        <button class="tab-btn" data-tab="tab-utm">UTM Builder</button>
+        <button class="tab-btn active" data-tab="tab-single" data-url="/url-encoder-decoder">URL Encoder/Decoder</button>
+        <button class="tab-btn" data-tab="tab-batch" data-url="/url-encoder-decoder/batch">Batch Processing</button>
+        <button class="tab-btn" data-tab="tab-query" data-url="/url-encoder-decoder/query-parser">Query String Parser</button>
+        <button class="tab-btn" data-tab="tab-utm" data-url="/url-encoder-decoder/utm-builder">UTM Builder</button>
       </div>
       <div class="panel-header-actions">
         <button class="btn btn-primary btn-xs copy-btn" id="copy-action">Copy Output</button>
@@ -918,18 +918,38 @@ const webAppSchema = {
   const tabContents = document.querySelectorAll('.tab-content');
   const globalCopyBtn = document.getElementById('copy-action');
 
+  function activateTab(tab: Element) {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const targetId = tab.getAttribute('data-tab');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      if (content.id === targetId) content.classList.add('active');
+    });
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+      activateTab(tab);
+      const url = tab.getAttribute('data-url');
+      if (url) history.pushState(null, '', url);
+    });
+  });
 
-      const targetId = tab.getAttribute('data-tab');
-      tabContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === targetId) {
-          content.classList.add('active');
-        }
-      });
+  // Activate tab based on URL on page load
+  (function() {
+    const path = window.location.pathname.replace(/\/$/, '');
+    tabs.forEach(tab => {
+      const url = (tab.getAttribute('data-url') || '').replace(/\/$/, '');
+      if (url && url === path) activateTab(tab);
+    });
+  })();
+
+  window.addEventListener('popstate', () => {
+    const path = window.location.pathname.replace(/\/$/, '');
+    tabs.forEach(tab => {
+      const url = (tab.getAttribute('data-url') || '').replace(/\/$/, '');
+      if (url && url === path) activateTab(tab);
     });
   });
 

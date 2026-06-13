@@ -1,0 +1,187 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEOContent from '../../components/SEOContent.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const toolName = "JWT Token Generator Online — Free, Instant, Private";
+const pageHeading = "JWT Token Generator";
+const activeTool = "jwt-decoder";
+const accentColor = "#8b5cf6";
+const accentGlow = "rgba(139, 92, 246, 0.15)";
+
+const seoDescription = "Generate test JSON Web Tokens (JWT) with custom headers, payloads, and HMAC-SHA256 signatures instantly in your browser. No data uploaded — 100% client-side.";
+const seoKeywords = "jwt generator, generate jwt token, create jwt online, jwt token maker, jwt hs256 generator, test jwt token free";
+
+const howToUse = [
+  "Configure the JWT header JSON (algorithm defaults to HS256).",
+  "Edit the payload JSON with your custom claims (sub, iat, exp, etc.).",
+  "Enter a secret key for HMAC-SHA256 signing.",
+  "Click 'Generate Token' to produce a valid signed JWT.",
+  "Copy or load the generated token into the decoder to verify."
+];
+
+const faqs = [
+  { q: "What algorithm is supported?", a: "Currently HS256 (HMAC-SHA256). The token is signed locally in your browser using the Web Crypto API." },
+  { q: "Is the generated token valid?", a: "Yes, the token is properly signed and can be verified by any JWT library using the same secret key." },
+  { q: "Is this safe for production secrets?", a: "Yes. Everything runs in your browser. The secret key never leaves your device." }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "JWT Token Generator",
+  "url": "https://instanttoolshub.com/jwt-decoder/token-generator",
+  "description": "Free online JWT token generator. Create HS256-signed JSON Web Tokens in your browser.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "provider": { "@type": "Organization", "name": "InstantToolsHub", "url": "https://instanttoolshub.com" }
+};
+---
+
+<Layout title={toolName} description={seoDescription} keywords={seoKeywords} activeTool={activeTool} accentColor={accentColor} accentGlow={accentGlow}>
+  <Fragment set:html={`<script type="application/ld+json">${JSON.stringify(webAppSchema)}<\/script>`} />
+  <div class="tool-header">
+    <h1>{pageHeading}</h1>
+    <p>Create custom HMAC-SHA256 signed JSON Web Tokens for testing and development — entirely in your browser.</p>
+  </div>
+
+  <div class="panel glass">
+    <div class="panel-header tabbed-header">
+      <div class="tabs">
+        <a href="/jwt-decoder" class="tab-btn tab-link">Decode Token</a>
+        <button class="tab-btn active" data-tab="tab-generate">Generate Test Token</button>
+      </div>
+      <div class="panel-header-actions">
+        <button class="btn btn-outline btn-xs" id="btn-clear-gen">Clear</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="gen-container">
+        <div class="gen-input-side">
+          <div class="split-label">Token Configuration</div>
+          <div class="gen-form">
+            <div class="form-control">
+              <label class="form-label">Algorithm</label>
+              <select id="gen-alg" class="form-select"><option value="HS256">HS256 (HMAC-SHA256)</option></select>
+            </div>
+            <div class="form-control">
+              <label class="form-label">Header (JSON)</label>
+              <textarea id="gen-header" class="form-textarea code-font" style="min-height:80px;"></textarea>
+            </div>
+            <div class="form-control">
+              <label class="form-label">Payload (JSON)</label>
+              <textarea id="gen-payload" class="form-textarea code-font" style="min-height:120px;"></textarea>
+            </div>
+            <div class="form-control">
+              <label class="form-label">Secret Key</label>
+              <input type="text" id="gen-secret" placeholder="Enter signing secret..." class="form-input code-font" value="my-secret-key" />
+            </div>
+            <button class="btn btn-primary" id="btn-generate-token">Generate Token</button>
+          </div>
+        </div>
+        <div class="gen-output-side">
+          <div class="split-label">Generated JWT</div>
+          <textarea id="gen-token-output" readonly placeholder="Generated JWT will appear here..." class="form-textarea code-font gen-output-textarea" aria-live="polite"></textarea>
+          <div class="gen-actions">
+            <button class="btn btn-secondary btn-xs" id="btn-copy-gen-token">Copy Token</button>
+            <a href="/jwt-decoder" class="btn btn-outline btn-xs">Decode This Token</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-tools-nav glass">
+    <h3>More JWT Tools</h3>
+    <div class="links-list">
+      <a href="/jwt-decoder">JWT Decoder & Verifier</a>
+    </div>
+  </div>
+
+  <RelatedTools currentTool="jwt-decoder" />
+  <SEOContent toolName={pageHeading} description="JSON Web Token generation creates a compact, self-contained token for securely transmitting information. The token consists of three Base64URL-encoded parts: a header specifying the algorithm, a payload containing claims, and a signature computed using HMAC-SHA256 with your secret key." howToUse={howToUse} faqs={faqs} />
+</Layout>
+
+<style>
+  .tool-header { margin-bottom: 1.5rem; }
+  .tool-header h1 { color: #fff; margin-bottom: 0.5rem; }
+  .panel { display: flex; flex-direction: column; min-height: 500px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.4); }
+  .tabbed-header { padding: 0; padding-right: 1rem; }
+  .tabs { display: flex; height: 100%; }
+  .tab-btn { background: transparent; border: none; border-right: 1px solid var(--border-light); color: var(--text-secondary); padding: 0.75rem 1.25rem; font-family: var(--font-sans); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all var(--transition-fast); }
+  .tab-btn.active { background: var(--bg-primary); color: var(--accent-primary); border-bottom: 2px solid var(--accent-primary); }
+  .panel-header-actions { display: flex; gap: 0.5rem; }
+  .panel-body { flex-grow: 1; padding: 0; }
+  .gen-container { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .gen-input-side { border-right: 1px solid var(--border-light); display: flex; flex-direction: column; }
+  .gen-form { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; }
+  .gen-output-side { display: flex; flex-direction: column; }
+  .gen-output-textarea { flex-grow: 1; padding: 1.25rem; font-size: 0.85rem; color: #c084fc; background: #030712; border: none; resize: none; outline: none; }
+  .gen-actions { padding: 1rem; border-top: 1px solid var(--border-light); display: flex; gap: 0.75rem; }
+  .split-label { padding: 0.5rem 1.25rem; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .code-font { font-family: var(--font-mono) !important; font-size: 0.85rem !important; }
+  .sub-tools-nav { padding: 1.5rem; margin-top: 2rem; }
+  .sub-tools-nav h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.75rem; }
+  .links-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  .links-list a { color: var(--accent-primary); font-weight: 500; text-decoration: underline; font-size: 0.95rem; }
+  @media (max-width: 768px) { .gen-container { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const genHeader = document.getElementById('gen-header');
+  const genPayload = document.getElementById('gen-payload');
+  const genSecret = document.getElementById('gen-secret');
+  const genOutput = document.getElementById('gen-token-output');
+  const btnGenerate = document.getElementById('btn-generate-token');
+  const btnCopy = document.getElementById('btn-copy-gen-token');
+  const btnClear = document.getElementById('btn-clear-gen');
+
+  // Set defaults
+  if (genHeader) genHeader.value = JSON.stringify({"alg": "HS256", "typ": "JWT"}, null, 2);
+  if (genPayload) genPayload.value = JSON.stringify({"sub": "1234567890", "name": "John Doe", "admin": true, "iat": 1716239022}, null, 2);
+
+  function base64UrlEncode(str) {
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  async function hmacSha256(secret, message) {
+    const enc = new TextEncoder();
+    const keyData = enc.encode(secret);
+    const algorithm = { name: 'HMAC', hash: { name: 'SHA-256' } };
+    const key = await crypto.subtle.importKey('raw', keyData, algorithm, false, ['sign']);
+    const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
+    const bytes = new Uint8Array(sig);
+    let binary = '';
+    bytes.forEach(b => { binary += String.fromCharCode(b); });
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  if (btnGenerate) {
+    btnGenerate.addEventListener('click', async () => {
+      if (!genHeader || !genPayload || !genSecret || !genOutput) return;
+      try {
+        JSON.parse(genHeader.value);
+        JSON.parse(genPayload.value);
+      } catch (e) { genOutput.value = 'Error: Header and Payload must be valid JSON.'; return; }
+      if (!genSecret.value) { genOutput.value = 'Error: Secret key is required.'; return; }
+
+      const headerB64 = base64UrlEncode(genHeader.value);
+      const payloadB64 = base64UrlEncode(genPayload.value);
+      const signature = await hmacSha256(genSecret.value, headerB64 + '.' + payloadB64);
+      genOutput.value = headerB64 + '.' + payloadB64 + '.' + signature;
+    });
+  }
+
+  if (btnCopy && genOutput) {
+    btnCopy.addEventListener('click', () => {
+      if (genOutput.value) navigator.clipboard.writeText(genOutput.value).then(() => { btnCopy.textContent = 'Copied!'; setTimeout(() => { btnCopy.textContent = 'Copy Token'; }, 2000); });
+    });
+  }
+
+  if (btnClear && genHeader && genPayload && genSecret && genOutput) {
+    btnClear.addEventListener('click', () => { genHeader.value = ''; genPayload.value = ''; genSecret.value = ''; genOutput.value = ''; });
+  }
+</script>

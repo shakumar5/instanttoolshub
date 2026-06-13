@@ -99,8 +99,8 @@ const webAppSchema = {
   <div class="panel glass">
     <div class="panel-header tabbed-header">
       <div class="tabs">
-        <button class="tab-btn active" data-tab="tab-decode">Decode Token</button>
-        <button class="tab-btn" data-tab="tab-generate">Generate Test Token</button>
+        <button class="tab-btn active" data-tab="tab-decode" data-url="/jwt-decoder">Decode Token</button>
+        <button class="tab-btn" data-tab="tab-generate" data-url="/jwt-decoder/token-generator">Generate Test Token</button>
       </div>
       <div class="panel-header-actions">
         <button class="btn btn-outline btn-xs" id="btn-sample-jwt">Sample JWT</button>
@@ -628,20 +628,37 @@ const webAppSchema = {
   const tabs = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
 
+  function activateTab(tab: Element) {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    const targetId = tab.getAttribute('data-tab');
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+      if (content.id === targetId) {
+        content.classList.add('active');
+      }
+    });
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      const targetId = tab.getAttribute('data-tab');
-      tabContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === targetId) {
-          content.classList.add('active');
-        }
-      });
+      activateTab(tab);
+      const url = tab.getAttribute('data-url');
+      if (url) history.pushState(null, '', url);
     });
   });
+
+  // Activate correct tab on page load based on URL path
+  (function() {
+    const path = window.location.pathname;
+    tabs.forEach(tab => {
+      const url = tab.getAttribute('data-url');
+      if (url && path.startsWith(url) && url !== '/jwt-decoder') {
+        activateTab(tab);
+      }
+    });
+  })();
 
   // Elements
   const jwtInput = document.getElementById('jwt-input') as HTMLTextAreaElement | null;
